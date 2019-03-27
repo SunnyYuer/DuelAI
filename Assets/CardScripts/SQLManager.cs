@@ -24,19 +24,16 @@ public class SQLManager {
         if (Application.platform == RuntimePlatform.Android)
         {
             dbPath = Application.persistentDataPath + "/" + sqlName;
-            GameObject.Find("InputField").GetComponent<InputField>().text += "123";
             if (!File.Exists(dbPath))
             {//把数据库从安装包复制到安卓可写路径中，注：sqlite不能在安装包中读取数据
                 WWW loader = new WWW("jar:file://" + Application.dataPath + "!/assets/" + sqlName);
                 while (!loader.isDone) { }
                 File.WriteAllBytes(dbPath, loader.bytes);
             }
-            GameObject.Find("InputField").GetComponent<InputField>().text += "456";
             connection = new SqliteConnection("URI=file:" + dbPath);
         }
         connection.Open();
         command = connection.CreateCommand();
-        GameObject.Find("InputField").GetComponent<InputField>().text += "789";
         Debug.Log("数据库连接成功");
     }
 

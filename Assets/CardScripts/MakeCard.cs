@@ -16,11 +16,11 @@ public class MakeCard : MonoBehaviour {
     {
         SQLManager sql = new SQLManager();
         sql.ConnectSQL();
-        string name = GameObject.Find("InputField1").GetComponent<InputField>().text;
-        string id = GameObject.Find("InputField2").GetComponent<InputField>().text;
+        string name = GameObject.Find("CardNameInputField").GetComponent<InputField>().text;
+        string id = GameObject.Find("CardIdInputField").GetComponent<InputField>().text;
         Dropdown dp = GameObject.Find("Dropdown").GetComponent<Dropdown>();
         string type = dp.options[dp.value].text;
-        string describe = GameObject.Find("InputField").GetComponent<InputField>().text;
+        string describe = GameObject.Find("DescribeInputField").GetComponent<InputField>().text;
         sql.InsertData("cards", new string[] { "id", "name", "type", "describe" }, new string[] { id, name, type, describe });
         sql.CloseSQLConnection();
     }
