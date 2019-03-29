@@ -40,7 +40,7 @@ public class SQLManager {
     public SqliteDataReader ReadTable(string tableName, string NameorId)
     {
         if (NameorId.Equals("")) command.CommandText = "select * from " + tableName;
-        else command.CommandText = "select * from " + tableName + " where name='" + NameorId + "' or id='" + NameorId + "'";
+        else command.CommandText = "select * from " + tableName + " where name like '%" + NameorId + "%' or id='" + NameorId + "'";
         Debug.Log(command.CommandText);
         return command.ExecuteReader();
     }

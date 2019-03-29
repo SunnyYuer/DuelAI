@@ -11,7 +11,6 @@ public class MakeCard : MonoBehaviour {
     public GameObject card;
 
     private SQLManager sql;
-    private SqliteDataReader reader;
 
     // Use this for initialization
     void Start ()
@@ -36,7 +35,7 @@ public class MakeCard : MonoBehaviour {
         cardlist.sizeDelta = new Vector2(0, 5);
 
         string nameorid = GameObject.Find("SearchInputField").GetComponent<InputField>().text;
-        reader = sql.ReadTable("cards", nameorid);
+        SqliteDataReader reader = sql.ReadTable("cards", nameorid);
         while (reader.Read())
         {
             string name = reader.GetString(reader.GetOrdinal("name"));
@@ -55,7 +54,7 @@ public class MakeCard : MonoBehaviour {
         Dropdown dp = GameObject.Find("Dropdown").GetComponent<Dropdown>();
         string type = dp.options[dp.value].text;
         string describe = GameObject.Find("DescribeInputField").GetComponent<InputField>().text;
-        sql.InsertData("cards", new string[] { "id", "name", "type", "describe" }, new string[] { id, name, type, describe });
-        //sql.CloseSQLConnection();
+        SqliteDataReader reader = sql.InsertData("cards", new string[] { "id", "name", "type", "describe" }, new string[] { id, name, type, describe });
+        reader.Close();
     }
 }
