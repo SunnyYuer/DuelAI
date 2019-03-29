@@ -6,7 +6,8 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MakeCard : MonoBehaviour {
+public class MakeCard : MonoBehaviour
+{
 
     public GameObject card;
 
@@ -38,10 +39,12 @@ public class MakeCard : MonoBehaviour {
         SqliteDataReader reader = sql.ReadTable("cards", nameorid);
         while (reader.Read())
         {
+            string id = reader.GetString(reader.GetOrdinal("id"));
             string name = reader.GetString(reader.GetOrdinal("name"));
             GameObject cardnext = Instantiate(card, cardlist);
             cardnext.SetActive(true);
-            cardnext.GetComponentInChildren<Text>().text = name;
+            cardnext.GetComponentsInChildren<Text>()[0].text = name;
+            cardnext.GetComponentsInChildren<Text>()[3].text = id;
             cardlist.sizeDelta = new Vector2(0, cardlist.rect.height+105);
         }
         reader.Close();

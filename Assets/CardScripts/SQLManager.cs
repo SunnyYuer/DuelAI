@@ -34,7 +34,7 @@ public class SQLManager {
         }
         connection.Open();
         command = connection.CreateCommand();
-        Debug.Log("数据库连接成功");
+        //Debug.Log("数据库连接成功");
     }
 
     public SqliteDataReader ReadTable(string tableName, string NameorId)
@@ -76,6 +76,6 @@ public class SQLManager {
     {
         connection.Close();
         connection = null;
-        Debug.Log("已经断开数据库连接");
+        //Debug.Log("已经断开数据库连接");
     }
 }
