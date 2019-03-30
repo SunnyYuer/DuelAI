@@ -10,7 +10,6 @@ public class MakeCard : MonoBehaviour
 {
 
     public GameObject card;
-
     private SQLManager sql;
 
     // Use this for initialization

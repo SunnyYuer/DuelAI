@@ -7,9 +7,11 @@ using UnityEngine.UI;
 
 public class CardClick : MonoBehaviour, IPointerClickHandler
 {
+    private static GameObject lastclickedcard;
+
     // Use this for initialization
     void Start () {
-		
+        
 	}
 	
 	// Update is called once per frame
@@ -19,6 +21,11 @@ public class CardClick : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (lastclickedcard != null) 
+            lastclickedcard.GetComponent<Image>().color = Color.white;
+        gameObject.GetComponent<Image>().color = Color.gray;//设置点击卡片后的状态颜色
+        lastclickedcard = gameObject;
+
         SQLManager sql = new SQLManager();
         sql.ConnectSQL();
 
