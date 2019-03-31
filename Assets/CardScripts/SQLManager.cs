@@ -9,27 +9,20 @@ public class SQLManager {
     private SqliteConnection connection;
     private SqliteCommand command;
     private SqliteDataReader reader;
-    public string sqlName = "cards.db";
-    private string dbPath;
  
     public void ConnectSQL()
     {
+        string dbPath;
         if (Application.platform == RuntimePlatform.WindowsEditor ||
             Application.platform == RuntimePlatform.WindowsPlayer ||
             Application.platform == RuntimePlatform.LinuxPlayer)
         {
-            dbPath = Application.streamingAssetsPath + "/" + sqlName;
+            dbPath = Application.streamingAssetsPath + "/" + MakeCard.rule + "/" + MakeCard.sqlName;
             connection = new SqliteConnection("data source="+dbPath);
         }
         if (Application.platform == RuntimePlatform.Android)
         {
-            dbPath = Application.persistentDataPath + "/" + sqlName;
-            if (!File.Exists(dbPath))
-            {//把数据库从安装包复制到安卓可写路径中，注：sqlite不能在安装包中读取数据
-                WWW loader = new WWW("jar:file://" + Application.dataPath + "!/assets/" + sqlName);
-                while (!loader.isDone) { }
-                File.WriteAllBytes(dbPath, loader.bytes);
-            }
+            dbPath = MakeCard.androidsdcard + "/" + MakeCard.rule + "/" + MakeCard.sqlName;
             connection = new SqliteConnection("URI=file:" + dbPath);
         }
         connection.Open();
