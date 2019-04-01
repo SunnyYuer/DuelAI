@@ -97,10 +97,11 @@ public class MakeCard : MonoBehaviour
         cardlist.sizeDelta = new Vector2(0, 5);
 
         string nameorid = GameObject.Find("SearchInputField").GetComponent<InputField>().text;
+        float cardheight = card.GetComponent<RectTransform>().rect.height;
         SqliteDataReader reader = sql.ReadTable("cards", nameorid);
         while (reader.Read())
         {
-            cardlist.sizeDelta = new Vector2(0, cardlist.rect.height + 105);
+            cardlist.sizeDelta = new Vector2(0, cardlist.rect.height + cardheight + 5);
             string id = reader.GetString(reader.GetOrdinal("id"));
             string name = reader.GetString(reader.GetOrdinal("name"));
             string cardjpg = id + ".jpg";
@@ -128,7 +129,7 @@ public class MakeCard : MonoBehaviour
             byte[] imgByte = new byte[files.Length];
             files.Read(imgByte, 0, imgByte.Length);
             files.Close();
-            Texture2D texture = new Texture2D(209, 300);
+            Texture2D texture = new Texture2D(236, 344);
             texture.LoadImage(imgByte);
             sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
         }
