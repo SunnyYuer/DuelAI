@@ -67,7 +67,7 @@ public class MakeCard : MonoBehaviour
         string path = androidsdcard + "/" + rule + "/pics";
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
-        SqliteDataReader reader = sql.ReadTable("cards", "");
+        SqliteDataReader reader = sql.ReadCardsId("cards", "");
         while (reader.Read())
         {
             string id = reader.GetString(reader.GetOrdinal("id"));
@@ -98,7 +98,7 @@ public class MakeCard : MonoBehaviour
 
         string nameorid = GameObject.Find("SearchInputField").GetComponent<InputField>().text;
         float cardheight = card.GetComponent<RectTransform>().rect.height;
-        SqliteDataReader reader = sql.ReadTable("cards", nameorid);
+        SqliteDataReader reader = sql.ReadCardsAll("cards", nameorid);
         while (reader.Read())
         {
             cardlist.sizeDelta = new Vector2(0, cardlist.rect.height + cardheight + 5);
@@ -143,7 +143,12 @@ public class MakeCard : MonoBehaviour
         Dropdown dp = GameObject.Find("Dropdown").GetComponent<Dropdown>();
         string type = dp.options[dp.value].text;
         string describe = GameObject.Find("DescribeInputField").GetComponent<InputField>().text;
-        SqliteDataReader reader = sql.InsertData("cards", new string[] { "id", "name", "type", "describe" }, new string[] { id, name, type, describe });
+        SqliteDataReader reader = sql.ReadCardsId("cards",id);
+        bool hasrows = reader.HasRows;
         reader.Close();
+        if (hasrows)
+            sql.UpdateCard("cards", new string[] { "name", "type", "describe" }, new string[] { name, type, describe }, id).Close();
+        else
+            sql.InsertCard("cards", new string[] { "id", "name", "type", "describe" }, new string[] { id, name, type, describe }).Close();
     }
 }

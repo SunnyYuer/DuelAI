@@ -30,7 +30,7 @@ public class CardClick : MonoBehaviour, IPointerClickHandler
         sql.ConnectSQL();
 
         string id = gameObject.GetComponentsInChildren<Text>()[3].text;
-        SqliteDataReader reader = sql.ReadTable("cards", id);
+        SqliteDataReader reader = sql.ReadCardsAll("cards", id);
         if (reader.Read())
         {
             string name = reader.GetString(reader.GetOrdinal("name"));
