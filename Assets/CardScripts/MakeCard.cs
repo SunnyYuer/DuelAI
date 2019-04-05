@@ -112,6 +112,7 @@ public class MakeCard : MonoBehaviour
             cardnext.GetComponentsInChildren<Image>()[1].sprite = getCardSprite(cardjpg);
         }
         reader.Close();
+        //Instantiate(Resources.Load("Prefabs/TipBackground"), GameObject.Find("Canvas").transform);
     }
 
     public void OnCardIdValueChanged(string id)
