@@ -50,7 +50,8 @@ public class MakeCard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.Escape))
+            OnQuitClick();
     }
 
     public void AndroidUpdateDatabase()
@@ -150,5 +151,11 @@ public class MakeCard : MonoBehaviour
             sql.UpdateCard("cards", new string[] { "name", "type", "describe" }, new string[] { name, type, describe }, id).Close();
         else
             sql.InsertCard("cards", new string[] { "id", "name", "type", "describe" }, new string[] { id, name, type, describe }).Close();
+    }
+
+    public void OnQuitClick()
+    {
+        sql.CloseSQLConnection();
+        Destroy(gameObject);
     }
 }
