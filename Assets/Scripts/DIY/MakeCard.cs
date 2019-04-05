@@ -44,6 +44,7 @@ public class MakeCard : MonoBehaviour
             picspath = androidsdcard + "/" + rule + "/pics/";
         else
             picspath = Application.streamingAssetsPath + "/" + rule + "/pics/";
+        
     }
 
     // Update is called once per frame
@@ -90,7 +91,7 @@ public class MakeCard : MonoBehaviour
     public void OnSearchClick()
     {
         RectTransform cardlist = GameObject.Find("CardList").GetComponent<RectTransform>();
-        for (int i = 1; i < cardlist.childCount; i++)
+        for (int i = 0; i < cardlist.childCount; i++)
         {
             Destroy(cardlist.GetChild(i).gameObject);
         }
@@ -106,13 +107,11 @@ public class MakeCard : MonoBehaviour
             string name = reader.GetString(reader.GetOrdinal("name"));
             string cardjpg = id + ".jpg";
             GameObject cardnext = Instantiate(card, cardlist);
-            cardnext.SetActive(true);
             cardnext.GetComponentsInChildren<Text>()[0].text = name;
             cardnext.GetComponentsInChildren<Text>()[3].text = id;
             cardnext.GetComponentsInChildren<Image>()[1].sprite = getCardSprite(cardjpg);
         }
         reader.Close();
-        //Instantiate(Resources.Load("Prefabs/TipBackground"), GameObject.Find("Canvas").transform);
     }
 
     public void OnCardIdValueChanged(string id)
