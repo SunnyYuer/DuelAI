@@ -28,7 +28,7 @@ public class MakeCard : MonoBehaviour
 {
     public GameObject card;
     public static string androidsdcard = "/sdcard/DuelAI";
-    public static string rule = "fair";//默认规则
+    public static string rule = "default";//默认规则
     public static string sqlName = "cards.db";
     private SQLManager sql;
     private string picspath;
