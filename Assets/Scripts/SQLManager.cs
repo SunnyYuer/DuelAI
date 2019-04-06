@@ -46,6 +46,14 @@ public class SQLManager {
         return command.ExecuteReader();
     }
 
+    public SqliteDataReader GetCardsCount(string tableName, string NameorId)
+    {
+        if (NameorId.Equals("")) command.CommandText = "select count(*) from " + tableName;
+        else command.CommandText = "select count(*) from " + tableName + " where name like '%" + NameorId + "%' or id='" + NameorId + "'";
+        Debug.Log(command.CommandText);
+        return command.ExecuteReader();
+    }
+
     public SqliteDataReader InsertCard(string tableName, string[] fieldNames, object[] values)
     {
         command.CommandText = "insert into " + tableName + "(";

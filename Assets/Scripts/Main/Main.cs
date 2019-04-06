@@ -63,13 +63,17 @@ public class Main : MonoBehaviour {
 
         SQLManager sql = new SQLManager();
         sql.ConnectSQL();
-        SqliteDataReader reader = sql.ReadCardsId("cards", "");
+        SqliteDataReader reader = sql.GetCardsCount("cards", "");
+        int cardcount = int.Parse(reader.GetValue(0).ToString());
+        reader.Close();
+        float prog = 1.0f / cardcount;
+        reader = sql.ReadCardsId("cards", "");
         while (reader.Read())
         {
             string id = reader.GetString(reader.GetOrdinal("id"));
             string cardjpg = id + ".jpg";
             wwwGetFile(Application.streamingAssetsPath + "/" + rule + "/pics/" + cardjpg, path + "/" + cardjpg);
-            progressImage.fillAmount += 0.020f;
+            progressImage.fillAmount += prog;
             progressText.text = (int)(progressImage.fillAmount * 100) + "%";
         }
         reader.Close();
