@@ -17,12 +17,12 @@ public class SQLManager {
             Application.platform == RuntimePlatform.WindowsPlayer ||
             Application.platform == RuntimePlatform.LinuxPlayer)
         {
-            dbPath = Application.streamingAssetsPath + "/" + MakeCard.rule + "/" + MakeCard.sqlName;
+            dbPath = Application.streamingAssetsPath + "/" + Main.rule + "/" + Main.sqlName;
             connection = new SqliteConnection("data source="+dbPath);
         }
         if (Application.platform == RuntimePlatform.Android)
         {
-            dbPath = MakeCard.androidsdcard + "/" + MakeCard.rule + "/" + MakeCard.sqlName;
+            dbPath = Main.AndroidSdcard + "/" + Main.rule + "/" + Main.sqlName;
             connection = new SqliteConnection("URI=file:" + dbPath);
         }
         connection.Open();

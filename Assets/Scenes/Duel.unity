@@ -1045,6 +1045,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c74d9365c2abd7428970c9eb67f0710, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CardMaker: {fileID: 1114823190275892, guid: d3bd49eaa57ef3a419de26058cc9ea41, type: 2}
+  progressImage: {fileID: 0}
+  progressText: {fileID: 0}
 --- !u!1 &2103784258
 GameObject:
   m_ObjectHideFlags: 0
