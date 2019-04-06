@@ -144,7 +144,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u8D44\u6E90\u52A0\u8F7D"
+  m_Text: "\u66F4\u65B0\u8D44\u6E90"
 --- !u!114 &114553050647806276
 MonoBehaviour:
   m_ObjectHideFlags: 1

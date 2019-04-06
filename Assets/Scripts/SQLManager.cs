@@ -17,7 +17,7 @@ public class SQLManager {
             Application.platform == RuntimePlatform.WindowsPlayer ||
             Application.platform == RuntimePlatform.LinuxPlayer)
         {
-            dbPath = Application.streamingAssetsPath + "/" + Main.rule + "/" + Main.sqlName;
+            dbPath = Main.streamAssetsPath + "/" + Main.rule + "/" + Main.sqlName;
             connection = new SqliteConnection("data source="+dbPath);
         }
         if (Application.platform == RuntimePlatform.Android)

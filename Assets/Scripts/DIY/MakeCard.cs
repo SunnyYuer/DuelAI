@@ -19,7 +19,7 @@ public class MakeCard : MonoBehaviour
         if (Application.platform == RuntimePlatform.Android)
             picspath = Main.AndroidSdcard + "/" + Main.rule + "/pics/";
         else
-            picspath = Application.streamingAssetsPath + "/" + Main.rule + "/pics/";
+            picspath = Main.streamAssetsPath + "/" + Main.rule + "/pics/";
     }
 
     // Update is called once per frame

@@ -43,7 +43,7 @@ android {
 	}
 
 	aaptOptions {
-		noCompress '.unity3d', '.ress', '.resource', '.obb'**STREAMING_ASSETS**
+		noCompress '.unity3d', '.ress', '.resource', '.obb'
 	}
 
 **SIGN**

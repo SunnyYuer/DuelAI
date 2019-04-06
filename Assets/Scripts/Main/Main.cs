@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,26 +27,46 @@ public class Main : MonoBehaviour {
 
     public GameObject CardMaker;
 
+    public GameObject progress;
     public Image progressImage;
     public Text progressText;
+    private int cardcount = 0;
+    private int curpro = 1;
+    private int androidUpdate = 0;
 
+    public static string streamAssetsPath;
     public static string AndroidSdcard = "/sdcard/DuelAI";
     public static string rule = "default";//默认规则
     public static string sqlName = "cards.db";
 
     // Use this for initialization
     void Start () {
-        if (Application.platform == RuntimePlatform.Android) AndroidUpdate();
+        streamAssetsPath = Application.streamingAssetsPath;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            AndroidInitialize();
+            Thread update = new Thread(AndroidUpdate);
+            update.Start();
+        }
     }
 	
 	// Update is called once per frame
 	void Update () {
-
+        if (androidUpdate == 1)
+        {
+            progressImage.fillAmount = 1f * curpro / cardcount;
+            progressText.text = curpro + "/" + cardcount;
+            if (curpro >= cardcount)
+            {
+                Destroy(progress);
+                androidUpdate = 2;
+            }
+        }
     }
 
-    public void AndroidUpdate()
+    public void AndroidInitialize()
     {
-        GameObject progress = (GameObject)Instantiate(Resources.Load("Prefabs/ProgressBackground"), GameObject.Find("Canvas").transform);
+        progress = (GameObject)Instantiate(Resources.Load("Prefabs/ProgressBackground"), GameObject.Find("Canvas").transform);
         progressImage = GameObject.Find("ProgressImage").GetComponent<Image>();
         progressText = GameObject.Find("ProgressText").GetComponent<Text>();
 
@@ -53,33 +74,35 @@ public class Main : MonoBehaviour {
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
         path = AndroidSdcard + "/" + rule;
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
-        wwwGetFile(Application.streamingAssetsPath + "/" + rule + "/" + sqlName, path + "/" + sqlName);
-        progressImage.fillAmount += 0.021f;
-        progressText.text = (int)(progressImage.fillAmount * 100) + "%";
-
+        wwwGetFile(streamAssetsPath + "/" + rule + "/" + sqlName, path + "/" + sqlName);
         path = AndroidSdcard + "/" + rule + "/pics";
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
         SQLManager sql = new SQLManager();
         sql.ConnectSQL();
         SqliteDataReader reader = sql.GetCardsCount("cards", "");
-        int cardcount = int.Parse(reader.GetValue(0).ToString());
-        reader.Close();
-        float prog = 1.0f / cardcount;
-        reader = sql.ReadCardsId("cards", "");
-        while (reader.Read())
-        {
-            string id = reader.GetString(reader.GetOrdinal("id"));
-            string cardjpg = id + ".jpg";
-            wwwGetFile(Application.streamingAssetsPath + "/" + rule + "/pics/" + cardjpg, path + "/" + cardjpg);
-            progressImage.fillAmount += prog;
-            progressText.text = (int)(progressImage.fillAmount * 100) + "%";
-        }
+        cardcount = int.Parse(reader.GetValue(0).ToString());
         reader.Close();
         sql.CloseSQLConnection();
 
-        Destroy(progress);
+        androidUpdate = 1;
+    }
+
+    public void AndroidUpdate()
+    {
+        string path = AndroidSdcard + "/" + rule + "/pics";
+        SQLManager sql = new SQLManager();
+        sql.ConnectSQL();
+        SqliteDataReader reader = sql.ReadCardsId("cards", "");
+        while (reader.Read())
+        {
+            string id = reader.GetValue(0).ToString();
+            string cardjpg = id + ".jpg";
+            wwwGetFile(streamAssetsPath + "/" + rule + "/pics/" + cardjpg, path + "/" + cardjpg);
+            curpro++;
+        }
+        reader.Close();
+        sql.CloseSQLConnection();
     }
 
     public void wwwGetFile(string readpath, string writepath)
