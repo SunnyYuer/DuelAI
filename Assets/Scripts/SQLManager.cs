@@ -8,7 +8,6 @@ public class SQLManager {
 
     private SqliteConnection connection;
     private SqliteCommand command;
-    private SqliteDataReader reader;
  
     public void ConnectSQL()
     {
@@ -34,7 +33,16 @@ public class SQLManager {
     {
         if (NameorId.Equals("")) command.CommandText = "select * from " + tableName;
         else command.CommandText = "select * from " + tableName + " where name like '%" + NameorId + "%' or id='" + NameorId + "'";
-        Debug.Log(command.CommandText);
+        //Debug.Log(command.CommandText);
+        return command.ExecuteReader();
+    }
+
+    public SqliteDataReader ReadCardsAllLimit(string tableName, string NameorId, int limit, int offset)
+    {
+        if (NameorId.Equals("")) command.CommandText = "select * from " + tableName + " limit " + limit + " offset " + offset;
+        else command.CommandText = "select * from " + tableName + " where name like '%" + NameorId + "%' or id='" + NameorId + "'"
+                + " limit " + limit + " offset " + offset;
+        //Debug.Log(command.CommandText);
         return command.ExecuteReader();
     }
 
@@ -50,7 +58,7 @@ public class SQLManager {
     {
         if (NameorId.Equals("")) command.CommandText = "select count(*) from " + tableName;
         else command.CommandText = "select count(*) from " + tableName + " where name like '%" + NameorId + "%' or id='" + NameorId + "'";
-        Debug.Log(command.CommandText);
+        //Debug.Log(command.CommandText);
         return command.ExecuteReader();
     }
 

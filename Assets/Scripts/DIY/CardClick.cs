@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class CardClick : MonoBehaviour, IPointerClickHandler
 {
-    private static GameObject lastclickedcard;
+    public static GameObject lastclickedcard;
 
     // Use this for initialization
     void Start () {
@@ -29,8 +29,10 @@ public class CardClick : MonoBehaviour, IPointerClickHandler
         SQLManager sql = new SQLManager();
         sql.ConnectSQL();
 
-        string id = gameObject.GetComponentsInChildren<Text>()[3].text;
-        SqliteDataReader reader = sql.ReadCardsAll("cards", id);
+        string cardAbstract = gameObject.GetComponentInChildren<Text>().text;
+        string[] abs = cardAbstract.Split('\n');
+        string id = abs[abs.Length-1];
+        SqliteDataReader reader = sql.ReadCardsAll(Main.tableName, id);
         if (reader.Read())
         {
             string name = reader.GetString(reader.GetOrdinal("name"));

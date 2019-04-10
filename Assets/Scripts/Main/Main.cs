@@ -38,6 +38,7 @@ public class Main : MonoBehaviour {
     public static string AndroidSdcard = "/sdcard/DuelAI";
     public static string rule = "default";//默认规则
     public static string sqlName = "cards.db";
+    public static string tableName = "cards";
 
     // Use this for initialization
     void Start () {
@@ -80,7 +81,7 @@ public class Main : MonoBehaviour {
 
         SQLManager sql = new SQLManager();
         sql.ConnectSQL();
-        SqliteDataReader reader = sql.GetCardsCount("cards", "");
+        SqliteDataReader reader = sql.GetCardsCount(tableName, "");
         cardcount = int.Parse(reader.GetValue(0).ToString());
         reader.Close();
         sql.CloseSQLConnection();
@@ -93,7 +94,7 @@ public class Main : MonoBehaviour {
         string path = AndroidSdcard + "/" + rule + "/pics";
         SQLManager sql = new SQLManager();
         sql.ConnectSQL();
-        SqliteDataReader reader = sql.ReadCardsId("cards", "");
+        SqliteDataReader reader = sql.ReadCardsId(tableName, "");
         while (reader.Read())
         {
             string id = reader.GetValue(0).ToString();
