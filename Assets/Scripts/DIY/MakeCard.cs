@@ -107,19 +107,20 @@ public class MakeCard : MonoBehaviour
             string cardAbstract = cardnext.GetComponentInChildren<Text>().text;
             string[] abs = cardAbstract.Split('\n');
             string id = abs[abs.Length - 1];
-            if (!spriteList.ContainsKey(id))
-                cardnext.GetComponentsInChildren<Image>()[1].sprite = getCardSprite(id);
+            cardnext.GetComponentsInChildren<Image>()[1].sprite = getCardSprite(id, true);
         }
     }
 
     public void OnCardIdValueChanged(string id)
     {
-        GameObject.Find("CardBigImage").GetComponent<Image>().sprite = getCardSprite(id);
+        GameObject.Find("CardBigImage").GetComponent<Image>().sprite = getCardSprite(id, false);
     }
 
-    public Sprite getCardSprite(string id)
+    public Sprite getCardSprite(string id, bool small)
     {
-        if (spriteList.ContainsKey(id))
+        if (Main.spriteDic.ContainsKey(id) && small)
+            return Main.spriteDic[id];
+        if (spriteList.ContainsKey(id) && !small)
             return spriteList[id];
         string cardpath = picspath + id + ".jpg";
         Sprite sprite = null;
@@ -129,12 +130,53 @@ public class MakeCard : MonoBehaviour
             byte[] imgByte = new byte[files.Length];
             files.Read(imgByte, 0, imgByte.Length);
             files.Close();
-            Texture2D texture = new Texture2D(236, 344);
+            Texture2D texture;
+            if (Application.platform == RuntimePlatform.Android)
+                texture = new Texture2D(236, 344, TextureFormat.ETC_RGB4, false);
+            else
+                texture = new Texture2D(236, 344, TextureFormat.DXT1, false);
             texture.LoadImage(imgByte);
+            if (small) texture = ScaleTexture(texture, 59, 86);
             sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-            spriteList.Add(id, sprite);
+            if (small) Main.spriteDic.Add(id, sprite);
+            else
+            {
+                if (spriteList.Count >= 100)
+                {
+                    spriteList.Clear();//大图最多保存100张
+                    Resources.UnloadUnusedAssets();
+                }
+                spriteList.Add(id, sprite);
+            }
         }
         return sprite;
+    }
+
+    public Texture2D ScaleTexture(Texture2D sourceTex, int targetWidth, int targetHeight)
+    {
+        Texture2D destTex = new Texture2D(targetWidth, targetHeight, TextureFormat.RGB24, false);
+        Color[] destPix = new Color[destTex.width * destTex.height];
+
+        // For each pixel in the destination texture...
+        for (int y = 0; y < destTex.height; y++)
+        {
+            for (int x = 0; x < destTex.width; x++)
+            {
+                // Calculate the fraction of the way across the image
+                // that this pixel positon corresponds to.
+                float xFrac = x * 1.0f / (destTex.width - 1);
+                float yFrac = y * 1.0f / (destTex.height - 1);
+
+                // Get the non-integer pixel positions using GetPixelBilinear.
+                destPix[y * destTex.width + x] = sourceTex.GetPixelBilinear(xFrac, yFrac);
+            }
+        }
+
+        // Copy the pixel data to the destination texture and apply the change.
+        destTex.SetPixels(destPix);
+        destTex.Apply();
+        Destroy(sourceTex);
+        return destTex;
     }
 
     public void OnSaveClick()
@@ -155,8 +197,8 @@ public class MakeCard : MonoBehaviour
 
     public void OnQuitClick()
     {
-        Resources.UnloadUnusedAssets();//释放掉不再使用的Texture2D和Sprite
         sql.CloseSQLConnection();
         Destroy(gameObject);
+        Resources.UnloadUnusedAssets();//释放掉不再使用的Texture2D和Sprite
     }
 }

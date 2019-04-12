@@ -40,9 +40,13 @@ public class Main : MonoBehaviour {
     public static string sqlName = "cards.db";
     public static string tableName = "cards";
 
+    public static Dictionary<string, Sprite> spriteDic;
+
     // Use this for initialization
-    void Start () {
+    void Start ()
+    {
         streamAssetsPath = Application.streamingAssetsPath;
+        spriteDic = new Dictionary<string, Sprite>();
         if (Application.platform == RuntimePlatform.Android)
         {
             AndroidInitialize();
