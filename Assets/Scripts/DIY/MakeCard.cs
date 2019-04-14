@@ -8,10 +8,16 @@ using UnityEngine.UI;
 
 public class MakeCard : MonoBehaviour
 {
+    public RectTransform cardlist;
     public GameObject card;
+    public GameObject refreshtext;
+    public static bool hasRefreshtext;
+    private int lastcardnum = 0;
+    private int cardtotalnum;
+    private string nameorid;
     private SQLManager sql;
     private string picspath;
-    private int lastcardnum = 0;
+    private bool showcardpics;
     private Dictionary<string, Sprite> spriteList;
 
     // Use this for initialization
@@ -24,6 +30,7 @@ public class MakeCard : MonoBehaviour
         else
             picspath = Main.streamAssetsPath + "/" + Main.rule + "/pics/";
         spriteList = new Dictionary<string, Sprite>();
+        hasRefreshtext = false;
     }
 
     // Update is called once per frame
@@ -31,40 +38,49 @@ public class MakeCard : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
             OnQuitClick();
-        if (lastcardnum > 0)
+        if (showcardpics)
             showpics();
     }
 
     public void OnSearchClick()
     {
-        DateTime dt1 = DateTime.Now;
-
         if (CardClick.lastclickedcard != null)
             CardClick.lastclickedcard.GetComponent<Image>().color = Color.white;
 
-        RectTransform cardlist = GameObject.Find("CardList").GetComponent<RectTransform>();
-        int instancards = cardlist.childCount;//已实例化的卡片数量
-
-        string nameorid = GameObject.Find("SearchInputField").GetComponent<InputField>().text;
+        nameorid = GameObject.Find("SearchInputField").GetComponent<InputField>().text;
         SqliteDataReader reader = sql.GetCardsCount(Main.tableName, nameorid);
         int cardnum = int.Parse(reader.GetValue(0).ToString());
-        GameObject.Find("ResultText").GetComponent<Text>().text = cardnum.ToString();
-        if (cardnum > 1000) cardnum = 1000;
         reader.Close();
-        GameObject.Find("ResultText").GetComponent<Text>().text = cardnum.ToString() + "/" + GameObject.Find("ResultText").GetComponent<Text>().text;
-        float cardheight = card.GetComponent<RectTransform>().rect.height;
-        cardlist.sizeDelta = new Vector2(0, cardheight * cardnum + 5);
+        cardtotalnum = cardnum;
+        if (cardnum > 1000) cardnum = 1000;
+        showcardlist(cardnum);
+    }
 
-        reader = sql.ReadCardsAllLimit(Main.tableName, nameorid, cardnum, 0);
+    public void showcardlist(int cardnum)
+    {
+        DateTime dt1 = DateTime.Now;
+
+        int instancards = cardlist.childCount;//已实例化的卡片数量
+        if (hasRefreshtext) instancards--;
+        if (((cardtotalnum==cardnum) || ((cardnum-instancards)>=1000)) && hasRefreshtext)
+        {
+            Destroy(cardlist.GetChild(instancards).gameObject);
+            hasRefreshtext = false;
+        }
+        GameObject.Find("ResultText").GetComponent<Text>().text = cardnum.ToString() + "/" + cardtotalnum.ToString();
+        cardlist.sizeDelta = new Vector2(0, 90*cardnum + 5);
+
+        int offset = (cardnum - 1) / 1000 * 1000;
+        SqliteDataReader reader = sql.ReadCardsAllLimit(Main.tableName, nameorid, cardnum-offset, offset);
         int num = 0;
         while (reader.Read())
         {
-            string id = reader.GetString(reader.GetOrdinal("id"));
+            string id = reader.GetValue(0).ToString();
             string name = reader.GetString(reader.GetOrdinal("name"));
             GameObject cardnext;
-            if (num < instancards)
+            if ((num+offset) < instancards)
             {
-                cardnext = cardlist.GetChild(num).gameObject;
+                cardnext = cardlist.GetChild(num+offset).gameObject;
                 cardnext.SetActive(true);
             }
             else
@@ -78,20 +94,30 @@ public class MakeCard : MonoBehaviour
             num++;
         }
         reader.Close();
-        for (int i = num; i < lastcardnum; i++)
+        for (int i = (num+offset); i < lastcardnum; i++)
         {
             cardlist.GetChild(i).gameObject.SetActive(false);
         }
         lastcardnum = cardnum;
+        if ((cardtotalnum > cardnum) && !hasRefreshtext)
+        {
+            hasRefreshtext = true;
+            Instantiate(refreshtext, cardlist);
+        }
+        showcardpics = true;
 
         DateTime dt2 = DateTime.Now;
         TimeSpan ts = dt2.Subtract(dt1);
-        Debug.Log(ts.TotalMilliseconds);
+        Debug.Log("用时 " + ts.TotalMilliseconds + "ms");
+    }
+
+    public void OnScrollbarValueChanged()
+    {
+        showcardpics = true;
     }
 
     public void showpics()
     {
-        RectTransform cardlist = GameObject.Find("CardList").GetComponent<RectTransform>();
         float cardheight = card.GetComponent<RectTransform>().rect.height;
         float topposition = cardlist.anchoredPosition.y;
         float bottomposition = topposition + cardheight * 7;
@@ -106,9 +132,11 @@ public class MakeCard : MonoBehaviour
             GameObject cardnext = cardlist.GetChild(i).gameObject;
             string cardAbstract = cardnext.GetComponentInChildren<Text>().text;
             string[] abs = cardAbstract.Split('\n');
+            if (abs.Length == 1) continue;//refreshtext此时还未完全销毁
             string id = abs[abs.Length - 1];
             cardnext.GetComponentsInChildren<Image>()[1].sprite = getCardSprite(id, true);
         }
+        showcardpics = false;
     }
 
     public void OnCardIdValueChanged(string id)

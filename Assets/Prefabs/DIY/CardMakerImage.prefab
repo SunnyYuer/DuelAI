@@ -613,6 +613,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224752676752866046}
   - component: {fileID: 114409523074791264}
+  - component: {fileID: 114879224533299860}
   m_Layer: 5
   m_Name: CardList
   m_TagString: Untagged
@@ -1635,7 +1636,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 074ce6fca098c854f8d0445e7a14643a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardlist: {fileID: 224752676752866046}
   card: {fileID: 1814372528148318, guid: 9695802c15a2092418f915378e2005dc, type: 2}
+  refreshtext: {fileID: 1936198537354288, guid: 3c529bcc8269a064992a919fee5728f3,
+    type: 2}
 --- !u!114 &114408738418401082
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2490,7 +2494,18 @@ MonoBehaviour:
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114407117723431170}
+        m_MethodName: OnScrollbarValueChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Scrollbar+ScrollEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114841627309240646
@@ -2586,6 +2601,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 
+--- !u!114 &114879224533299860
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1702738031610332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb9129034e32e3840b1e4a8de6d8689d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resultText: {fileID: 114544352680963156}
+  scollrect: {fileID: 114770008849343704}
 --- !u!114 &114879677500851978
 MonoBehaviour:
   m_ObjectHideFlags: 1

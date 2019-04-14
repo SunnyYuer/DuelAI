@@ -36,9 +36,9 @@ public class Main : MonoBehaviour {
 
     public static string streamAssetsPath;
     public static string AndroidSdcard = "/sdcard/DuelAI";
-    public static string rule = "default";//默认规则
-    public static string sqlName = "cards.db";
-    public static string tableName = "cards";
+    public static string rule = "duel";//默认规则
+    public static string sqlName = "cards.cdb";
+    public static string tableName = "texts";
 
     public static Dictionary<string, Sprite> spriteDic;
 

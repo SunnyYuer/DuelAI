@@ -110,8 +110,8 @@ public class SQLManager {
 
     public void CloseSQLConnection()
     {
+        command.Dispose();
         connection.Close();
-        connection = null;
         //Debug.Log("已经断开数据库连接");
     }
 }
