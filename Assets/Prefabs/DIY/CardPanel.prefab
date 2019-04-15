@@ -39,8 +39,6 @@ GameObject:
   - component: {fileID: 224813328051648878}
   - component: {fileID: 222203230923560752}
   - component: {fileID: 114741844740956040}
-  - component: {fileID: 114914553919479942}
-  - component: {fileID: 114815989432140184}
   m_Layer: 5
   m_Name: CardPanel
   m_TagString: Untagged
@@ -165,29 +163,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114815989432140184
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1814372528148318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1200242548, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ShowMaskGraphic: 1
---- !u!114 &114914553919479942
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1814372528148318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1f31e2874765714c9d6c944015dfed1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!222 &222203230923560752
 CanvasRenderer:
   m_ObjectHideFlags: 1

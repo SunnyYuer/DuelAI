@@ -44,8 +44,8 @@ public class MakeCard : MonoBehaviour
 
     public void OnSearchClick()
     {
-        if (CardClick.lastclickedcard != null)
-            CardClick.lastclickedcard.GetComponent<Image>().color = Color.white;
+        if (CardListEvent.lastclickedcard != null)
+            CardListEvent.lastclickedcard.GetComponent<Image>().color = Color.white;
 
         nameorid = GameObject.Find("SearchInputField").GetComponent<InputField>().text;
         SqliteDataReader reader = sql.GetCardsCount(Main.tableName, nameorid);
