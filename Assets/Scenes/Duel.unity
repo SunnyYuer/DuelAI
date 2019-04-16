@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311912, g: 0.3807398, b: 0.3587271, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1046,9 +1046,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CardMaker: {fileID: 1114823190275892, guid: d3bd49eaa57ef3a419de26058cc9ea41, type: 2}
-  progress: {fileID: 0}
-  progressImage: {fileID: 0}
-  progressText: {fileID: 0}
 --- !u!1 &2103784258
 GameObject:
   m_ObjectHideFlags: 0

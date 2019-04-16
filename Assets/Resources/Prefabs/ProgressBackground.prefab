@@ -70,6 +70,7 @@ GameObject:
   - component: {fileID: 224402259135194982}
   - component: {fileID: 222350207938756858}
   - component: {fileID: 114598788265122406}
+  - component: {fileID: 114740910653451464}
   m_Layer: 5
   m_Name: ProgressBackground
   m_TagString: Untagged
@@ -204,7 +205,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 0%
+  m_Text: 0/1
 --- !u!114 &114598788265122406
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -232,6 +233,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114740910653451464
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1583558809787944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54f725b8afd9de441a5e9d7671ee0414, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114897063356490532
 MonoBehaviour:
   m_ObjectHideFlags: 1

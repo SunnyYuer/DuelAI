@@ -27,13 +27,6 @@ public class Main : MonoBehaviour {
 
     public GameObject CardMaker;
 
-    public GameObject progress;
-    public Image progressImage;
-    public Text progressText;
-    private int cardcount = 0;
-    private int curpro = 1;
-    private int androidUpdate = 0;
-
     public static string streamAssetsPath;
     public static string AndroidSdcard = "/sdcard/DuelAI";
     public static string rule = "duel";//默认规则
@@ -57,24 +50,11 @@ public class Main : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (androidUpdate == 1)
-        {
-            progressImage.fillAmount = 1f * curpro / cardcount;
-            progressText.text = curpro + "/" + cardcount;
-            if (curpro >= cardcount)
-            {
-                Destroy(progress);
-                androidUpdate = 2;
-            }
-        }
+
     }
 
     public void AndroidInitialize()
     {
-        progress = (GameObject)Instantiate(Resources.Load("Prefabs/ProgressBackground"), GameObject.Find("Canvas").transform);
-        progressImage = GameObject.Find("ProgressImage").GetComponent<Image>();
-        progressText = GameObject.Find("ProgressText").GetComponent<Text>();
-
         string path = AndroidSdcard;
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
         path = AndroidSdcard + "/" + rule;
@@ -86,11 +66,12 @@ public class Main : MonoBehaviour {
         SQLManager sql = new SQLManager();
         sql.ConnectSQL();
         SqliteDataReader reader = sql.GetCardsCount(tableName, "");
-        cardcount = int.Parse(reader.GetValue(0).ToString());
+        Progress.overallpro = int.Parse(reader.GetValue(0).ToString());
+        Progress.progress = 0;
         reader.Close();
         sql.CloseSQLConnection();
 
-        androidUpdate = 1;
+        Instantiate(Resources.Load("Prefabs/ProgressBackground"), GameObject.Find("Canvas").transform);
     }
 
     public void AndroidUpdate()
@@ -104,7 +85,7 @@ public class Main : MonoBehaviour {
             string id = reader.GetValue(0).ToString();
             string cardjpg = id + ".jpg";
             wwwGetFile(streamAssetsPath + "/" + rule + "/pics/" + cardjpg, path + "/" + cardjpg);
-            curpro++;
+            Progress.progress++;
         }
         reader.Close();
         sql.CloseSQLConnection();
