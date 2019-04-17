@@ -34,13 +34,11 @@ public class Main : MonoBehaviour {
     public static string sqlName = "cards.cdb";
     public static string tableName = "texts";
 
-    public static Dictionary<string, Sprite> spriteDic;
-
     // Use this for initialization
     void Start ()
     {
         streamAssetsPath = Application.streamingAssetsPath;
-        spriteDic = new Dictionary<string, Sprite>();
+        CardSpriteManager.Initialize();
         if (Application.platform == RuntimePlatform.Android)
         {
             AndroidInitialize();
