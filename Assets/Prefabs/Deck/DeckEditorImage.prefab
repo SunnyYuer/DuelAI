@@ -1250,7 +1250,7 @@ MonoBehaviour:
     m_Left: 5
     m_Right: 5
     m_Top: 0
-    m_Bottom: 5
+    m_Bottom: 0
   m_ChildAlignment: 0
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
@@ -1476,8 +1476,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardlist: {fileID: 224955832974699384}
-  card: {fileID: 1814372528148318, guid: 9695802c15a2092418f915378e2005dc, type: 2}
-  scrollbar: {fileID: 0}
+  scrollbar: {fileID: 114722868541766372}
 --- !u!114 &114722868541766372
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1517,7 +1516,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 224936886768114890}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.1
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

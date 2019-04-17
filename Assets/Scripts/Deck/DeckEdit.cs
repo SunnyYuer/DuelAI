@@ -9,8 +9,7 @@ using UnityEngine.UI;
 public class DeckEdit : MonoBehaviour {
 
     public RectTransform cardlist;
-    public GameObject card;
-    public GameObject scrollbar;
+    public Scrollbar scrollbar;
     private SQLManager sql;
     private bool showcard = false;
     private int showcardnum = 0;
@@ -48,12 +47,17 @@ public class DeckEdit : MonoBehaviour {
 
         string nameorid = GameObject.Find("SearchInputField").GetComponent<InputField>().text;
         SqliteDataReader reader = sql.GetCardsCount(Main.tableName, nameorid);
-        int cardnum = int.Parse(reader.GetValue(0).ToString());
-        cardtotalnum = cardnum;
+        cardtotalnum = int.Parse(reader.GetValue(0).ToString());
         reader.Close();
-        GameObject.Find("ResultText").GetComponent<Text>().text = cardnum.ToString() + "/" + cardnum.ToString();
-        showcardnum = cardnum;//cardlist里要显示的卡片数量
-        if (cardnum >= 7) showcardnum = 7;
+        showcardnum = cardtotalnum;//cardlist里要显示的卡片数量
+        if (cardtotalnum > 7) showcardnum = 7;
+        GameObject.Find("ResultText").GetComponent<Text>().text = cardtotalnum.ToString() + "/" + cardtotalnum.ToString();
+        cardlist.sizeDelta = new Vector2(0, 90 * showcardnum);
+
+        float scrollbarsize = 1F * showcardnum / cardtotalnum;
+        if (scrollbarsize < 0.05) scrollbarsize = 0.05F;
+        scrollbar.size = scrollbarsize;
+        scrollbar.value = 1;
         scrollvalue = 0;
 
         cardidList.Clear();
@@ -79,7 +83,7 @@ public class DeckEdit : MonoBehaviour {
 
     public void OnScrollbarValueChanged(float value)
     {
-        scrollvalue = 1f - value;
+        scrollvalue = 1F - value;
         showcard = true;
     }
 
