@@ -11,7 +11,7 @@ public class SQLManager {
  
     public void ConnectSQL()
     {
-        string dbPath;
+        string dbPath = "";
         if (Application.platform == RuntimePlatform.WindowsEditor ||
             Application.platform == RuntimePlatform.WindowsPlayer ||
             Application.platform == RuntimePlatform.LinuxPlayer)

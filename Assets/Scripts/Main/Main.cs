@@ -25,6 +25,7 @@ Application.persistentDataPath    =/home/yuer/.config/unity3d/yuer/DuelAI
 
 public class Main : MonoBehaviour {
 
+    public GameObject DeckEditor;
     public GameObject CardMaker;
 
     public static string streamAssetsPath;
@@ -99,6 +100,11 @@ public class Main : MonoBehaviour {
             while (!www.isDone) { }
             if (string.IsNullOrEmpty(www.error)) File.WriteAllBytes(writepath, www.bytes);
         }
+    }
+
+    public void OnEditDeckButtonClick()
+    {
+        Instantiate(DeckEditor, GameObject.Find("Canvas").transform);
     }
 
     public void OnDIYButtonClick()

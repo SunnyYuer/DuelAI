@@ -826,7 +826,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1137269157}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1599682629}
+        m_MethodName: OnEditDeckButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1137269157
@@ -1045,6 +1056,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c74d9365c2abd7428970c9eb67f0710, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DeckEditor: {fileID: 1139343519534516, guid: 96ddb571fba98804ebe34dfe86f8450b, type: 2}
   CardMaker: {fileID: 1114823190275892, guid: d3bd49eaa57ef3a419de26058cc9ea41, type: 2}
 --- !u!1 &2103784258
 GameObject:
