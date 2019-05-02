@@ -27,12 +27,18 @@ public class Main : MonoBehaviour {
 
     public GameObject DeckEditor;
     public GameObject CardMaker;
+    public GameObject FPSText;
 
     public static string streamAssetsPath;
     public static string AndroidSdcard = "/sdcard/DuelAI";
     public static string rule = "duel";//默认规则
     public static string sqlName = "cards.cdb";
     public static string tableName = "texts";
+
+    private float currentTime = 0;
+    private float lateTime = 0;
+    private float framesNum = 0;
+    private float fps = 0;
 
     // Use this for initialization
     void Start ()
@@ -48,8 +54,17 @@ public class Main : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
-
+	void Update ()
+    {
+        currentTime += Time.deltaTime;
+        framesNum++;
+        if (currentTime - lateTime >= 1.0f)
+        {
+            fps = framesNum / (currentTime - lateTime);
+            FPSText.GetComponent<Text>().text = "FPS：" + fps;
+            lateTime = currentTime;
+            framesNum = 0;
+        }
     }
 
     public void AndroidInitialize()
@@ -103,10 +118,17 @@ public class Main : MonoBehaviour {
     public void OnEditDeckButtonClick()
     {
         Instantiate(DeckEditor, GameObject.Find("Canvas").transform);
+        FPSText.transform.SetAsLastSibling();
     }
 
     public void OnDIYButtonClick()
     {
         Instantiate(CardMaker, GameObject.Find("Canvas").transform);
+        FPSText.transform.SetAsLastSibling();
+    }
+
+    public void OnQuitGameClick()
+    {
+        Application.Quit();
     }
 }
