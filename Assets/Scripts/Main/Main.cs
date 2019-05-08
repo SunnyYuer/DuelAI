@@ -25,6 +25,7 @@ Application.persistentDataPath    =/home/yuer/.config/unity3d/yuer/DuelAI
 
 public class Main : MonoBehaviour {
 
+    public GameObject Duel;
     public GameObject DeckEditor;
     public GameObject CardMaker;
     public GameObject FPSText;
@@ -113,6 +114,12 @@ public class Main : MonoBehaviour {
             while (!www.isDone) { }
             if (string.IsNullOrEmpty(www.error)) File.WriteAllBytes(writepath, www.bytes);
         }
+    }
+
+    public void OnStartGameButtonClick()
+    {
+        Instantiate(Duel, GameObject.Find("Canvas").transform);
+        FPSText.transform.SetAsLastSibling();
     }
 
     public void OnEditDeckButtonClick()
