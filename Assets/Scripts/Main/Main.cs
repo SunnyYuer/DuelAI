@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 /*
@@ -74,7 +75,7 @@ public class Main : MonoBehaviour {
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
         path = AndroidSdcard + "/" + rule;
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-        wwwGetFile(streamAssetsPath + "/" + rule + "/" + sqlName, path + "/" + sqlName);
+        GetFile(streamAssetsPath + "/" + rule + "/" + sqlName, path + "/" + sqlName);
         path = AndroidSdcard + "/" + rule + "/pics";
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
@@ -99,20 +100,27 @@ public class Main : MonoBehaviour {
         {
             string id = reader.GetValue(0).ToString();
             string cardjpg = id + ".jpg";
-            wwwGetFile(streamAssetsPath + "/" + rule + "/pics/" + cardjpg, path + "/" + cardjpg);
+            GetFile(streamAssetsPath + "/" + rule + "/pics/" + cardjpg, path + "/" + cardjpg);
             Progress.progress++;
         }
         reader.Close();
         sql.CloseSQLConnection();
     }
 
-    public void wwwGetFile(string readpath, string writepath)
+    public void GetFile(string readpath, string writepath)
     {//把数据库从安装包复制到安卓可写路径中，注：在安装包中无法读写数据
         if (!File.Exists(writepath))
         {
+            /*
             WWW www = new WWW(readpath);
             while (!www.isDone) { }
             if (string.IsNullOrEmpty(www.error)) File.WriteAllBytes(writepath, www.bytes);
+            */
+            UnityWebRequest webRequest = UnityWebRequest.Get(readpath);
+            webRequest.SendWebRequest();
+            while (!webRequest.isDone) { }
+            if (string.IsNullOrEmpty(webRequest.error))
+                File.WriteAllBytes(writepath, webRequest.downloadHandler.data);
         }
     }
 
