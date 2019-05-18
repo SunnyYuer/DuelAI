@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DeckClick : MonoBehaviour, IPointerClickHandler
+public class OwnDeckClick : MonoBehaviour, IPointerClickHandler
 {
     public RectTransform handcardlist;
     public GameObject card;
+    private float listwidth;
+    private float listheight;
+    private float cardwidth;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        listwidth = handcardlist.rect.width;
+        listheight = handcardlist.rect.height;
+        cardwidth = card.GetComponent<RectTransform>().rect.width;
     }
 
     // Update is called once per frame
@@ -28,9 +33,7 @@ public class DeckClick : MonoBehaviour, IPointerClickHandler
 
     public void ChangeHandCardPosition()
     {
-        float listwidth = handcardlist.rect.width;
-        float cardwidth = card.GetComponent<RectTransform>().rect.width;
-        Vector3 vector = new Vector3(0, 55.9f, 0);
+        Vector3 vector = new Vector3(0, listheight/2, 0);
         int cardnum = handcardlist.childCount;
         if (cardnum <= 10)
         {

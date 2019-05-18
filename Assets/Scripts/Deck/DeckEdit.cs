@@ -97,4 +97,9 @@ public class DeckEdit : MonoBehaviour {
         }
         showcard = false;
     }
+
+    public void OnQuitClick()
+    {
+        Destroy(gameObject);
+    }
 }
