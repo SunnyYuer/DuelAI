@@ -11,17 +11,15 @@ public class SQLManager {
  
     public void ConnectSQL()
     {
-        string dbPath = "";
+        string dbPath = Main.rulePath + "/" + Main.sqlName;
         if (Application.platform == RuntimePlatform.WindowsEditor ||
             Application.platform == RuntimePlatform.WindowsPlayer ||
             Application.platform == RuntimePlatform.LinuxPlayer)
         {
-            dbPath = Main.streamAssetsPath + "/" + Main.rule + "/" + Main.sqlName;
             connection = new SqliteConnection("data source="+dbPath);
         }
         if (Application.platform == RuntimePlatform.Android)
         {
-            dbPath = Main.AndroidSdcard + "/" + Main.rule + "/" + Main.sqlName;
             connection = new SqliteConnection("URI=file:" + dbPath);
         }
         connection.Open();

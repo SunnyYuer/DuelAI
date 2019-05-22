@@ -27,16 +27,16 @@ public class Main : MonoBehaviour
 {
     public GameObject mainLayout;
 
-    public static string streamAssetsPath;
-    public static string AndroidSdcard = "/sdcard/DuelAI";
-    public static string rule = "duel";//默认规则
+    public static string rulePath;
+    public string AndroidSdcard = "/sdcard/DuelAI";
+    public string rule = "duel";//默认规则
     public static string sqlName = "cards.cdb";
     public static string tableName = "texts";
 
     // Use this for initialization
     void Start()
     {
-        streamAssetsPath = Application.streamingAssetsPath;
+        UpdateRulePath();
         CardSpriteManager.Initialize();
         if (Application.platform == RuntimePlatform.Android)
         {
@@ -54,14 +54,24 @@ public class Main : MonoBehaviour
         
     }
 
+    public void UpdateRulePath()
+    {
+        if (Application.platform == RuntimePlatform.Android)
+            rulePath = AndroidSdcard + "/" + rule;
+        else
+            rulePath = Application.streamingAssetsPath + "/" + rule;
+    }
+
     public void AndroidInitialize()
     {
         string path = AndroidSdcard;
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-        path = AndroidSdcard + "/" + rule;
+        path = rulePath;
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-        GetFile(streamAssetsPath + "/" + rule + "/" + sqlName, path + "/" + sqlName);
-        path = AndroidSdcard + "/" + rule + "/pics";
+        GetFile(Application.streamingAssetsPath + "/" + rule + "/" + sqlName, path + "/" + sqlName);
+        path = rulePath + "/pics";
+        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+        path = rulePath + "/deck";
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
         SQLManager sql = new SQLManager();
@@ -77,7 +87,7 @@ public class Main : MonoBehaviour
 
     public void AndroidUpdate()
     {
-        string path = AndroidSdcard + "/" + rule + "/pics";
+        string path = rulePath + "/pics";
         SQLManager sql = new SQLManager();
         sql.ConnectSQL();
         SqliteDataReader reader = sql.ReadCardsId(tableName, "");
@@ -85,7 +95,7 @@ public class Main : MonoBehaviour
         {
             string id = reader.GetValue(0).ToString();
             string cardjpg = id + ".jpg";
-            GetFile(streamAssetsPath + "/" + rule + "/pics/" + cardjpg, path + "/" + cardjpg);
+            GetFile(Application.streamingAssetsPath + "/" + rule + "/pics/" + cardjpg, path + "/" + cardjpg);
             Progress.progress++;
         }
         reader.Close();

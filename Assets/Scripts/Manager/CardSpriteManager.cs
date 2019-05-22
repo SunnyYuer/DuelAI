@@ -17,10 +17,7 @@ public class CardSpriteManager
 
     public CardSpriteManager()
     {
-        if (Application.platform == RuntimePlatform.Android)
-            picspath = Main.AndroidSdcard + "/" + Main.rule + "/pics/";
-        else
-            picspath = Main.streamAssetsPath + "/" + Main.rule + "/pics/";
+        picspath = Main.rulePath + "/pics/";
     }
 
     public Sprite getCardSprite(string id, bool small)
@@ -48,9 +45,9 @@ public class CardSpriteManager
             if (small) spriteDic.Add(id, sprite);
             else
             {
-                if (bigspriteDic.Count >= 100)
+                if (bigspriteDic.Count >= 200)
                 {
-                    bigspriteDic.Clear();//大图最多保存100张
+                    bigspriteDic.Clear();//大图最多保存200张
                     Resources.UnloadUnusedAssets();
                 }
                 bigspriteDic.Add(id, sprite);

@@ -18,6 +18,11 @@ public class Duel : MonoBehaviour
         
     }
 
+    public void ReadDeckFile()
+    {
+        string deckpath = Main.rulePath + "/deck/mycard.ydk";
+    }
+
     public void OnQuitClick()
     {
         Destroy(gameObject);
