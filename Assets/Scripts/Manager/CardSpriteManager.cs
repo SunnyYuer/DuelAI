@@ -35,10 +35,11 @@ public class CardSpriteManager
             files.Read(imgByte, 0, imgByte.Length);
             files.Close();
             Texture2D texture;
-            if (Application.platform == RuntimePlatform.Android)
-                texture = new Texture2D(236, 344, TextureFormat.ETC_RGB4, false);
-            else
-                texture = new Texture2D(236, 344, TextureFormat.DXT1, false);
+#if UNITY_EDITOR || UNITY_STANDALONE
+            texture = new Texture2D(236, 344, TextureFormat.DXT1, false);
+#elif UNITY_ANDROID
+            texture = new Texture2D(236, 344, TextureFormat.ETC_RGB4, false);
+#endif
             texture.LoadImage(imgByte);
             if (small) texture = ScaleTexture(texture, 59, 86);
             sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));

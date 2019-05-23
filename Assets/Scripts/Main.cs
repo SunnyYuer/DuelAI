@@ -38,12 +38,11 @@ public class Main : MonoBehaviour
     {
         UpdateRulePath();
         CardSpriteManager.Initialize();
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            AndroidInitialize();
-            Thread update = new Thread(AndroidUpdate);
-            update.Start();
-        }
+#if UNITY_ANDROID && !UNITY_EDITOR
+        AndroidInitialize();
+        Thread update = new Thread(AndroidUpdate);
+        update.Start();
+#endif
         Instantiate(mainLayout, GameObject.Find("Canvas").transform);
         Instantiate(Resources.Load("Prefabs/FPSText"), GameObject.Find("Canvas").transform);
     }
@@ -56,10 +55,11 @@ public class Main : MonoBehaviour
 
     public void UpdateRulePath()
     {
-        if (Application.platform == RuntimePlatform.Android)
-            rulePath = AndroidSdcard + "/" + rule;
-        else
-            rulePath = Application.streamingAssetsPath + "/" + rule;
+#if UNITY_EDITOR || UNITY_STANDALONE
+        rulePath = Application.streamingAssetsPath + "/" + rule;
+#elif UNITY_ANDROID
+        rulePath = AndroidSdcard + "/" + rule;
+#endif
     }
 
     public void AndroidInitialize()

@@ -12,16 +12,11 @@ public class SQLManager {
     public void ConnectSQL()
     {
         string dbPath = Main.rulePath + "/" + Main.sqlName;
-        if (Application.platform == RuntimePlatform.WindowsEditor ||
-            Application.platform == RuntimePlatform.WindowsPlayer ||
-            Application.platform == RuntimePlatform.LinuxPlayer)
-        {
-            connection = new SqliteConnection("data source="+dbPath);
-        }
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            connection = new SqliteConnection("URI=file:" + dbPath);
-        }
+#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_IOS
+        connection = new SqliteConnection("data source=" + dbPath);
+#elif UNITY_ANDROID
+        connection = new SqliteConnection("URI=file:" + dbPath);
+#endif
         connection.Open();
         command = connection.CreateCommand();
         //Debug.Log("数据库连接成功");
