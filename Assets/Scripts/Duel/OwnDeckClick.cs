@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class OwnDeckClick : MonoBehaviour, IPointerClickHandler
 {
@@ -10,6 +11,7 @@ public class OwnDeckClick : MonoBehaviour, IPointerClickHandler
     private float listwidth;
     private float listheight;
     private float cardwidth;
+    private CardSpriteManager spriteManager;
 
     // Start is called before the first frame update
     void Start()
@@ -17,6 +19,7 @@ public class OwnDeckClick : MonoBehaviour, IPointerClickHandler
         listwidth = handcardlist.rect.width;
         listheight = handcardlist.rect.height;
         cardwidth = card.GetComponent<RectTransform>().rect.width;
+        spriteManager = new CardSpriteManager();
     }
 
     // Update is called once per frame
@@ -27,7 +30,9 @@ public class OwnDeckClick : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Instantiate(card, handcardlist);
+        GameObject handcard = Instantiate(card, handcardlist);
+        handcard.GetComponent<Image>().sprite = spriteManager.getCardSprite(Duel.owndeck[0], false);
+        Duel.owndeck.RemoveAt(0);
         ChangeHandCardPosition();
     }
 

@@ -100,6 +100,7 @@ public class DeckEdit : MonoBehaviour {
 
     public void OnQuitClick()
     {
+        sql.CloseSQLConnection();
         Destroy(gameObject);
     }
 }
