@@ -29,10 +29,15 @@ public class DrawCardOps : MonoBehaviour
 
     public void DrawCard()
     {
-        GameObject handcard = Instantiate(card, handcardlist);
-        handcard.GetComponent<Image>().sprite = spriteManager.getCardSprite(Duel.opsdeck[0], false);
-        Duel.opsdeck.RemoveAt(0);
-        ChangeHandCardPosition();
+        if (Duel.opsdeck.Count > 0)
+        {
+            GameObject handcard = Instantiate(card, handcardlist);
+            handcard.GetComponent<Image>().sprite = spriteManager.getCardSprite(Duel.opsdeck[0], false);
+            ChangeHandCardPosition();
+            Duel.opsdeck.RemoveAt(0);
+            if (Duel.opsdeck.Count > 0) GameObject.Find("DeckImageOps").GetComponent<Image>().sprite = spriteManager.getCardSprite(Duel.opsdeck[0], false);
+            else GameObject.Find("DeckImageOps").GetComponent<Image>().sprite = Duel.UIMask;
+        }
     }
 
     public void ChangeHandCardPosition()

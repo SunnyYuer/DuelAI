@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Duel : MonoBehaviour
 {
@@ -10,11 +11,17 @@ public class Duel : MonoBehaviour
     public static List<string> ownextra = new List<string>();
     public static List<string> opsdeck = new List<string>();
     public static List<string> opsextra = new List<string>();
+    public static Sprite UIMask;
+    private CardSpriteManager spriteManager;
 
     // Start is called before the first frame update
     void Start()
     {
+        spriteManager = new CardSpriteManager();
+        UIMask = GameObject.Find("GraveImageOwn").GetComponent<Image>().sprite;//保存UIMask
         ReadDeckFile();
+        GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite = spriteManager.getCardSprite(owndeck[0], false);
+        GameObject.Find("DeckImageOps").GetComponent<Image>().sprite = spriteManager.getCardSprite(opsdeck[0], false);
     }
 
     // Update is called once per frame

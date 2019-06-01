@@ -29,10 +29,15 @@ public class DrawCardOwn : MonoBehaviour
 
     public void DrawCard()
     {
-        GameObject handcard = Instantiate(card, handcardlist);
-        handcard.GetComponent<Image>().sprite = spriteManager.getCardSprite(Duel.owndeck[0], false);
-        Duel.owndeck.RemoveAt(0);
-        ChangeHandCardPosition();
+        if (Duel.owndeck.Count > 0)
+        {
+            GameObject handcard = Instantiate(card, handcardlist);
+            handcard.GetComponent<Image>().sprite = spriteManager.getCardSprite(Duel.owndeck[0], false);
+            ChangeHandCardPosition();
+            Duel.owndeck.RemoveAt(0);
+            if (Duel.owndeck.Count > 0) GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite = spriteManager.getCardSprite(Duel.owndeck[0], false);
+            else GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite = Duel.UIMask;
+        }
     }
 
     public void ChangeHandCardPosition()
