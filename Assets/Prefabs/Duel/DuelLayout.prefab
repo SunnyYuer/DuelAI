@@ -218,7 +218,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6791702179750288359}
   m_Layer: 5
-  m_Name: OppositeCardLayout
+  m_Name: CardLayoutOps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -247,7 +247,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -20}
-  m_SizeDelta: {x: -500, y: 120}
+  m_SizeDelta: {x: -500, y: 100}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &6791702179860909984
 GameObject:
@@ -261,7 +261,7 @@ GameObject:
   - component: {fileID: 6791702179860909981}
   - component: {fileID: 6791702179860909982}
   m_Layer: 5
-  m_Name: OwnExtraDeckImage
+  m_Name: ExtraDeckImageOwn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -335,7 +335,7 @@ GameObject:
   - component: {fileID: 6791702179939215436}
   - component: {fileID: 6791702179939215437}
   m_Layer: 5
-  m_Name: OwnNameText
+  m_Name: NameTextOwn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -414,7 +414,7 @@ GameObject:
   - component: {fileID: 6791702179941635200}
   - component: {fileID: 6791702179941635201}
   m_Layer: 5
-  m_Name: OpsLPText
+  m_Name: LPTextOps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -492,9 +492,9 @@ GameObject:
   - component: {fileID: 6791702180043783972}
   - component: {fileID: 6791702180043783970}
   - component: {fileID: 6791702180043783971}
-  - component: {fileID: 6791702180043783969}
+  - component: {fileID: 2519083698976606811}
   m_Layer: 5
-  m_Name: OwnDeckImage
+  m_Name: DeckImageOwn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -556,7 +556,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!114 &6791702180043783969
+--- !u!114 &2519083698976606811
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -568,8 +568,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 250cec3bab128fc47abaf32097a0b7aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handcardlist: {fileID: 6791702180877158219}
-  card: {fileID: 5133651692496425065, guid: bd6209b7898c42a4394ccf3c6d09f75e, type: 3}
 --- !u!1 &6791702180096512852
 GameObject:
   m_ObjectHideFlags: 0
@@ -582,7 +580,7 @@ GameObject:
   - component: {fileID: 6791702180096512849}
   - component: {fileID: 6791702180096512850}
   m_Layer: 5
-  m_Name: OwnLPText
+  m_Name: LPTextOwn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -661,7 +659,7 @@ GameObject:
   - component: {fileID: 6791702180285451693}
   - component: {fileID: 6791702180285451694}
   m_Layer: 5
-  m_Name: OpsExceptImage
+  m_Name: ExceptImageOps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -735,7 +733,7 @@ GameObject:
   - component: {fileID: 6791702180420478459}
   - component: {fileID: 6791702180420478460}
   m_Layer: 5
-  m_Name: OwnGraveImage
+  m_Name: GraveImageOwn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -809,7 +807,7 @@ GameObject:
   - component: {fileID: 6791702180713398987}
   - component: {fileID: 6791702180713398988}
   m_Layer: 5
-  m_Name: OwnExceptImage
+  m_Name: ExceptImageOwn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -883,7 +881,7 @@ GameObject:
   - component: {fileID: 6791702180735255596}
   - component: {fileID: 6791702180735255597}
   m_Layer: 5
-  m_Name: OpsGraveImage
+  m_Name: GraveImageOps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1030,8 +1028,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6791702180877158219}
+  - component: {fileID: 4317593376345332578}
   m_Layer: 5
-  m_Name: OwnHandCardsLayout
+  m_Name: HandCardsLayoutOwn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1056,6 +1055,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 10}
   m_SizeDelta: {x: 821, y: 111.8}
   m_Pivot: {x: 0.5, y: 0}
+--- !u!114 &4317593376345332578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6791702180877158220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21511a33d788aa146817756745127783, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handcardlist: {fileID: 6791702180877158219}
+  card: {fileID: 5133651692496425065, guid: bd6209b7898c42a4394ccf3c6d09f75e, type: 3}
 --- !u!1 &6791702180972817521
 GameObject:
   m_ObjectHideFlags: 0
@@ -1068,7 +1081,7 @@ GameObject:
   - component: {fileID: 6791702180972817518}
   - component: {fileID: 6791702180972817519}
   m_Layer: 5
-  m_Name: OpsNameText
+  m_Name: NameTextOps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1147,7 +1160,7 @@ GameObject:
   - component: {fileID: 6791702181042736240}
   - component: {fileID: 6791702181042736241}
   m_Layer: 5
-  m_Name: OpsExtraDeckImage
+  m_Name: ExtraDeckImageOps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1298,7 +1311,7 @@ GameObject:
   - component: {fileID: 6791702181477992707}
   - component: {fileID: 6791702181477992708}
   m_Layer: 5
-  m_Name: OpsDeckImage
+  m_Name: DeckImageOps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1372,8 +1385,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abcd1d7fe77039f42a4fc7d5adffe29d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handcardlist: {fileID: 6791702181556102377}
-  card: {fileID: 3852013261318534894, guid: 36b669b16a8661948b2f5abacbb23b98, type: 3}
 --- !u!1 &6791702181556102378
 GameObject:
   m_ObjectHideFlags: 0
@@ -1384,8 +1395,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6791702181556102377}
   - component: {fileID: 6791702181556102375}
+  - component: {fileID: 6338098202532860555}
   m_Layer: 5
-  m_Name: OpsHandCardsLayout
+  m_Name: HandCardsLayoutOps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1418,6 +1430,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6791702181556102378}
   m_CullTransparentMesh: 0
+--- !u!114 &6338098202532860555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6791702181556102378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ef51860c22bd3c49a37887ffbed1958, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handcardlist: {fileID: 6791702181556102377}
+  card: {fileID: 3852013261318534894, guid: 36b669b16a8661948b2f5abacbb23b98, type: 3}
 --- !u!1 &6791702181697270018
 GameObject:
   m_ObjectHideFlags: 0
@@ -1481,7 +1507,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6791702181814629269}
   m_Layer: 5
-  m_Name: OwnCardLayout
+  m_Name: CardLayoutOwn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
