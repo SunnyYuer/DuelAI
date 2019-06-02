@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DrawCardOps : MonoBehaviour
+public class HandCardOps : MonoBehaviour
 {
     public RectTransform handcardlist;
     public GameObject card;
+    public GameObject deck;
     private float listwidth;
     private float listheight;
     private float cardwidth;
-    private CardSpriteManager spriteManager;
 
     // Start is called before the first frame update
     void Start()
@@ -18,7 +18,6 @@ public class DrawCardOps : MonoBehaviour
         listwidth = handcardlist.rect.width;
         listheight = handcardlist.rect.height;
         cardwidth = card.GetComponent<RectTransform>().rect.width;
-        spriteManager = new CardSpriteManager();
     }
 
     // Update is called once per frame
@@ -32,11 +31,10 @@ public class DrawCardOps : MonoBehaviour
         if (Duel.opsdeck.Count > 0)
         {
             GameObject handcard = Instantiate(card, handcardlist);
-            handcard.GetComponent<Image>().sprite = spriteManager.getCardSprite(Duel.opsdeck[0], false);
+            handcard.GetComponent<Image>().sprite = Duel.spriteManager.getCardSprite(Duel.opsdeck[0], false);
             ChangeHandCardPosition();
             Duel.opsdeck.RemoveAt(0);
-            if (Duel.opsdeck.Count > 0) GameObject.Find("DeckImageOps").GetComponent<Image>().sprite = spriteManager.getCardSprite(Duel.opsdeck[0], false);
-            else GameObject.Find("DeckImageOps").GetComponent<Image>().sprite = Duel.UIMask;
+            deck.GetComponent<DeckOps>().DeckUpdate();
         }
     }
 
