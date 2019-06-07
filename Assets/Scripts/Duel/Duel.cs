@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +9,8 @@ public class Duel : MonoBehaviour
     public GameObject mainLayout;
     public GameObject deckOwn;
     public GameObject deckOps;
+    public GameObject handOwn;
+    public GameObject handOps;
     public static List<string> owndeck;
     public static List<string> ownextra;
     public static List<string> opsdeck;
@@ -21,6 +22,7 @@ public class Duel : MonoBehaviour
     public GameObject mainPhaseButton;
     public static int whoTurn;
     public static int duelPhase;
+    public int turnNum;
 
     // Start is called before the first frame update
     void Start()
@@ -37,8 +39,13 @@ public class Duel : MonoBehaviour
         deckOwn.GetComponent<DeckOwn>().DeckUpdate();
         deckOps.GetComponent<DeckOps>().DeckUpdate();
         //初始化回合和阶段
+        turnNum = 0;
         whoTurn = 0;
         ChangePhase(0);
+        //各自起手5张卡
+        StartCoroutine(DrawCardOwn(5));
+        StartCoroutine(DrawCardOps(5));
+        //决斗开始
     }
 
     // Update is called once per frame
@@ -91,6 +98,8 @@ public class Duel : MonoBehaviour
         if (duelPhase == 1)
         {
             phaseText.text = "抽卡阶段";
+            if(whoTurn == 0) StartCoroutine(DrawCardOwn(1));
+            else StartCoroutine(DrawCardOps(1));
             StartCoroutine(PhaseWait());
         }
         if (duelPhase == 2)
@@ -148,6 +157,28 @@ public class Duel : MonoBehaviour
         {
             buttonText.text = "结束战斗";
             ChangePhase(4);
+        }
+    }
+
+    IEnumerator DrawCardOwn(int num)
+    {
+        yield return 0;
+        while (num > 0)
+        {
+            handOwn.GetComponent<HandCardOwn>().DrawCard();
+            yield return new WaitForSeconds(0.1f);
+            num--;
+        }
+    }
+
+    IEnumerator DrawCardOps(int num)
+    {
+        yield return 0;
+        while (num > 0)
+        {
+            handOps.GetComponent<HandCardOps>().DrawCard();
+            yield return new WaitForSeconds(0.1f);
+            num--;
         }
     }
 

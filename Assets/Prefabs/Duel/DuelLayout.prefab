@@ -1736,9 +1736,12 @@ MonoBehaviour:
     type: 3}
   deckOwn: {fileID: 6791702180043783973}
   deckOps: {fileID: 6791702181477992710}
+  handOwn: {fileID: 6791702180877158220}
+  handOps: {fileID: 6791702181556102378}
   endTurnButton: {fileID: 8406949217961765362}
   phaseText: {fileID: 3364749515243193860}
   mainPhaseButton: {fileID: 6959245512858716636}
+  turnNum: 0
 --- !u!1 &6791702181814629270
 GameObject:
   m_ObjectHideFlags: 0
