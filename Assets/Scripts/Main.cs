@@ -29,9 +29,9 @@ public class Main : MonoBehaviour
 
     public static string rulePath;
     public string AndroidSdcard = "/sdcard/DuelAI";
-    public string rule = "duel";//默认规则
-    public static string sqlName = "cards.cdb";
-    public static string tableName = "texts";
+    public string rule = "default";//默认规则
+    public static string sqlName = "cards.db";
+    public static string tableName = "cards";
 
     // Use this for initialization
     void Start()

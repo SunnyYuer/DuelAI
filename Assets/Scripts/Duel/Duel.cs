@@ -13,10 +13,13 @@ public class Duel : MonoBehaviour
     public GameObject handOps;
     public static List<string> owndeck;
     public static List<string> ownextra;
+    public static List<string> ownhandcard;
     public static List<string> opsdeck;
     public static List<string> opsextra;
-    public static Sprite UIMask;
+    public static List<string> opshandcard;
+    public static CardDataManager cardDataManager;
     public static CardSpriteManager spriteManager;
+    public static Sprite UIMask;
     public GameObject endTurnButton;
     public Text phaseText;
     public GameObject mainPhaseButton;
@@ -29,12 +32,20 @@ public class Duel : MonoBehaviour
     {
         owndeck = new List<string>();
         ownextra = new List<string>();
+        ownhandcard = new List<string>();
         opsdeck = new List<string>();
         opsextra = new List<string>();
+        opshandcard = new List<string>();
+        cardDataManager = new CardDataManager();
         spriteManager = new CardSpriteManager();
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         //读取卡组
         ReadDeckFile();
+        //加载卡组数据
+        cardDataManager.LoadCardData(owndeck);
+        cardDataManager.LoadCardData(ownextra);
+        cardDataManager.LoadCardData(opsdeck);
+        cardDataManager.LoadCardData(opsextra);
         //放置卡组
         deckOwn.GetComponent<DeckOwn>().DeckUpdate();
         deckOps.GetComponent<DeckOps>().DeckUpdate();

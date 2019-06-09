@@ -33,6 +33,7 @@ public class HandCardOps : MonoBehaviour
             GameObject handcard = Instantiate(card, handcardlist);
             handcard.GetComponent<Image>().sprite = Duel.spriteManager.getCardSprite(Duel.opsdeck[0], false);
             ChangeHandCardPosition();
+            Duel.opshandcard.Add(Duel.opsdeck[0]);
             Duel.opsdeck.RemoveAt(0);
             deck.GetComponent<DeckOps>().DeckUpdate();
         }
