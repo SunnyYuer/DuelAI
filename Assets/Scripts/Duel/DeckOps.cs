@@ -23,11 +23,11 @@ public class DeckOps : MonoBehaviour, IPointerClickHandler
 
     public void DeckUpdate()
     {
-        if (Duel.opsdeck.Count > 0)
-            image.sprite = Duel.spriteManager.getCardSprite(Duel.opsdeck[0], false);
+        if (Duel.deck[1].Count > 0)
+            image.sprite = Duel.spriteManager.getCardSprite(Duel.deck[1][0], false);
         else
             image.sprite = Duel.UIMask;
-        decknum.text = Duel.opsdeck.Count.ToString();
+        decknum.text = Duel.deck[1].Count.ToString();
     }
 
     public void OnPointerClick(PointerEventData eventData)

@@ -11,12 +11,9 @@ public class Duel : MonoBehaviour
     public GameObject deckOps;
     public GameObject handOwn;
     public GameObject handOps;
-    public static List<string> owndeck;
-    public static List<string> ownextra;
-    public static List<string> ownhandcard;
-    public static List<string> opsdeck;
-    public static List<string> opsextra;
-    public static List<string> opshandcard;
+    public static List<string>[] deck;
+    public static List<string>[] extra;
+    public static List<string>[] handcard;
     public static CardDataManager cardDataManager;
     public static CardSpriteManager spriteManager;
     public static Sprite UIMask;
@@ -30,22 +27,17 @@ public class Duel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        owndeck = new List<string>();
-        ownextra = new List<string>();
-        ownhandcard = new List<string>();
-        opsdeck = new List<string>();
-        opsextra = new List<string>();
-        opshandcard = new List<string>();
+        InitialDeck();
         cardDataManager = new CardDataManager();
         spriteManager = new CardSpriteManager();
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         //读取卡组
         ReadDeckFile();
         //加载卡组数据
-        cardDataManager.LoadCardData(owndeck);
-        cardDataManager.LoadCardData(ownextra);
-        cardDataManager.LoadCardData(opsdeck);
-        cardDataManager.LoadCardData(opsextra);
+        cardDataManager.LoadCardData(deck[0]);
+        cardDataManager.LoadCardData(extra[0]);
+        cardDataManager.LoadCardData(deck[1]);
+        cardDataManager.LoadCardData(extra[1]);
         //放置卡组
         deckOwn.GetComponent<DeckOwn>().DeckUpdate();
         deckOps.GetComponent<DeckOps>().DeckUpdate();
@@ -65,6 +57,19 @@ public class Duel : MonoBehaviour
         
     }
 
+    public void InitialDeck()
+    {
+        deck = new List<string>[4];
+        extra = new List<string>[4];
+        handcard = new List<string>[4];
+        for (int i = 0; i < 4; i++)
+        {
+            deck[i] = new List<string>();
+            extra[i] = new List<string>();
+            handcard[i] = new List<string>();
+        }
+    }
+
     public void ReadDeckFile()
     {
         string deckpath = Main.rulePath + "/deck/mycard.ydk";
@@ -76,8 +81,8 @@ public class Duel : MonoBehaviour
         {
             int rmindex = strs[i].IndexOf('#');
             if (rmindex >= 0) strs[i] = strs[i].Remove(rmindex);
-            owndeck.Add(strs[i]);
-            opsdeck.Add(strs[i]);
+            deck[0].Add(strs[i]);
+            deck[1].Add(strs[i]);
             i++;
         }
         i++;
@@ -85,8 +90,8 @@ public class Duel : MonoBehaviour
         {
             int rmindex = strs[i].IndexOf('#');
             if (rmindex >= 0) strs[i] = strs[i].Remove(rmindex);
-            ownextra.Add(strs[i]);
-            opsextra.Add(strs[i]);
+            extra[0].Add(strs[i]);
+            extra[1].Add(strs[i]);
             i++;
         }
     }
