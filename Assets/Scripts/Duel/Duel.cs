@@ -17,12 +17,14 @@ public class Duel : MonoBehaviour
     public static CardSpriteManager spriteManager;
     public static Sprite UIMask;
     public static DuelDataManager duelData;
+    public AI ai;
 
     // Start is called before the first frame update
     void Start()
     {
         duelData = new DuelDataManager();
         spriteManager = new CardSpriteManager();
+        ai = new AI();
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         //读取卡组
         ReadDeckFile();
