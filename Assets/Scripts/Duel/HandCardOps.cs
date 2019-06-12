@@ -28,13 +28,13 @@ public class HandCardOps : MonoBehaviour
 
     public void DrawCard()
     {
-        if (Duel.deck[1].Count > 0)
+        if (Duel.duelData.deck[1].Count > 0)
         {
             GameObject handcard = Instantiate(card, handcardlist);
-            handcard.GetComponent<Image>().sprite = Duel.spriteManager.getCardSprite(Duel.deck[1][0], false);
+            handcard.GetComponent<Image>().sprite = Duel.spriteManager.getCardSprite(Duel.duelData.deck[1][0], false);
             ChangeHandCardPosition();
-            Duel.handcard[1].Add(Duel.deck[1][0]);
-            Duel.deck[1].RemoveAt(0);
+            Duel.duelData.handcard[1].Add(Duel.duelData.deck[1][0]);
+            Duel.duelData.deck[1].RemoveAt(0);
             deck.GetComponent<DeckOps>().DeckUpdate();
         }
     }

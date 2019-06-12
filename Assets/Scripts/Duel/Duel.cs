@@ -11,39 +11,28 @@ public class Duel : MonoBehaviour
     public GameObject deckOps;
     public GameObject handOwn;
     public GameObject handOps;
-    public static List<string>[] deck;
-    public static List<string>[] extra;
-    public static List<string>[] handcard;
-    public static CardDataManager cardDataManager;
-    public static CardSpriteManager spriteManager;
-    public static Sprite UIMask;
     public GameObject endTurnButton;
     public Text phaseText;
     public GameObject mainPhaseButton;
-    public static int whoTurn;
-    public static int duelPhase;
-    public int turnNum;
+    public static CardSpriteManager spriteManager;
+    public static Sprite UIMask;
+    public static DuelDataManager duelData;
 
     // Start is called before the first frame update
     void Start()
     {
-        InitialDeck();
-        cardDataManager = new CardDataManager();
+        duelData = new DuelDataManager();
         spriteManager = new CardSpriteManager();
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         //读取卡组
         ReadDeckFile();
         //加载卡组数据
-        cardDataManager.LoadCardData(deck[0]);
-        cardDataManager.LoadCardData(extra[0]);
-        cardDataManager.LoadCardData(deck[1]);
-        cardDataManager.LoadCardData(extra[1]);
+        duelData.LoadDeckData();
         //放置卡组
         deckOwn.GetComponent<DeckOwn>().DeckUpdate();
         deckOps.GetComponent<DeckOps>().DeckUpdate();
         //初始化回合和阶段
-        turnNum = 0;
-        whoTurn = 0;
+        duelData.whoTurn = 0;
         ChangePhase(0);
         //各自起手5张卡
         StartCoroutine(DrawCardOwn(5));
@@ -57,19 +46,6 @@ public class Duel : MonoBehaviour
         
     }
 
-    public void InitialDeck()
-    {
-        deck = new List<string>[4];
-        extra = new List<string>[4];
-        handcard = new List<string>[4];
-        for (int i = 0; i < 4; i++)
-        {
-            deck[i] = new List<string>();
-            extra[i] = new List<string>();
-            handcard[i] = new List<string>();
-        }
-    }
-
     public void ReadDeckFile()
     {
         string deckpath = Main.rulePath + "/deck/mycard.ydk";
@@ -81,8 +57,8 @@ public class Duel : MonoBehaviour
         {
             int rmindex = strs[i].IndexOf('#');
             if (rmindex >= 0) strs[i] = strs[i].Remove(rmindex);
-            deck[0].Add(strs[i]);
-            deck[1].Add(strs[i]);
+            duelData.deck[0].Add(strs[i]);
+            duelData.deck[1].Add(strs[i]);
             i++;
         }
         i++;
@@ -90,8 +66,8 @@ public class Duel : MonoBehaviour
         {
             int rmindex = strs[i].IndexOf('#');
             if (rmindex >= 0) strs[i] = strs[i].Remove(rmindex);
-            extra[0].Add(strs[i]);
-            extra[1].Add(strs[i]);
+            duelData.extra[0].Add(strs[i]);
+            duelData.extra[1].Add(strs[i]);
             i++;
         }
     }
@@ -101,41 +77,41 @@ public class Duel : MonoBehaviour
         if (phase >= 7)
         {
             phase = 0;
-            whoTurn = 1 - whoTurn;
+            duelData.whoTurn = 1 - duelData.whoTurn;
         }
-        duelPhase = phase;
+        duelData.duelPhase = phase;
         PhaseButtonShow();
-        if (duelPhase == 0)
+        if (duelData.duelPhase == 0)
         {
-            if (whoTurn == 0) phaseText.text = "我的回合";
+            if (duelData.whoTurn == 0) phaseText.text = "我的回合";
             else phaseText.text = "对方回合";
             StartCoroutine(PhaseWait());
         }
-        if (duelPhase == 1)
+        if (duelData.duelPhase == 1)
         {
             phaseText.text = "抽卡阶段";
-            if(whoTurn == 0) StartCoroutine(DrawCardOwn(1));
+            if(duelData.whoTurn == 0) StartCoroutine(DrawCardOwn(1));
             else StartCoroutine(DrawCardOps(1));
             StartCoroutine(PhaseWait());
         }
-        if (duelPhase == 2)
+        if (duelData.duelPhase == 2)
         {
             phaseText.text = "准备阶段";
             StartCoroutine(PhaseWait());
         }
-        if (duelPhase == 3)
+        if (duelData.duelPhase == 3)
         {
             phaseText.text = "主一阶段";
         }
-        if (duelPhase == 4)
+        if (duelData.duelPhase == 4)
         {
             phaseText.text = "战斗阶段";
         }
-        if (duelPhase == 5)
+        if (duelData.duelPhase == 5)
         {
             phaseText.text = "主二阶段";
         }
-        if (duelPhase == 6)
+        if (duelData.duelPhase == 6)
         {
             phaseText.text = "结束阶段";
             StartCoroutine(PhaseWait());
@@ -145,14 +121,14 @@ public class Duel : MonoBehaviour
     IEnumerator PhaseWait()
     {
         yield return new WaitForSeconds(1);
-        ChangePhase(++duelPhase);
+        ChangePhase(++duelData.duelPhase);
     }
 
     public void PhaseButtonShow()
     {
-        if (duelPhase >= 3 && duelPhase <= 4) mainPhaseButton.SetActive(true);
+        if (duelData.duelPhase >= 3 && duelData.duelPhase <= 4) mainPhaseButton.SetActive(true);
         else mainPhaseButton.SetActive(false);
-        if (duelPhase >= 3 && duelPhase <= 5) endTurnButton.SetActive(true);
+        if (duelData.duelPhase >= 3 && duelData.duelPhase <= 5) endTurnButton.SetActive(true);
         else endTurnButton.SetActive(false);
     }
 
@@ -164,12 +140,12 @@ public class Duel : MonoBehaviour
     public void OnMainPhaseButtonClick()
     {
         Text buttonText = mainPhaseButton.GetComponentInChildren<Text>();
-        if (duelPhase == 4)
+        if (duelData.duelPhase == 4)
         {
             buttonText.text = "开始战斗";
             ChangePhase(5);
         }
-        if (duelPhase == 3)
+        if (duelData.duelPhase == 3)
         {
             buttonText.text = "结束战斗";
             ChangePhase(4);
