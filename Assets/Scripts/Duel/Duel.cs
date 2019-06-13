@@ -104,10 +104,12 @@ public class Duel : MonoBehaviour
         if (duelData.duelPhase == 3)
         {
             phaseText.text = "主一阶段";
+            ChangeMainPhaseButtonText();
         }
         if (duelData.duelPhase == 4)
         {
             phaseText.text = "战斗阶段";
+            ChangeMainPhaseButtonText();
         }
         if (duelData.duelPhase == 5)
         {
@@ -139,19 +141,17 @@ public class Duel : MonoBehaviour
         ChangePhase(6);
     }
 
-    public void OnMainPhaseButtonClick()
+    public void ChangeMainPhaseButtonText()
     {
         Text buttonText = mainPhaseButton.GetComponentInChildren<Text>();
-        if (duelData.duelPhase == 4)
-        {
-            buttonText.text = "开始战斗";
-            ChangePhase(5);
-        }
-        if (duelData.duelPhase == 3)
-        {
-            buttonText.text = "结束战斗";
-            ChangePhase(4);
-        }
+        if (duelData.duelPhase == 3) buttonText.text = "开始战斗";
+        if (duelData.duelPhase == 4) buttonText.text = "结束战斗";
+    }
+
+    public void OnMainPhaseButtonClick()
+    {
+        if (duelData.duelPhase == 4) ChangePhase(5);
+        if (duelData.duelPhase == 3) ChangePhase(4);
     }
 
     IEnumerator DrawCardOwn(int num)
