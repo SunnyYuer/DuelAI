@@ -32,6 +32,6 @@ public class DeckOps : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        GameObject.Find("HandCardsLayoutOps").GetComponent<HandCardOps>().DrawCard();
+        //GameObject.Find("HandCardsLayoutOps").GetComponent<HandCardOps>().DrawCard();
     }
 }

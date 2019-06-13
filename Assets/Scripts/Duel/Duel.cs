@@ -48,6 +48,12 @@ public class Duel : MonoBehaviour
         
     }
 
+    public void OnQuitClick()
+    {
+        Destroy(gameObject);
+        Instantiate(mainLayout, GameObject.Find("Canvas").transform);
+    }
+
     public void ReadDeckFile()
     {
         string deckpath = Main.rulePath + "/deck/mycard.ydk";
@@ -159,7 +165,8 @@ public class Duel : MonoBehaviour
         yield return 0;
         while (num > 0)
         {
-            handOwn.GetComponent<HandCardOwn>().DrawCard();
+            handOwn.GetComponent<HandCardOwn>().AddHandCardFromDeck();
+            deckOwn.GetComponent<DeckOwn>().DeckUpdate();
             yield return new WaitForSeconds(0.1f);
             num--;
         }
@@ -170,15 +177,10 @@ public class Duel : MonoBehaviour
         yield return 0;
         while (num > 0)
         {
-            handOps.GetComponent<HandCardOps>().DrawCard();
+            handOps.GetComponent<HandCardOps>().AddHandCardFromDeck();
+            deckOps.GetComponent<DeckOps>().DeckUpdate();
             yield return new WaitForSeconds(0.1f);
             num--;
         }
-    }
-
-    public void OnQuitClick()
-    {
-        Destroy(gameObject);
-        Instantiate(mainLayout, GameObject.Find("Canvas").transform);
     }
 }

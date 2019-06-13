@@ -7,7 +7,6 @@ public class HandCardOwn : MonoBehaviour
 {
     public RectTransform handcardlist;
     public GameObject card;
-    public GameObject deck;
     private float listwidth;
     private float listheight;
     private float cardwidth;
@@ -26,7 +25,7 @@ public class HandCardOwn : MonoBehaviour
 
     }
 
-    public void DrawCard()
+    public void AddHandCardFromDeck()
     {
         if (Duel.duelData.deck[0].Count > 0)
         {
@@ -35,7 +34,6 @@ public class HandCardOwn : MonoBehaviour
             ChangeHandCardPosition();
             Duel.duelData.handcard[0].Add(Duel.duelData.deck[0][0]);
             Duel.duelData.deck[0].RemoveAt(0);
-            deck.GetComponent<DeckOwn>().DeckUpdate();
         }
     }
 
