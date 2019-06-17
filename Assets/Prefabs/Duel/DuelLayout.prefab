@@ -1309,7 +1309,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handcardlist: {fileID: 6791702180877158219}
   card: {fileID: 5133651692496425065, guid: bd6209b7898c42a4394ccf3c6d09f75e, type: 3}
-  deck: {fileID: 6791702180043783973}
 --- !u!1 &6791702180972817521
 GameObject:
   m_ObjectHideFlags: 0
@@ -1679,7 +1678,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handcardlist: {fileID: 6791702181556102377}
   card: {fileID: 3852013261318534894, guid: 36b669b16a8661948b2f5abacbb23b98, type: 3}
-  deck: {fileID: 6791702181477992710}
 --- !u!1 &6791702181697270018
 GameObject:
   m_ObjectHideFlags: 0
@@ -1734,14 +1732,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainLayout: {fileID: 8344503884013952710, guid: a78711cb244002d46b00664ad0ae8398,
     type: 3}
-  deckOwn: {fileID: 6791702180043783973}
-  deckOps: {fileID: 6791702181477992710}
-  handOwn: {fileID: 6791702180877158220}
-  handOps: {fileID: 6791702181556102378}
+  deckOwn: {fileID: 1236780718351047031}
+  deckOps: {fileID: 6430187799037395263}
+  handOwn: {fileID: 8371625762274328373}
+  handOps: {fileID: 7961374815630919330}
   endTurnButton: {fileID: 8406949217961765362}
   phaseText: {fileID: 3364749515243193860}
   mainPhaseButton: {fileID: 6959245512858716636}
-  turnNum: 0
 --- !u!1 &6791702181814629270
 GameObject:
   m_ObjectHideFlags: 0

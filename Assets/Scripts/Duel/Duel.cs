@@ -7,10 +7,10 @@ using UnityEngine.UI;
 public class Duel : MonoBehaviour
 {
     public GameObject mainLayout;
-    public GameObject deckOwn;
-    public GameObject deckOps;
-    public GameObject handOwn;
-    public GameObject handOps;
+    public DeckOwn deckOwn;
+    public DeckOps deckOps;
+    public HandCardOwn handOwn;
+    public HandCardOps handOps;
     public GameObject endTurnButton;
     public Text phaseText;
     public GameObject mainPhaseButton;
@@ -31,8 +31,8 @@ public class Duel : MonoBehaviour
         //加载卡组数据
         duelData.LoadDeckData();
         //放置卡组
-        deckOwn.GetComponent<DeckOwn>().DeckUpdate();
-        deckOps.GetComponent<DeckOps>().DeckUpdate();
+        deckOwn.DeckUpdate();
+        deckOps.DeckUpdate();
         //初始化回合和阶段
         duelData.whoTurn = 0;
         ChangePhase(0);
@@ -111,6 +111,11 @@ public class Duel : MonoBehaviour
         {
             phaseText.text = "主一阶段";
             ChangeMainPhaseButtonText();
+            if (duelData.whoTurn == 0)
+            {
+                NormalSummonFromHandCardOwn(2);
+                StartCoroutine(PhaseWait());
+            }
         }
         if (duelData.duelPhase == 4)
         {
@@ -128,7 +133,7 @@ public class Duel : MonoBehaviour
         }
     }
 
-    IEnumerator PhaseWait()
+    public IEnumerator PhaseWait()
     {
         yield return new WaitForSeconds(1);
         ChangePhase(++duelData.duelPhase);
@@ -160,27 +165,30 @@ public class Duel : MonoBehaviour
         if (duelData.duelPhase == 3) ChangePhase(4);
     }
 
-    IEnumerator DrawCardOwn(int num)
+    public IEnumerator DrawCardOwn(int num)
     {
-        yield return 0;
         while (num > 0)
         {
-            handOwn.GetComponent<HandCardOwn>().AddHandCardFromDeck();
-            deckOwn.GetComponent<DeckOwn>().DeckUpdate();
             yield return new WaitForSeconds(0.1f);
+            handOwn.AddHandCardFromDeck();
+            deckOwn.DeckUpdate();
             num--;
         }
     }
 
-    IEnumerator DrawCardOps(int num)
+    public IEnumerator DrawCardOps(int num)
     {
-        yield return 0;
         while (num > 0)
         {
-            handOps.GetComponent<HandCardOps>().AddHandCardFromDeck();
-            deckOps.GetComponent<DeckOps>().DeckUpdate();
             yield return new WaitForSeconds(0.1f);
+            handOps.AddHandCardFromDeck();
+            deckOps.DeckUpdate();
             num--;
         }
+    }
+
+    public void NormalSummonFromHandCardOwn(int index)
+    {
+        handOwn.RemoveHandCard(index);
     }
 }
