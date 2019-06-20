@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.7300301, g: 0.7890018, b: 0.8497393, a: 1}
+  m_IndirectSpecularColor: {r: 0.7303064, g: 0.7891824, b: 0.849961, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -352,7 +352,7 @@ GameObject:
   - component: {fileID: 277522700}
   - component: {fileID: 277522699}
   m_Layer: 0
-  m_Name: CardQuad (13)
+  m_Name: MonsterQuadOps (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -367,9 +367,9 @@ Transform:
   m_GameObject: {fileID: 277522697}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 3, y: 0, z: 3}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.5900009, y: 0.86000097, z: 1}
   m_Children: []
-  m_Father: {fileID: 1541546380}
+  m_Father: {fileID: 1988155163}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!64 &277522699
@@ -513,6 +513,72 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
+--- !u!1 &320207154
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 320207155}
+  m_Layer: 0
+  m_Name: MagicTrapArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &320207155
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 320207154}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 482803401}
+  - {fileID: 1648748580}
+  - {fileID: 1443603538}
+  - {fileID: 1784631539}
+  - {fileID: 1049045834}
+  m_Father: {fileID: 617262024}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &377300918
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 377300919}
+  m_Layer: 0
+  m_Name: FieldArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &377300919
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 377300918}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 2076764175}
+  m_Father: {fileID: 1541546380}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &384346294
 GameObject:
   m_ObjectHideFlags: 0
@@ -526,7 +592,7 @@ GameObject:
   - component: {fileID: 384346297}
   - component: {fileID: 384346296}
   m_Layer: 0
-  m_Name: CardQuad (19)
+  m_Name: MagicTrapQuadOps (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -541,10 +607,10 @@ Transform:
   m_GameObject: {fileID: 384346294}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 4, y: 0, z: 4}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.5900009, y: 0.86000097, z: 1}
   m_Children: []
-  m_Father: {fileID: 1541546380}
-  m_RootOrder: 9
+  m_Father: {fileID: 1273172830}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!64 &384346296
 MeshCollider:
@@ -618,7 +684,7 @@ GameObject:
   - component: {fileID: 482803403}
   - component: {fileID: 482803402}
   m_Layer: 0
-  m_Name: CardQuad
+  m_Name: MagicTrapQuadOwn (0)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -633,9 +699,9 @@ Transform:
   m_GameObject: {fileID: 482803400}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.59, y: 0.8600005, z: 1}
   m_Children: []
-  m_Father: {fileID: 617262024}
+  m_Father: {fileID: 320207155}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &482803402
@@ -812,6 +878,72 @@ MonoBehaviour:
     type: 3}
   AndroidSdcard: /sdcard/DuelAI
   rule: default
+--- !u!1 &575105465
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 575105466}
+  m_Layer: 0
+  m_Name: MonsterArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &575105466
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575105465}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1554434575}
+  - {fileID: 884961876}
+  - {fileID: 1975646211}
+  - {fileID: 1106460881}
+  - {fileID: 1513705696}
+  m_Father: {fileID: 617262024}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &594853953
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 594853954}
+  m_Layer: 0
+  m_Name: FieldArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &594853954
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594853953}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1847551662}
+  m_Father: {fileID: 617262024}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &617262023
 GameObject:
   m_ObjectHideFlags: 0
@@ -822,7 +954,7 @@ GameObject:
   m_Component:
   - component: {fileID: 617262024}
   m_Layer: 0
-  m_Name: Own
+  m_Name: FieldOwn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -839,17 +971,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 482803401}
-  - {fileID: 1648748580}
-  - {fileID: 1443603538}
-  - {fileID: 1784631539}
-  - {fileID: 1049045834}
-  - {fileID: 1554434575}
-  - {fileID: 884961876}
-  - {fileID: 1975646211}
-  - {fileID: 1106460881}
-  - {fileID: 1513705696}
-  - {fileID: 1847551662}
+  - {fileID: 320207155}
+  - {fileID: 575105466}
+  - {fileID: 594853954}
   m_Father: {fileID: 703906128}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -866,7 +990,7 @@ GameObject:
   - component: {fileID: 645309946}
   - component: {fileID: 645309945}
   m_Layer: 0
-  m_Name: CardQuad (10)
+  m_Name: MonsterQuadOps (0)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -881,9 +1005,9 @@ Transform:
   m_GameObject: {fileID: 645309943}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 3}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.5900009, y: 0.86000097, z: 1}
   m_Children: []
-  m_Father: {fileID: 1541546380}
+  m_Father: {fileID: 1988155163}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!64 &645309945
@@ -990,7 +1114,7 @@ GameObject:
   - component: {fileID: 884961878}
   - component: {fileID: 884961877}
   m_Layer: 0
-  m_Name: CardQuad (6)
+  m_Name: MonsterQuadOwn (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1005,10 +1129,10 @@ Transform:
   m_GameObject: {fileID: 884961875}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 1, y: 0, z: 1}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.59, y: 0.8600005, z: 1}
   m_Children: []
-  m_Father: {fileID: 617262024}
-  m_RootOrder: 6
+  m_Father: {fileID: 575105466}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &884961877
 MeshCollider:
@@ -1082,7 +1206,7 @@ GameObject:
   - component: {fileID: 895383847}
   - component: {fileID: 895383846}
   m_Layer: 0
-  m_Name: CardQuad (14)
+  m_Name: MonsterQuadOps (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1097,9 +1221,9 @@ Transform:
   m_GameObject: {fileID: 895383844}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 4, y: 0, z: 3}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.5900009, y: 0.86000097, z: 1}
   m_Children: []
-  m_Father: {fileID: 1541546380}
+  m_Father: {fileID: 1988155163}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!64 &895383846
@@ -1174,7 +1298,7 @@ GameObject:
   - component: {fileID: 1049045836}
   - component: {fileID: 1049045835}
   m_Layer: 0
-  m_Name: CardQuad (4)
+  m_Name: MagicTrapQuadOwn (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1189,9 +1313,9 @@ Transform:
   m_GameObject: {fileID: 1049045833}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 4, y: 0, z: 0}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.59, y: 0.8600005, z: 1}
   m_Children: []
-  m_Father: {fileID: 617262024}
+  m_Father: {fileID: 320207155}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &1049045835
@@ -1266,7 +1390,7 @@ GameObject:
   - component: {fileID: 1106460883}
   - component: {fileID: 1106460882}
   m_Layer: 0
-  m_Name: CardQuad (8)
+  m_Name: MonsterQuadOwn (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1281,10 +1405,10 @@ Transform:
   m_GameObject: {fileID: 1106460880}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 3, y: 0, z: 1}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.59, y: 0.8600005, z: 1}
   m_Children: []
-  m_Father: {fileID: 617262024}
-  m_RootOrder: 8
+  m_Father: {fileID: 575105466}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &1106460882
 MeshCollider:
@@ -1358,7 +1482,7 @@ GameObject:
   - component: {fileID: 1141032153}
   - component: {fileID: 1141032152}
   m_Layer: 0
-  m_Name: CardQuad (16)
+  m_Name: MagicTrapQuadOps (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1373,10 +1497,10 @@ Transform:
   m_GameObject: {fileID: 1141032150}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 1, y: 0, z: 4}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.5900009, y: 0.86000097, z: 1}
   m_Children: []
-  m_Father: {fileID: 1541546380}
-  m_RootOrder: 6
+  m_Father: {fileID: 1273172830}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!64 &1141032152
 MeshCollider:
@@ -1437,6 +1561,41 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1141032150}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1273172829
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1273172830}
+  m_Layer: 0
+  m_Name: MagicTrapArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1273172830
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1273172829}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1657836346}
+  - {fileID: 1141032151}
+  - {fileID: 1947259670}
+  - {fileID: 1766224803}
+  - {fileID: 384346295}
+  m_Father: {fileID: 1541546380}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1443603537
 GameObject:
   m_ObjectHideFlags: 0
@@ -1450,7 +1609,7 @@ GameObject:
   - component: {fileID: 1443603540}
   - component: {fileID: 1443603539}
   m_Layer: 0
-  m_Name: CardQuad (2)
+  m_Name: MagicTrapQuadOwn (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1465,9 +1624,9 @@ Transform:
   m_GameObject: {fileID: 1443603537}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 2, y: 0, z: 0}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.59, y: 0.8600005, z: 1}
   m_Children: []
-  m_Father: {fileID: 617262024}
+  m_Father: {fileID: 320207155}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &1443603539
@@ -1542,7 +1701,7 @@ GameObject:
   - component: {fileID: 1513705698}
   - component: {fileID: 1513705697}
   m_Layer: 0
-  m_Name: CardQuad (9)
+  m_Name: MonsterQuadOwn (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1557,10 +1716,10 @@ Transform:
   m_GameObject: {fileID: 1513705695}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 4, y: 0, z: 1}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.59, y: 0.8600005, z: 1}
   m_Children: []
-  m_Father: {fileID: 617262024}
-  m_RootOrder: 9
+  m_Father: {fileID: 575105466}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &1513705697
 MeshCollider:
@@ -1631,7 +1790,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1541546380}
   m_Layer: 0
-  m_Name: Ops
+  m_Name: FieldOps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1648,17 +1807,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 645309944}
-  - {fileID: 1848258719}
-  - {fileID: 1895718383}
-  - {fileID: 277522698}
-  - {fileID: 895383845}
-  - {fileID: 1657836346}
-  - {fileID: 1141032151}
-  - {fileID: 1947259670}
-  - {fileID: 1766224803}
-  - {fileID: 384346295}
-  - {fileID: 2076764175}
+  - {fileID: 1273172830}
+  - {fileID: 1988155163}
+  - {fileID: 377300919}
   m_Father: {fileID: 703906128}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1675,7 +1826,7 @@ GameObject:
   - component: {fileID: 1554434577}
   - component: {fileID: 1554434576}
   m_Layer: 0
-  m_Name: CardQuad (5)
+  m_Name: MonsterQuadOwn (0)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1690,10 +1841,10 @@ Transform:
   m_GameObject: {fileID: 1554434574}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.59, y: 0.8600005, z: 1}
   m_Children: []
-  m_Father: {fileID: 617262024}
-  m_RootOrder: 5
+  m_Father: {fileID: 575105466}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &1554434576
 MeshCollider:
@@ -1767,7 +1918,7 @@ GameObject:
   - component: {fileID: 1648748582}
   - component: {fileID: 1648748581}
   m_Layer: 0
-  m_Name: CardQuad (1)
+  m_Name: MagicTrapQuadOwn (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1782,9 +1933,9 @@ Transform:
   m_GameObject: {fileID: 1648748579}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 1, y: 0, z: 0}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.59, y: 0.8600005, z: 1}
   m_Children: []
-  m_Father: {fileID: 617262024}
+  m_Father: {fileID: 320207155}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &1648748581
@@ -1859,7 +2010,7 @@ GameObject:
   - component: {fileID: 1657836348}
   - component: {fileID: 1657836347}
   m_Layer: 0
-  m_Name: CardQuad (15)
+  m_Name: MagicTrapQuadOps (0)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1874,10 +2025,10 @@ Transform:
   m_GameObject: {fileID: 1657836345}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 4}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.5900009, y: 0.86000097, z: 1}
   m_Children: []
-  m_Father: {fileID: 1541546380}
-  m_RootOrder: 5
+  m_Father: {fileID: 1273172830}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!64 &1657836347
 MeshCollider:
@@ -1951,7 +2102,7 @@ GameObject:
   - component: {fileID: 1766224805}
   - component: {fileID: 1766224804}
   m_Layer: 0
-  m_Name: CardQuad (18)
+  m_Name: MagicTrapQuadOps (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1966,10 +2117,10 @@ Transform:
   m_GameObject: {fileID: 1766224802}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 3, y: 0, z: 4}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.5900009, y: 0.86000097, z: 1}
   m_Children: []
-  m_Father: {fileID: 1541546380}
-  m_RootOrder: 8
+  m_Father: {fileID: 1273172830}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!64 &1766224804
 MeshCollider:
@@ -2043,7 +2194,7 @@ GameObject:
   - component: {fileID: 1784631541}
   - component: {fileID: 1784631540}
   m_Layer: 0
-  m_Name: CardQuad (3)
+  m_Name: MagicTrapQuadOwn (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2058,9 +2209,9 @@ Transform:
   m_GameObject: {fileID: 1784631538}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 3, y: 0, z: 0}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.59, y: 0.8600005, z: 1}
   m_Children: []
-  m_Father: {fileID: 617262024}
+  m_Father: {fileID: 320207155}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &1784631540
@@ -2135,7 +2286,7 @@ GameObject:
   - component: {fileID: 1847551664}
   - component: {fileID: 1847551663}
   m_Layer: 0
-  m_Name: FieldQuad
+  m_Name: FieldQuadOwn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2148,12 +2299,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1847551661}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: -1, y: 0, z: 0.5}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.59, y: 0.8600005, z: 1}
   m_Children: []
-  m_Father: {fileID: 617262024}
-  m_RootOrder: 10
+  m_Father: {fileID: 594853954}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &1847551663
 MeshCollider:
@@ -2227,7 +2378,7 @@ GameObject:
   - component: {fileID: 1848258721}
   - component: {fileID: 1848258720}
   m_Layer: 0
-  m_Name: CardQuad (11)
+  m_Name: MonsterQuadOps (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2242,9 +2393,9 @@ Transform:
   m_GameObject: {fileID: 1848258718}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 1, y: 0, z: 3}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.5900009, y: 0.86000097, z: 1}
   m_Children: []
-  m_Father: {fileID: 1541546380}
+  m_Father: {fileID: 1988155163}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!64 &1848258720
@@ -2319,7 +2470,7 @@ GameObject:
   - component: {fileID: 1895718385}
   - component: {fileID: 1895718384}
   m_Layer: 0
-  m_Name: CardQuad (12)
+  m_Name: MonsterQuadOps (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2334,9 +2485,9 @@ Transform:
   m_GameObject: {fileID: 1895718382}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 2, y: 0, z: 3}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.5900009, y: 0.86000097, z: 1}
   m_Children: []
-  m_Father: {fileID: 1541546380}
+  m_Father: {fileID: 1988155163}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!64 &1895718384
@@ -2411,7 +2562,7 @@ GameObject:
   - component: {fileID: 1947259672}
   - component: {fileID: 1947259671}
   m_Layer: 0
-  m_Name: CardQuad (17)
+  m_Name: MagicTrapQuadOps (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2426,10 +2577,10 @@ Transform:
   m_GameObject: {fileID: 1947259669}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 2, y: 0, z: 4}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.5900009, y: 0.86000097, z: 1}
   m_Children: []
-  m_Father: {fileID: 1541546380}
-  m_RootOrder: 7
+  m_Father: {fileID: 1273172830}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!64 &1947259671
 MeshCollider:
@@ -2503,7 +2654,7 @@ GameObject:
   - component: {fileID: 1975646213}
   - component: {fileID: 1975646212}
   m_Layer: 0
-  m_Name: CardQuad (7)
+  m_Name: MonsterQuadOwn (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2518,10 +2669,10 @@ Transform:
   m_GameObject: {fileID: 1975646210}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 2, y: 0, z: 1}
-  m_LocalScale: {x: 0.59, y: 0.86, z: 1}
+  m_LocalScale: {x: 0.59, y: 0.8600005, z: 1}
   m_Children: []
-  m_Father: {fileID: 617262024}
-  m_RootOrder: 7
+  m_Father: {fileID: 575105466}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &1975646212
 MeshCollider:
@@ -2582,6 +2733,41 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1975646210}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1988155162
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1988155163}
+  m_Layer: 0
+  m_Name: MonsterArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1988155163
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988155162}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 645309944}
+  - {fileID: 1848258719}
+  - {fileID: 1895718383}
+  - {fileID: 277522698}
+  - {fileID: 895383845}
+  m_Father: {fileID: 1541546380}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2076764174
 GameObject:
   m_ObjectHideFlags: 0
@@ -2595,7 +2781,7 @@ GameObject:
   - component: {fileID: 2076764177}
   - component: {fileID: 2076764176}
   m_Layer: 0
-  m_Name: FieldQuad
+  m_Name: FieldQuadOps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2608,12 +2794,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2076764174}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: -0.7071068, w: 0}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 5, y: 0, z: 3.5}
-  m_LocalScale: {x: 0.59, y: 0.86000043, z: 1}
+  m_LocalScale: {x: 0.59000045, y: 0.8600005, z: 1}
   m_Children: []
-  m_Father: {fileID: 1541546380}
-  m_RootOrder: 10
+  m_Father: {fileID: 377300919}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!64 &2076764176
 MeshCollider:
