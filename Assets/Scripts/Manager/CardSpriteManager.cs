@@ -20,7 +20,7 @@ public class CardSpriteManager
         picspath = Main.rulePath + "/pics/";
     }
 
-    public Sprite getCardSprite(string id, bool small)
+    public Sprite GetCardSprite(string id, bool small)
     {
         if (spriteDic.ContainsKey(id) && small)
             return spriteDic[id];
@@ -34,7 +34,7 @@ public class CardSpriteManager
             byte[] imgByte = new byte[files.Length];
             files.Read(imgByte, 0, imgByte.Length);
             files.Close();
-            Texture2D texture;
+            Texture2D texture = null;
 #if UNITY_EDITOR || UNITY_STANDALONE
             texture = new Texture2D(236, 344, TextureFormat.DXT1, false);
 #elif UNITY_ANDROID

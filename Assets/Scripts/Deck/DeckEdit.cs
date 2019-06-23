@@ -93,7 +93,7 @@ public class DeckEdit : MonoBehaviour {
             cardAbstract.text = "";
             cardAbstract.text += cardnameList[num] + "\n";
             cardAbstract.text += cardidList[num];
-            cardnext.GetComponentsInChildren<Image>()[1].sprite = spriteManager.getCardSprite(cardidList[num], true);
+            cardnext.GetComponentsInChildren<Image>()[1].sprite = spriteManager.GetCardSprite(cardidList[num], true);
         }
         showcard = false;
     }

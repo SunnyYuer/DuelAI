@@ -30,15 +30,22 @@ public class HandCardOps : MonoBehaviour
         if (Duel.duelData.deck[1].Count > 0)
         {
             GameObject handcard = Instantiate(card, handcardlist);
-            handcard.GetComponent<Image>().sprite = Duel.spriteManager.getCardSprite(Duel.duelData.deck[1][0], false);
-            ChangeHandCardPosition();
+            handcard.GetComponent<Image>().sprite = Duel.spriteManager.GetCardSprite(Duel.duelData.deck[1][0], false);
+            StartCoroutine(ChangeHandCardPosition(false));
             Duel.duelData.handcard[1].Add(Duel.duelData.deck[1][0]);
             Duel.duelData.deck[1].RemoveAt(0);
         }
     }
 
-    public void ChangeHandCardPosition()
+    public void RemoveHandCard(int index)
     {
+        Destroy(handcardlist.GetChild(index).gameObject);
+        StartCoroutine(ChangeHandCardPosition(true));
+    }
+
+    public IEnumerator ChangeHandCardPosition(bool wait)
+    {
+        if (wait) yield return new WaitForSeconds(0.1f);
         Vector3 vector = new Vector3(0, -listheight / 2, 0);
         int cardnum = handcardlist.childCount;
         if (cardnum <= 7)

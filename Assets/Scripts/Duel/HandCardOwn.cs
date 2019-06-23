@@ -30,7 +30,7 @@ public class HandCardOwn : MonoBehaviour
         if (Duel.duelData.deck[0].Count > 0)
         {
             GameObject handcard = Instantiate(card, handcardlist);
-            handcard.GetComponent<Image>().sprite = Duel.spriteManager.getCardSprite(Duel.duelData.deck[0][0], false);
+            handcard.GetComponent<Image>().sprite = Duel.spriteManager.GetCardSprite(Duel.duelData.deck[0][0], false);
             StartCoroutine(ChangeHandCardPosition(false));
             Duel.duelData.handcard[0].Add(Duel.duelData.deck[0][0]);
             Duel.duelData.deck[0].RemoveAt(0);
@@ -41,7 +41,6 @@ public class HandCardOwn : MonoBehaviour
     {
         Destroy(handcardlist.GetChild(index).gameObject);
         StartCoroutine(ChangeHandCardPosition(true));
-        Duel.duelData.handcard[0].RemoveAt(index);
     }
 
     public IEnumerator ChangeHandCardPosition(bool wait)

@@ -11,6 +11,8 @@ public class Duel : MonoBehaviour
     public DeckOps deckOps;
     public HandCardOwn handOwn;
     public HandCardOps handOps;
+    public MonsterOwn monserOwn;
+    public MonsterOps monserOps;
     public GameObject endTurnButton;
     public Text phaseText;
     public GameObject mainPhaseButton;
@@ -26,6 +28,8 @@ public class Duel : MonoBehaviour
         spriteManager = new CardSpriteManager();
         ai = new AI();
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
+        monserOwn = GameObject.Find("MonsterAreaOwn").GetComponent<MonsterOwn>();
+        monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
         //读取卡组
         ReadDeckFile();
         //加载卡组数据
@@ -116,6 +120,11 @@ public class Duel : MonoBehaviour
                 NormalSummonFromHandCardOwn(2);
                 StartCoroutine(PhaseWait());
             }
+            else
+            {
+                NormalSummonFromHandCardOps(2);
+                StartCoroutine(PhaseWait());
+            }
         }
         if (duelData.duelPhase == 4)
         {
@@ -190,5 +199,14 @@ public class Duel : MonoBehaviour
     public void NormalSummonFromHandCardOwn(int index)
     {
         handOwn.RemoveHandCard(index);
+        monserOwn.ShowMonsterCard(index, 2);
+        duelData.handcard[0].RemoveAt(index);
+    }
+
+    public void NormalSummonFromHandCardOps(int index)
+    {
+        handOps.RemoveHandCard(index);
+        monserOps.ShowMonsterCard(index, 2);
+        duelData.handcard[1].RemoveAt(index);
     }
 }

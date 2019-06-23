@@ -129,14 +129,14 @@ public class MakeCard : MonoBehaviour
             string[] abs = cardAbstract.Split('\n');
             if (abs.Length == 1) continue;//refreshtext此时还未完全销毁
             string id = abs[abs.Length - 1];
-            cardnext.GetComponentsInChildren<Image>()[1].sprite = spriteManager.getCardSprite(id, true);
+            cardnext.GetComponentsInChildren<Image>()[1].sprite = spriteManager.GetCardSprite(id, true);
         }
         showcardpics = false;
     }
 
     public void OnCardIdValueChanged(string id)
     {
-        GameObject.Find("CardBigImage").GetComponent<Image>().sprite = spriteManager.getCardSprite(id, false);
+        GameObject.Find("CardBigImage").GetComponent<Image>().sprite = spriteManager.GetCardSprite(id, false);
     }
 
     public void OnSaveClick()
