@@ -8,8 +8,8 @@ using UnityEngine.Networking;
 
 /*
 Windows:
-Application.dataPath                   =/Duel_Data
-Application.streamingAssetsPath =/Duel_Data/StreamingAssets
+Application.dataPath                   =DuelAI/Duel_Data
+Application.streamingAssetsPath =DuelAI/Duel_Data/StreamingAssets
 Application.persistentDataPath    =C:/Users/yuer/AppData/LocalLow/yuer/DuelAI
 
 Android:
@@ -18,8 +18,8 @@ Application.streamingAssetsPath =jar:file:///data/app/com.yuer.DuelAI-2/base.apk
 Application.persistentDataPath    =/storage/emulated/0/Android/data/com.yuer.DuelAI/files
 
 Linux:
-Application.dataPath                   =/Duel_Data
-Application.streamingAssetsPath =/Duel_Data/StreamingAssets
+Application.dataPath                   =DuelAI/Duel_Data
+Application.streamingAssetsPath =DuelAI/Duel_Data/StreamingAssets
 Application.persistentDataPath    =/home/yuer/.config/unity3d/yuer/DuelAI
 */
 
@@ -30,6 +30,7 @@ public class Main : MonoBehaviour
     public static string rulePath;
     public string AndroidSdcard = "/sdcard/DuelAI";
     public string rule = "default";//默认规则
+    public string ruleAssets = "rules.zip";
     public static string sqlName = "cards.db";
     public static string tableName = "cards";
 
@@ -45,6 +46,7 @@ public class Main : MonoBehaviour
 #endif
         Instantiate(mainLayout, GameObject.Find("Canvas").transform);
         Instantiate(Resources.Load("Prefabs/FPSText"), GameObject.Find("Canvas").transform);
+        Initialize();
     }
 
     // Update is called once per frame
@@ -62,18 +64,17 @@ public class Main : MonoBehaviour
 #endif
     }
 
-    public void AndroidInitialize()
+    public void Initialize()
     {
+#if UNITY_EDITOR || UNITY_STANDALONE
+        Zip.UnZipFile(Application.streamingAssetsPath + "/" + ruleAssets, Application.dataPath + "/..");
+#elif UNITY_ANDROID
         string path = AndroidSdcard;
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-        path = rulePath;
-        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-        GetFile(Application.streamingAssetsPath + "/" + rule + "/" + sqlName, path + "/" + sqlName);
-        path = rulePath + "/pics";
-        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-        path = rulePath + "/deck";
-        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
+        GetFile(Application.streamingAssetsPath  + "/" + ruleAssets, path + "/" + ruleAssets);
+        Zip.UnZipFile(path + "/" + ruleAssets, path);
+#endif
+        /*
         SQLManager sql = new SQLManager();
         sql.ConnectSQL();
         SqliteDataReader reader = sql.GetCardsCount(tableName, "");
@@ -83,6 +84,7 @@ public class Main : MonoBehaviour
         sql.CloseSQLConnection();
 
         Instantiate(Resources.Load("Prefabs/ProgressBackground"), GameObject.Find("Canvas").transform);
+        */
     }
 
     public void AndroidUpdate()
