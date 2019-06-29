@@ -56,7 +56,7 @@ public class Main : MonoBehaviour
     public void UpdateRulePath()
     {
 #if UNITY_EDITOR || UNITY_STANDALONE
-        rulePath = Application.streamingAssetsPath + "/" + rule;
+        rulePath = Application.dataPath + "/.." + "/" + rule;
 #elif UNITY_ANDROID
         rulePath = AndroidSdcard + "/" + rule;
 #endif
