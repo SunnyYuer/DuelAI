@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.7300301, g: 0.7890018, b: 0.84973913, a: 1}
+  m_IndirectSpecularColor: {r: 0.7300301, g: 0.7890018, b: 0.8497393, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -877,7 +877,8 @@ MonoBehaviour:
   mainLayout: {fileID: 8344503884013952710, guid: a78711cb244002d46b00664ad0ae8398,
     type: 3}
   AndroidSdcard: /sdcard/DuelAI
-  rule: default
+  rule: duel
+  zipFileVersion: 1
 --- !u!1 &575105465
 GameObject:
   m_ObjectHideFlags: 0
