@@ -877,8 +877,7 @@ MonoBehaviour:
   mainLayout: {fileID: 8344503884013952710, guid: a78711cb244002d46b00664ad0ae8398,
     type: 3}
   AndroidSdcard: /sdcard/DuelAI
-  rule: duel
-  zipFileVersion: 1
+  rule: default
 --- !u!1 &575105465
 GameObject:
   m_ObjectHideFlags: 0

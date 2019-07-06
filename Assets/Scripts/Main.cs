@@ -1,4 +1,4 @@
-﻿#undef UNITY_EDITOR
+﻿//#undef UNITY_EDITOR
 
 using ICSharpCode.SharpZipLib.Zip;
 using System;
@@ -32,7 +32,7 @@ public class Main : MonoBehaviour
 
     public static string rulePath;
     public string AndroidSdcard = "/sdcard/DuelAI";
-    public string rule;//规则default, duel
+    public string rule;//规则 default, duel
     public static string sqlName = "cards.db";
     public static string tableName = "cards";
 
@@ -95,14 +95,14 @@ public class Main : MonoBehaviour
     public void SaveVersionInfo()
     {
         PlayerPrefs.SetInt(rule + "versionTime", versionTextTime);
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
         PlayerPrefs.SetInt(rule + "version", zipFileVersion);
 #endif
     }
 
     public void UpdateAssets()
     {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
         if (!File.Exists(zipFilePath) || saveZipVersion < zipFileVersion)
         {
             Progress.title = "复制资源";
