@@ -55,7 +55,7 @@ public class MakeCard : MonoBehaviour
     {
         DateTime dt1 = DateTime.Now;
 
-        int instancards = cardlist.childCount;//已实例化的卡片数量
+        int instancards = cardlist.childCount;//已实例化的卡牌数量
         if (hasRefreshtext) instancards--;
         if (((cardtotalnum==cardnum) || ((cardnum-instancards)>=1000)) && hasRefreshtext)
         {

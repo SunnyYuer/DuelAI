@@ -9,8 +9,8 @@ public class CardDataManager
     {
         public string id;
         public string name;
-        public string type;//卡片类型
-        public string series;//卡片系列
+        public string type;//卡牌类型
+        public string series;//卡牌系列
 
         public string attribute;//怪兽属性
         public int level;//怪兽星级

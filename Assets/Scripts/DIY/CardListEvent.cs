@@ -83,7 +83,7 @@ public class CardListEvent : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (lastclickedcard != null)
             lastclickedcard.GetComponent<Image>().color = Color.white;
         GameObject clickedcard = cardlist.GetChild(cardindex).gameObject;
-        clickedcard.GetComponent<Image>().color = Color.gray;//设置点击卡片后的状态颜色
+        clickedcard.GetComponent<Image>().color = Color.gray;//设置点击卡牌后的状态颜色
         lastclickedcard = clickedcard;
 
         SQLManager sql = new SQLManager();

@@ -44,7 +44,7 @@ public class DeckEdit : MonoBehaviour {
         SqliteDataReader reader = sql.GetCardsCount(Main.tableName, nameorid);
         cardtotalnum = int.Parse(reader.GetValue(0).ToString());
         reader.Close();
-        showcardnum = cardtotalnum;//cardlist里要显示的卡片数量
+        showcardnum = cardtotalnum;//cardlist里要显示的卡牌数量
         if (cardtotalnum > 7) showcardnum = 7;
         GameObject.Find("ResultText").GetComponent<Text>().text = cardtotalnum.ToString() + "/" + cardtotalnum.ToString();
         cardlist.sizeDelta = new Vector2(0, 90 * showcardnum);
