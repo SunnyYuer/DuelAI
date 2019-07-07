@@ -7,6 +7,7 @@ public class MainInterface : MonoBehaviour {
     public GameObject Duel;
     public GameObject DeckEditor;
     public GameObject CardMaker;
+    public GameObject Setting;
 
     // Use this for initialization
     void Start ()
@@ -36,6 +37,11 @@ public class MainInterface : MonoBehaviour {
     {
         Instantiate(CardMaker, GameObject.Find("Canvas").transform);
         GameObject.Find("FPSText(Clone)").transform.SetAsLastSibling();
+    }
+
+    public void OnSettingClick()
+    {
+        Instantiate(Setting, GameObject.Find("Canvas").transform);
     }
 
     public void OnQuitGameClick()

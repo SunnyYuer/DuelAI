@@ -47,9 +47,14 @@ public class Main : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        //管理类的初始化
         CardSpriteManager.Initialize();
+        //加载主界面
         Instantiate(mainLayout, GameObject.Find("Canvas").transform);
         Instantiate(Resources.Load("Prefabs/FPSText"), GameObject.Find("Canvas").transform);
+        //加载设置
+        LoadSetting();
+        //加载规则
         //PlayerPrefs.DeleteAll();
         ChangeRule();
     }
@@ -62,6 +67,13 @@ public class Main : MonoBehaviour
             SaveVersionInfo();
             updateDone = 0;
         }
+    }
+
+    public void LoadSetting()
+    {
+        int setting = PlayerPrefs.GetInt("shadow", 1);
+        if (setting == 1) GameObject.Find("Light").GetComponent<Light>().shadows = LightShadows.Soft;
+        else GameObject.Find("Light").GetComponent<Light>().shadows = LightShadows.None;
     }
 
     public void UpdateRulePath()
