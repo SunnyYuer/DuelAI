@@ -20,7 +20,8 @@ public class MonsterOwn : MonoBehaviour
 
     public void ShowMonsterCard(int index, int position)
     {
-        Sprite sprite = Duel.spriteManager.GetCardSprite(Duel.duelData.handcard[0][index], false);
+        List<string> handcard = Duel.duelData.handcard[Duel.duelData.opWhoOwn];
+        Sprite sprite = Duel.spriteManager.GetCardSprite(handcard[index], false);
         if(sprite == null)
             monsterArea.GetChild(position).GetComponent<Renderer>().material.mainTexture = null;
         else

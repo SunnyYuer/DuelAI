@@ -27,13 +27,12 @@ public class HandCardOwn : MonoBehaviour
 
     public void AddHandCardFromDeck()
     {
-        if (Duel.duelData.deck[0].Count > 0)
+        List<string> deck = Duel.duelData.deck[Duel.duelData.opWhoOwn];
+        if (deck.Count > 0)
         {
             GameObject handcard = Instantiate(card, handcardlist);
-            handcard.GetComponent<Image>().sprite = Duel.spriteManager.GetCardSprite(Duel.duelData.deck[0][0], false);
+            handcard.GetComponent<Image>().sprite = Duel.spriteManager.GetCardSprite(deck[0], false);
             StartCoroutine(ChangeHandCardPosition(false));
-            Duel.duelData.handcard[0].Add(Duel.duelData.deck[0][0]);
-            Duel.duelData.deck[0].RemoveAt(0);
         }
     }
 

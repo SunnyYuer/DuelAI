@@ -24,7 +24,7 @@ public class Duel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        duelData = new DuelDataManager();
+        duelData = new DuelDataManager(2);
         spriteManager = new CardSpriteManager();
         ai = new AI();
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
@@ -175,38 +175,42 @@ public class Duel : MonoBehaviour
     }
 
     public IEnumerator DrawCardOwn(int num)
-    {
+    {//自己抽卡
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
             handOwn.AddHandCardFromDeck();
+            duelData.handcard[duelData.opWhoOwn].Add(duelData.deck[duelData.opWhoOwn][0]);
+            duelData.deck[duelData.opWhoOwn].RemoveAt(0);
             deckOwn.DeckUpdate();
             num--;
         }
     }
 
     public IEnumerator DrawCardOps(int num)
-    {
+    {//对方抽卡
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
             handOps.AddHandCardFromDeck();
+            duelData.handcard[duelData.opWhoOps].Add(duelData.deck[duelData.opWhoOps][0]);
+            duelData.deck[duelData.opWhoOps].RemoveAt(0);
             deckOps.DeckUpdate();
             num--;
         }
     }
 
     public void NormalSummonFromHandCardOwn(int index)
-    {
+    {//自己从手卡通常召唤
         handOwn.RemoveHandCard(index);
         monserOwn.ShowMonsterCard(index, 2);
-        duelData.handcard[0].RemoveAt(index);
+        duelData.handcard[duelData.opWhoOwn].RemoveAt(index);
     }
 
     public void NormalSummonFromHandCardOps(int index)
-    {
+    {//对方从手卡通常召唤
         handOps.RemoveHandCard(index);
         monserOps.ShowMonsterCard(index, 2);
-        duelData.handcard[1].RemoveAt(index);
+        duelData.handcard[duelData.opWhoOps].RemoveAt(index);
     }
 }

@@ -23,11 +23,12 @@ public class DeckOwn : MonoBehaviour, IPointerClickHandler
 
     public void DeckUpdate()
     {
-        if (Duel.duelData.deck[0].Count > 0)
-            image.sprite = Duel.spriteManager.GetCardSprite(Duel.duelData.deck[0][0], false);
+        List<string> deck = Duel.duelData.deck[Duel.duelData.opWhoOwn];
+        if (deck.Count > 0)
+            image.sprite = Duel.spriteManager.GetCardSprite(deck[0], false);
         else
             image.sprite = Duel.UIMask;
-        decknum.text = Duel.duelData.deck[0].Count.ToString();
+        decknum.text = deck.Count.ToString();
     }
 
     public void OnPointerClick(PointerEventData eventData)
