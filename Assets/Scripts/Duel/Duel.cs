@@ -117,12 +117,12 @@ public class Duel : MonoBehaviour
             ChangeMainPhaseButtonText();
             if (duelData.whoTurn == 0)
             {
-                NormalSummonFromHandCardOwn(2);
+                NormalSummonFromHandCardOwn(2, 2);
                 StartCoroutine(PhaseWait());
             }
             else
             {
-                NormalSummonFromHandCardOps(2);
+                NormalSummonFromHandCardOps(2, 2);
                 StartCoroutine(PhaseWait());
             }
         }
@@ -200,17 +200,19 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public void NormalSummonFromHandCardOwn(int index)
+    public void NormalSummonFromHandCardOwn(int index, int position)
     {//自己从手卡通常召唤
         handOwn.RemoveHandCard(index);
-        monserOwn.ShowMonsterCard(index, 2);
+        monserOwn.ShowMonsterCard(index, position);
+        duelData.monster[duelData.opWhoOwn][position] = duelData.handcard[duelData.opWhoOwn][index];
         duelData.handcard[duelData.opWhoOwn].RemoveAt(index);
     }
 
-    public void NormalSummonFromHandCardOps(int index)
+    public void NormalSummonFromHandCardOps(int index, int position)
     {//对方从手卡通常召唤
         handOps.RemoveHandCard(index);
-        monserOps.ShowMonsterCard(index, 2);
+        monserOps.ShowMonsterCard(index, position);
+        duelData.monster[duelData.opWhoOps][position] = duelData.handcard[duelData.opWhoOps][index];
         duelData.handcard[duelData.opWhoOps].RemoveAt(index);
     }
 }
