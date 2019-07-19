@@ -174,8 +174,13 @@ public class Duel : MonoBehaviour
         if (duelData.duelPhase == 3) ChangePhase(4);
     }
 
+    /// <summary>
+    /// 自己抽卡
+    /// </summary>
+    /// <param name="num"></param>
+    /// <returns></returns>
     public IEnumerator DrawCardOwn(int num)
-    {//自己抽卡
+    {
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
@@ -187,8 +192,13 @@ public class Duel : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 对方抽卡
+    /// </summary>
+    /// <param name="num"></param>
+    /// <returns></returns>
     public IEnumerator DrawCardOps(int num)
-    {//对方抽卡
+    {
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
@@ -200,16 +210,26 @@ public class Duel : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 自己从手卡通常召唤
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="position"></param>
     public void NormalSummonFromHandCardOwn(int index, int position)
-    {//自己从手卡通常召唤
+    {
         handOwn.RemoveHandCard(index);
         monserOwn.ShowMonsterCard(index, position);
         duelData.monster[duelData.opWhoOwn][position] = duelData.handcard[duelData.opWhoOwn][index];
         duelData.handcard[duelData.opWhoOwn].RemoveAt(index);
     }
 
+    /// <summary>
+    /// 对方从手卡通常召唤
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="position"></param>
     public void NormalSummonFromHandCardOps(int index, int position)
-    {//对方从手卡通常召唤
+    {
         handOps.RemoveHandCard(index);
         monserOps.ShowMonsterCard(index, position);
         duelData.monster[duelData.opWhoOps][position] = duelData.handcard[duelData.opWhoOps][index];
