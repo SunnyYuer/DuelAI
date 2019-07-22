@@ -6,8 +6,8 @@
 duel/
 default/
 Assets/AssetStoreTools*
-Assets/StreamingAssets/duel/
-Assets/StreamingAssets/default/pics/
+Assets/Resources/Lua/
+Assets/Resources/Lua.meta
 
 # Visual Studio cache directory
 .vs/

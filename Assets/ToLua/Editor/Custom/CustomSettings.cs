@@ -56,6 +56,8 @@ public static class CustomSettings
         //_GT(typeof(TestExport)),
         //_GT(typeof(TestExport.Space)),
         //-------------------------------------------------------------------        
+
+        //_GT(typeof(LuaCode)), //测试使用
                         
         _GT(typeof(LuaInjectionStation)),
         _GT(typeof(InjectType)),

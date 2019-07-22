@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using LuaInterface;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class DuelDataManager
@@ -65,8 +68,15 @@ public class DuelDataManager
         {
             allcode += card.code;
         }
-        CodeCompiler codeCompiler = new CodeCompiler();
-        //codeCompiler.CSharpCompile(allcode);
-        codeCompiler.TestCSharpCode();
+        LuaCode luaCode = null;
+        try
+        {
+            luaCode = new LuaCode();
+        }
+        catch(Exception e)
+        {
+            File.WriteAllText(Main.rulePath + "/error.log", e.ToString());
+        }
+        luaCode.Test();
     }
 }
