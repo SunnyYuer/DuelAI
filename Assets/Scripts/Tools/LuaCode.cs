@@ -26,7 +26,8 @@ public class LuaCode
     {
         try
         {
-            luaState.DoString(code);
+            luaState.DoFile("test.lua");
+            //luaState.DoString(code);
             LuaFunction func = luaState.GetFunction("Card71703785");
             func.Call();
             func.Dispose();
@@ -51,7 +52,7 @@ public class LuaCode
         //每行必须加\n
         string code =
             "function Card71703785()\n" +
-            "LuaCode.TestLog(\"运行成功\");\n" +
+            "print(\"运行成功\")\n" +
             "end\n";
         Run(code);
         Close();

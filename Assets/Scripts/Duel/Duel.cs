@@ -18,13 +18,17 @@ public class Duel : MonoBehaviour
     public GameObject mainPhaseButton;
     public static CardSpriteManager spriteManager;
     public static Sprite UIMask;
+    public DuelOperation duelOperate;
     public static DuelDataManager duelData;
+    public LuaCode luaCode;
     public AI ai;
 
     // Start is called before the first frame update
-    void Start()
+    IEnumerator Start()
     {
+        duelOperate = gameObject.GetComponent<DuelOperation>();
         duelData = new DuelDataManager(2);
+        luaCode = new LuaCode();
         spriteManager = new CardSpriteManager();
         ai = new AI();
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
@@ -39,11 +43,12 @@ public class Duel : MonoBehaviour
         deckOps.DeckUpdate();
         //初始化回合和阶段
         duelData.whoTurn = 0;
-        ChangePhase(0);
+        StartCoroutine(ChangePhase(0));
         //各自起手5张卡
         StartCoroutine(DrawCardOwn(5));
         StartCoroutine(DrawCardOps(5));
         //决斗开始
+        yield return 0;
     }
 
     // Update is called once per frame
@@ -54,6 +59,7 @@ public class Duel : MonoBehaviour
 
     public void OnQuitClick()
     {
+        luaCode.Close();
         Destroy(gameObject);
         Instantiate(mainLayout, GameObject.Find("Canvas").transform);
     }
@@ -84,7 +90,7 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public void ChangePhase(int phase)
+    public IEnumerator ChangePhase(int phase)
     {
         if (phase >= 7)
         {
@@ -102,8 +108,10 @@ public class Duel : MonoBehaviour
         if (duelData.duelPhase == 1)
         {
             phaseText.text = "抽卡阶段";
-            if(duelData.whoTurn == 0) StartCoroutine(DrawCardOwn(1));
-            else StartCoroutine(DrawCardOps(1));
+            if (duelData.whoTurn == 0)
+                yield return StartCoroutine(duelOperate.DrawCardOwn(1));
+            else
+                yield return StartCoroutine(duelOperate.DrawCardOps(1));
             StartCoroutine(PhaseWait());
         }
         if (duelData.duelPhase == 2)
@@ -115,6 +123,7 @@ public class Duel : MonoBehaviour
         {
             phaseText.text = "主一阶段";
             ChangeMainPhaseButtonText();
+            /*
             if (duelData.whoTurn == 0)
             {
                 NormalSummonFromHandCardOwn(2, 2);
@@ -125,6 +134,7 @@ public class Duel : MonoBehaviour
                 NormalSummonFromHandCardOps(2, 2);
                 StartCoroutine(PhaseWait());
             }
+            */
         }
         if (duelData.duelPhase == 4)
         {
@@ -145,7 +155,7 @@ public class Duel : MonoBehaviour
     public IEnumerator PhaseWait()
     {
         yield return new WaitForSeconds(1);
-        ChangePhase(++duelData.duelPhase);
+        StartCoroutine(ChangePhase(++duelData.duelPhase));
     }
 
     public void PhaseButtonShow()
@@ -158,7 +168,7 @@ public class Duel : MonoBehaviour
 
     public void OnEndTurnButtonClick()
     {
-        ChangePhase(6);
+        StartCoroutine(ChangePhase(6));
     }
 
     public void ChangeMainPhaseButtonText()
@@ -170,41 +180,43 @@ public class Duel : MonoBehaviour
 
     public void OnMainPhaseButtonClick()
     {
-        if (duelData.duelPhase == 4) ChangePhase(5);
-        if (duelData.duelPhase == 3) ChangePhase(4);
+        if (duelData.duelPhase == 4) StartCoroutine(ChangePhase(5));
+        if (duelData.duelPhase == 3) StartCoroutine(ChangePhase(4));
     }
 
-    /// <summary>
-    /// 自己抽卡
-    /// </summary>
-    /// <param name="num"></param>
-    /// <returns></returns>
+    public void EffectChain(int player)
+    {
+        duelData.player = player;
+        luaCode.Run("");
+    }
+
     public IEnumerator DrawCardOwn(int num)
     {
+        int player = duelData.opWhoOwn;
+        duelData.cardsJustDrawn[player].Clear();
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
             handOwn.AddHandCardFromDeck();
-            duelData.handcard[duelData.opWhoOwn].Add(duelData.deck[duelData.opWhoOwn][0]);
-            duelData.deck[duelData.opWhoOwn].RemoveAt(0);
+            duelData.handcard[player].Add(duelData.deck[player][0]);
+            duelData.cardsJustDrawn[player].Add(duelData.deck[player][0]);
+            duelData.deck[player].RemoveAt(0);
             deckOwn.DeckUpdate();
             num--;
         }
     }
 
-    /// <summary>
-    /// 对方抽卡
-    /// </summary>
-    /// <param name="num"></param>
-    /// <returns></returns>
     public IEnumerator DrawCardOps(int num)
     {
+        int player = duelData.opWhoOps;
+        duelData.cardsJustDrawn[player].Clear();
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
             handOps.AddHandCardFromDeck();
-            duelData.handcard[duelData.opWhoOps].Add(duelData.deck[duelData.opWhoOps][0]);
-            duelData.deck[duelData.opWhoOps].RemoveAt(0);
+            duelData.handcard[player].Add(duelData.deck[player][0]);
+            duelData.cardsJustDrawn[player].Add(duelData.deck[player][0]);
+            duelData.deck[player].RemoveAt(0);
             deckOps.DeckUpdate();
             num--;
         }

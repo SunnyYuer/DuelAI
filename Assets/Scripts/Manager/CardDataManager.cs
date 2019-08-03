@@ -23,11 +23,13 @@ public class CardDataManager
     }
 
     public Dictionary<string, Card> cardDic;
+    public string allcode;
     private SQLManager sql;
 
     public CardDataManager()
     {
         cardDic = new Dictionary<string, Card>();
+        allcode = "";
     }
 
     public void LoadCardData(List<string> cardsid)
@@ -49,6 +51,7 @@ public class CardDataManager
                 if(!attris.Equals("")) GetCardAttributes(card, attris);
                 card.describe = reader["describe"].ToString();
                 card.code = reader["code"].ToString();
+                allcode += card.code;
             }
             reader.Close();
             cardDic.Add(cardid, card);

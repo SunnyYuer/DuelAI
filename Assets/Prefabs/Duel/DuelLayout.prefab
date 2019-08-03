@@ -1688,6 +1688,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2275735592109331000}
   - component: {fileID: 6791702181697270016}
+  - component: {fileID: 3930989883147261927}
   m_Layer: 5
   m_Name: DuelLayout
   m_TagString: Untagged
@@ -1736,9 +1737,24 @@ MonoBehaviour:
   deckOps: {fileID: 6430187799037395263}
   handOwn: {fileID: 8371625762274328373}
   handOps: {fileID: 7961374815630919330}
+  monserOwn: {fileID: 0}
+  monserOps: {fileID: 0}
   endTurnButton: {fileID: 8406949217961765362}
   phaseText: {fileID: 3364749515243193860}
   mainPhaseButton: {fileID: 6959245512858716636}
+--- !u!114 &3930989883147261927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6791702181697270018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da72dba92d38ff4896dc2f406da2546, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duel: {fileID: 0}
 --- !u!1 &6791702181814629270
 GameObject:
   m_ObjectHideFlags: 0

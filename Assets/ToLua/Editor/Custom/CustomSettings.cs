@@ -57,8 +57,11 @@ public static class CustomSettings
         //_GT(typeof(TestExport.Space)),
         //-------------------------------------------------------------------        
 
-        //_GT(typeof(LuaCode)), //测试使用
-                        
+        //_GT(typeof(LuaCode)),//测试使用
+        _GT(typeof(DuelOperation)),
+        _GT(typeof(DuelDataManager)),
+        _GT(typeof(List<string>)),
+
         _GT(typeof(LuaInjectionStation)),
         _GT(typeof(InjectType)),
         _GT(typeof(Debugger)).SetNameSpace(null),          

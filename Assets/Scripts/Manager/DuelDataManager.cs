@@ -1,12 +1,16 @@
-﻿using LuaInterface;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 public class DuelDataManager
 {
+    public int duelPeopleNum;
+    public int turnNum;
+    public int whoTurn;//0自己回合，1对方回合
+    public int duelPhase;
+    public int opWhoOwn;//友方谁在操作
+    public int opWhoOps;//敌方谁在操作
+    public int player;//在操作的玩家
     public List<string>[] deck;
     public List<string>[] extra;
     public List<string>[] grave;
@@ -16,19 +20,25 @@ public class DuelDataManager
     public string[][] magictrap;
     public string[] field;
     public string[][] special;
-    public CardDataManager cardDataManager;
-    public int turnNum;
-    public int whoTurn;
-    public int duelPhase;
-    public int duelPeopleNum;
-    public int opWhoOwn;//友方谁在操作
-    public int opWhoOps;//敌方谁在操作
+    public CardDataManager cardData;
+
+    public class Record
+    {
+        public int turnNum;
+        public int duelPhase;
+        public int player;
+        public string card;
+        public int effect;
+        public List<string> effectCard;
+    }
+
+    public List<string>[] cardsJustDrawn;
 
     public DuelDataManager(int peopleNum)
     {
         duelPeopleNum = peopleNum;
         InitialDeck();
-        cardDataManager = new CardDataManager();
+        cardData = new CardDataManager();
         turnNum = 0;
         opWhoOwn = 0;//0或2
         opWhoOps = 1;//1或3
@@ -43,6 +53,7 @@ public class DuelDataManager
         handcard = new List<string>[duelPeopleNum];
         monster = new string[duelPeopleNum][];
         magictrap = new string[duelPeopleNum][];
+        cardsJustDrawn = new List<string>[duelPeopleNum];
         for (int i = 0; i < duelPeopleNum; i++)
         {
             deck[i] = new List<string>();
@@ -52,6 +63,7 @@ public class DuelDataManager
             handcard[i] = new List<string>();
             monster[i] = new string[5];
             magictrap[i] = new string[5];
+            cardsJustDrawn[i] = new List<string>();
         }
         field = new string[2];
     }
@@ -60,23 +72,15 @@ public class DuelDataManager
     {
         for (int i = 0; i < duelPeopleNum; i++)
         {
-            cardDataManager.LoadCardData(deck[i]);
-            cardDataManager.LoadCardData(extra[i]);
+            cardData.LoadCardData(deck[i]);
+            cardData.LoadCardData(extra[i]);
         }
+        /*
         string allcode = "";
         foreach (CardDataManager.Card card in cardDataManager.cardDic.Values)
         {
             allcode += card.code;
         }
-        LuaCode luaCode = null;
-        try
-        {
-            luaCode = new LuaCode();
-        }
-        catch(Exception e)
-        {
-            File.WriteAllText(Main.rulePath + "/error.log", e.ToString());
-        }
-        luaCode.Test();
+        */
     }
 }
