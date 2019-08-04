@@ -11,14 +11,14 @@ public class Duel : MonoBehaviour
     public DeckOps deckOps;
     public HandCardOwn handOwn;
     public HandCardOps handOps;
-    public MonsterOwn monserOwn;
-    public MonsterOps monserOps;
+    private MonsterOwn monserOwn;
+    private MonsterOps monserOps;
     public GameObject endTurnButton;
     public Text phaseText;
     public GameObject mainPhaseButton;
     public static CardSpriteManager spriteManager;
     public static Sprite UIMask;
-    public DuelOperation duelOperate;
+    private DuelOperation duelOperate;
     public static DuelDataManager duelData;
     public LuaCode luaCode;
     public AI ai;
