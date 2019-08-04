@@ -190,6 +190,11 @@ public class Duel : MonoBehaviour
         luaCode.Run("");
     }
 
+    public void SetEffect()
+    {
+        
+    }
+
     public IEnumerator DrawCardOwn(int num)
     {
         int player = duelData.opWhoOwn;

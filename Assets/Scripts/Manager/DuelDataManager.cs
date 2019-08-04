@@ -22,7 +22,10 @@ public class DuelDataManager
     public string[][] special;
     public CardDataManager cardData;
 
-    public class Record
+    /// <summary>
+    /// 卡牌发动效果以及受效果影响的卡牌记录
+    /// </summary>
+    public class EffectRecord
     {
         public int turnNum;
         public int duelPhase;
@@ -32,7 +35,27 @@ public class DuelDataManager
         public List<string> effectCard;
     }
 
+    /// <summary>
+    /// 可连锁的效果
+    /// </summary>
+    public class EffectPosition
+    {
+        public string card;
+        /// <summary>
+        /// 0  手卡
+        /// 1  怪兽区域
+        /// 2  魔法陷阱区域
+        /// 3  场地卡区域
+        /// 4  墓地
+        /// 5  特殊区域
+        /// </summary>
+        public int position;
+        public int index;
+        public int effect;
+    }
+
     public List<string>[] cardsJustDrawn;
+    public List<EffectPosition> effectPosition;
 
     public DuelDataManager(int peopleNum)
     {
