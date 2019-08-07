@@ -38,7 +38,7 @@ public class DuelDataManager
     /// <summary>
     /// 可连锁的效果
     /// </summary>
-    public class EffectPosition
+    public class ChainableEffect
     {
         public string card;
         /// <summary>
@@ -55,7 +55,7 @@ public class DuelDataManager
     }
 
     public List<string>[] cardsJustDrawn;
-    public List<EffectPosition> effectPosition;
+    public List<ChainableEffect> chainableEffect;
 
     public DuelDataManager(int peopleNum)
     {

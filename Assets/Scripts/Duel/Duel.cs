@@ -15,7 +15,7 @@ public class Duel : MonoBehaviour
     private MonsterOps monserOps;
     public GameObject endTurnButton;
     public Text phaseText;
-    public GameObject mainPhaseButton;
+    public GameObject battleButton;
     public static CardSpriteManager spriteManager;
     public static Sprite UIMask;
     private DuelOperation duelOperate;
@@ -122,7 +122,7 @@ public class Duel : MonoBehaviour
         if (duelData.duelPhase == 3)
         {
             phaseText.text = "主一阶段";
-            ChangeMainPhaseButtonText();
+            ChangeBattleButtonText();
             /*
             if (duelData.whoTurn == 0)
             {
@@ -139,7 +139,7 @@ public class Duel : MonoBehaviour
         if (duelData.duelPhase == 4)
         {
             phaseText.text = "战斗阶段";
-            ChangeMainPhaseButtonText();
+            ChangeBattleButtonText();
         }
         if (duelData.duelPhase == 5)
         {
@@ -160,8 +160,8 @@ public class Duel : MonoBehaviour
 
     public void PhaseButtonShow()
     {
-        if (duelData.duelPhase >= 3 && duelData.duelPhase <= 4) mainPhaseButton.SetActive(true);
-        else mainPhaseButton.SetActive(false);
+        if (duelData.duelPhase >= 3 && duelData.duelPhase <= 4) battleButton.SetActive(true);
+        else battleButton.SetActive(false);
         if (duelData.duelPhase >= 3 && duelData.duelPhase <= 5) endTurnButton.SetActive(true);
         else endTurnButton.SetActive(false);
     }
@@ -171,14 +171,14 @@ public class Duel : MonoBehaviour
         StartCoroutine(ChangePhase(6));
     }
 
-    public void ChangeMainPhaseButtonText()
+    public void ChangeBattleButtonText()
     {
-        Text buttonText = mainPhaseButton.GetComponentInChildren<Text>();
+        Text buttonText = battleButton.GetComponentInChildren<Text>();
         if (duelData.duelPhase == 3) buttonText.text = "开始战斗";
         if (duelData.duelPhase == 4) buttonText.text = "结束战斗";
     }
 
-    public void OnMainPhaseButtonClick()
+    public void OnBattleButtonClick()
     {
         if (duelData.duelPhase == 4) StartCoroutine(ChangePhase(5));
         if (duelData.duelPhase == 3) StartCoroutine(ChangePhase(4));
@@ -187,6 +187,15 @@ public class Duel : MonoBehaviour
     public void EffectChain(int player)
     {
         duelData.player = player;
+        ScanEffectOwn();
+    }
+
+    public void ScanEffectOwn()
+    {
+        foreach (string card in duelData.handcard[duelData.opWhoOwn])
+        {
+            Debug.Log(card);
+        }
         luaCode.Run("");
     }
 
