@@ -38,6 +38,7 @@ public class Duel : MonoBehaviour
         ReadDeckFile();
         //加载卡组数据
         duelData.LoadDeckData();
+        luaCode.SetCode(duelData.cardData.allcode);
         //放置卡组
         deckOwn.DeckUpdate();
         deckOps.DeckUpdate();
@@ -187,19 +188,18 @@ public class Duel : MonoBehaviour
     public void EffectChain(int player)
     {
         duelData.player = player;
-        ScanEffectOwn();
+        ScanEffect(player);
     }
 
-    public void ScanEffectOwn()
+    public void ScanEffect(int player)
     {
-        foreach (string card in duelData.handcard[duelData.opWhoOwn])
+        foreach (string card in duelData.handcard[player])
         {
-            Debug.Log(card);
+            luaCode.Run("Card"+card);
         }
-        luaCode.Run("");
     }
 
-    public void SetEffect()
+    public void SetChainableEffect(string card, int effect)
     {
         
     }

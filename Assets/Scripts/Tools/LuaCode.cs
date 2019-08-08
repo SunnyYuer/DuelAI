@@ -22,20 +22,24 @@ public class LuaCode
         return new LuaResLoader();
     }
 
-    public void Run(string code)
+    public void SetCode(string code)
+    {
+        luaState.DoFile("test.lua");
+        //luaState.DoString(code);
+    }
+
+    public void Run(string function)
     {
         try
         {
-            luaState.DoFile("test.lua");
-            //luaState.DoString(code);
-            LuaFunction func = luaState.GetFunction("Card71703785");
+            LuaFunction func = luaState.GetFunction(function);
             func.Call();
             func.Dispose();
         }
         catch(Exception e)
         {
 #if UNITY_EDITOR || UNITY_STANDALONE
-            File.WriteAllText("error.log", e.ToString());
+            File.AppendAllText("error.log", e.ToString());
 #elif UNITY_ANDROID
             File.WriteAllText(Main.rulePath+"/error.log", e.ToString());
 #endif
@@ -54,7 +58,8 @@ public class LuaCode
             "function Card71703785()\n" +
             "print(\"运行成功\")\n" +
             "end\n";
-        Run(code);
+        SetCode(code);
+        Run("Card71703785");
         Close();
     }
 

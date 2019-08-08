@@ -21,6 +21,14 @@ public class DuelOperation : MonoBehaviour
     }
 
     /// <summary>
+    /// 设置可连锁的效果，之后可选择以进行发动
+    /// </summary>
+    public void SetChainableEffect(string card, int effect)
+    {
+        duel.SetChainableEffect(card, effect);
+    }
+
+    /// <summary>
     /// 自己抽卡
     /// </summary>
     /// <param name="num"></param>
