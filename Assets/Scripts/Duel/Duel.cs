@@ -23,6 +23,8 @@ public class Duel : MonoBehaviour
     public LuaCode luaCode;
     public AI ai;
 
+    private List<int> chainableEffect;
+
     // Start is called before the first frame update
     IEnumerator Start()
     {
@@ -34,6 +36,7 @@ public class Duel : MonoBehaviour
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         monserOwn = GameObject.Find("MonsterAreaOwn").GetComponent<MonsterOwn>();
         monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
+        chainableEffect = new List<int>();
         //读取卡组
         ReadDeckFile();
         //加载卡组数据
@@ -193,15 +196,28 @@ public class Duel : MonoBehaviour
 
     public void ScanEffect(int player)
     {
-        foreach (string card in duelData.handcard[player])
+        int i;
+        for(i = 0; i < duelData.handcard[player].Count; i++)
         {
-            luaCode.Run("Card"+card);
+            luaCode.Run("Card"+ duelData.handcard[player][i]);
+            while (chainableEffect.Count > 0)
+            {
+                DuelDataManager.ChainableEffect cEffect = new DuelDataManager.ChainableEffect
+                {
+                    card = duelData.handcard[player][i],
+                    effect = chainableEffect[0],
+                    position = 0,
+                    index = i
+                };
+                duelData.chainableEffect.Add(cEffect);
+                chainableEffect.RemoveAt(0);
+            }
         }
     }
 
-    public void SetChainableEffect(string card, int effect)
+    public void SetChainableEffect(int effect)
     {
-        
+        chainableEffect.Add(effect);
     }
 
     public IEnumerator DrawCardOwn(int num)

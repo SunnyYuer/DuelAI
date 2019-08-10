@@ -7,6 +7,7 @@ public class DuelOperationWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(DuelOperation), typeof(UnityEngine.MonoBehaviour));
+		L.RegFunction("SetChainableEffect", SetChainableEffect);
 		L.RegFunction("DrawCardOwn", DrawCardOwn);
 		L.RegFunction("DrawCardOps", DrawCardOps);
 		L.RegFunction("DrawThisCard", DrawThisCard);
@@ -14,6 +15,23 @@ public class DuelOperationWrap
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("duelData", get_duelData, set_duelData);
 		L.EndClass();
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetChainableEffect(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.SetChainableEffect(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
