@@ -66,4 +66,14 @@ public class HandCardOwn : MonoBehaviour
             }
         }
     }
+
+    public void SetOutLine(int index)
+    {
+        handcardlist.GetChild(index).GetComponent<Outline>().enabled = true ;
+    }
+
+    public void CutOutLine(int index)
+    {
+        handcardlist.GetChild(index).GetComponent<Outline>().enabled = false;
+    }
 }

@@ -192,6 +192,7 @@ public class Duel : MonoBehaviour
     {
         duelData.player = player;
         ScanEffect(player);
+        SetCardOutLine();
     }
 
     public void ScanEffect(int player)
@@ -218,6 +219,17 @@ public class Duel : MonoBehaviour
     public void SetChainableEffect(int effect)
     {
         chainableEffect.Add(effect);
+    }
+
+    public void SetCardOutLine()
+    {
+        foreach(DuelDataManager.ChainableEffect cEffect in duelData.chainableEffect)
+        {
+            if (cEffect.position == 0)
+            {
+                handOwn.SetOutLine(cEffect.index);
+            }
+        }
     }
 
     public IEnumerator DrawCardOwn(int num)

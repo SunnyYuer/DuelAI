@@ -7,7 +7,6 @@ function Card71703785()
     else
         print("没有抽到马哈德")
     end
-    DuelOperation:SetChainableEffect(123)
 end
 
 function Card71703785Effect1()
