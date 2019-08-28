@@ -207,7 +207,7 @@ public class Duel : MonoBehaviour
                 {
                     card = duelData.handcard[player][i],
                     effect = chainableEffect[0],
-                    position = 0,
+                    position = CardPosition.handcard,
                     index = i
                 };
                 duelData.chainableEffect.Add(cEffect);
@@ -225,7 +225,7 @@ public class Duel : MonoBehaviour
     {
         foreach(DuelDataManager.ChainableEffect cEffect in duelData.chainableEffect)
         {
-            if (cEffect.position == 0)
+            if (cEffect.position == CardPosition.handcard)
             {
                 handOwn.SetOutLine(cEffect.index);
             }

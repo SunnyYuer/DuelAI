@@ -41,14 +41,6 @@ public class DuelDataManager
     public class ChainableEffect
     {
         public string card;
-        /// <summary>
-        /// 0  手卡
-        /// 1  怪兽区域
-        /// 2  魔法陷阱区域
-        /// 3  场地卡区域
-        /// 4  墓地
-        /// 5  特殊区域
-        /// </summary>
         public int position;
         public int index;
         public int effect;
