@@ -193,6 +193,7 @@ public class Duel : MonoBehaviour
         duelData.player = player;
         ScanEffect(player);
         SetCardOutLine();
+        SelectCardActivate();
     }
 
     public void ScanEffect(int player)
@@ -229,6 +230,20 @@ public class Duel : MonoBehaviour
             {
                 handOwn.SetOutLine(cEffect.index);
             }
+        }
+    }
+
+    public void SelectCardActivate()
+    {
+        if (duelData.chainableEffect.Count <= 1)
+        {
+            luaCode.Run("Card" + duelData.chainableEffect[0].card + "Effect" + duelData.chainableEffect[0].effect);
+        }
+        else
+        {
+            //由玩家选择或者AI选择
+            int select = 0;
+            luaCode.Run("Card" + duelData.chainableEffect[select].card + "Effect" + duelData.chainableEffect[select].effect);
         }
     }
 

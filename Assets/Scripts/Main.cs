@@ -98,7 +98,7 @@ public class Main : MonoBehaviour
         saveZipVersion = PlayerPrefs.GetInt(rule+"version", 0);
 #endif
         saveVersionTime = TimeTool.GetDateTime(PlayerPrefs.GetInt(rule+"versionTime", 0));
-        Debug.Log(saveVersionTime);
+        Debug.Log("资源版本时间："+saveVersionTime);
         Instantiate(Resources.Load("Prefabs/ProgressBackground"), GameObject.Find("Canvas").transform);
         Thread update = new Thread(UpdateAssets);
         update.Start();
