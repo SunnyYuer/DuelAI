@@ -23,7 +23,7 @@ public class Duel : MonoBehaviour
     public LuaCode luaCode;
     public AI ai;
 
-    private List<int> chainableEffect;
+    private List<ChainableEffect> chainableEffect;
 
     // Start is called before the first frame update
     IEnumerator Start()
@@ -36,7 +36,7 @@ public class Duel : MonoBehaviour
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         monserOwn = GameObject.Find("MonsterAreaOwn").GetComponent<MonsterOwn>();
         monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
-        chainableEffect = new List<int>();
+        chainableEffect = new List<ChainableEffect>();
         //读取卡组
         ReadDeckFile();
         //加载卡组数据
@@ -193,7 +193,10 @@ public class Duel : MonoBehaviour
         duelData.player = player;
         ScanEffect(player);
         SetCardOutLine();
-        SelectCardActivate();
+        if (duelData.chainableEffect.Count > 0)
+        {
+            if(WantChain()) SelectCardActivate();
+        }
     }
 
     public void ScanEffect(int player)
@@ -201,13 +204,14 @@ public class Duel : MonoBehaviour
         int i;
         for(i = 0; i < duelData.handcard[player].Count; i++)
         {
-            luaCode.Run("Card"+ duelData.handcard[player][i]);
+            luaCode.Run("c"+ duelData.handcard[player][i]);
             while (chainableEffect.Count > 0)
             {
-                DuelDataManager.ChainableEffect cEffect = new DuelDataManager.ChainableEffect
+                ChainableEffect cEffect = new ChainableEffect
                 {
                     card = duelData.handcard[player][i],
-                    effect = chainableEffect[0],
+                    effect = chainableEffect[0].effect,
+                    cost = chainableEffect[0].cost,
                     position = CardPosition.handcard,
                     index = i
                 };
@@ -217,14 +221,19 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public void SetChainableEffect(int effect)
+    public void SetChainableEffect(int effect, bool cost)
     {
-        chainableEffect.Add(effect);
+        ChainableEffect cEffect = new ChainableEffect
+        {
+            effect = effect,
+            cost = cost
+        };
+        chainableEffect.Add(cEffect);
     }
 
     public void SetCardOutLine()
     {
-        foreach(DuelDataManager.ChainableEffect cEffect in duelData.chainableEffect)
+        foreach(ChainableEffect cEffect in duelData.chainableEffect)
         {
             if (cEffect.position == CardPosition.handcard)
             {
@@ -233,17 +242,24 @@ public class Duel : MonoBehaviour
         }
     }
 
+    public bool WantChain()
+    {
+        //由玩家选择或者AI选择
+        return true;
+    }
+
     public void SelectCardActivate()
     {
-        if (duelData.chainableEffect.Count <= 1)
+        if (duelData.chainableEffect.Count == 1)
         {
-            luaCode.Run("Card" + duelData.chainableEffect[0].card + "Effect" + duelData.chainableEffect[0].effect);
+            Debug.Log(duelData.chainableEffect[0].cost);
+            luaCode.Run(luaCode.EffectFunStr(duelData.chainableEffect[0]));
         }
         else
         {
             //由玩家选择或者AI选择
             int select = 0;
-            luaCode.Run("Card" + duelData.chainableEffect[select].card + "Effect" + duelData.chainableEffect[select].effect);
+            luaCode.Run(luaCode.EffectFunStr(duelData.chainableEffect[select]));
         }
     }
 

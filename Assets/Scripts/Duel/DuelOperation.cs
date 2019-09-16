@@ -24,9 +24,10 @@ public class DuelOperation : MonoBehaviour
     /// 设置可连锁的效果，之后可选择以进行发动
     /// </summary>
     /// <param name="effect"></param>
-    public void SetChainableEffect(int effect)
+    /// <param name="cost"></param>
+    public void SetChainableEffect(int effect, bool cost = false)
     {
-        duel.SetChainableEffect(effect);
+        duel.SetChainableEffect(effect, cost);
     }
 
     /// <summary>

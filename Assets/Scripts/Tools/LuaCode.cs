@@ -46,6 +46,16 @@ public class LuaCode
         }
     }
 
+    public string CostFunStr(ChainableEffect chainableEffect)
+    {
+        return "c" + chainableEffect.card + "cost" + chainableEffect.effect;
+    }
+
+    public string EffectFunStr(ChainableEffect chainableEffect)
+    {
+        return "c" + chainableEffect.card + "effect" + chainableEffect.effect;
+    }
+
     public void Close()
     {
         luaState.Dispose();

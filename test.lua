@@ -1,14 +1,16 @@
 DuelLayout = UnityEngine.GameObject.Find("DuelLayout(Clone)")
-DuelOperation = DuelLayout:GetComponent("DuelOperation")
+Duel = DuelLayout:GetComponent("DuelOperation")
 
-function Card71703785()
-    if(DuelOperation:DrawThisCard("71703785")) then
-        DuelOperation:SetChainableEffect(1)
-    else
-        print("没有抽到马哈德")
+function c71703785()
+    if(Duel:DrawThisCard("71703785")) then
+        Duel:SetChainableEffect(1, true)
     end
 end
 
-function Card71703785Effect1()
+function c71703785cost1()
+    print("马哈德发动需要代价")
+end
+
+function c71703785effect1()
     print("马哈德发动效果")
 end

@@ -21,31 +21,6 @@ public class DuelDataManager
     public string[] field;
     public string[][] special;
     public CardDataManager cardData;
-
-    /// <summary>
-    /// 卡牌发动效果以及受效果影响的卡牌记录
-    /// </summary>
-    public class EffectRecord
-    {
-        public int turnNum;
-        public int duelPhase;
-        public int player;
-        public string card;
-        public int effect;
-        public List<string> effectCard;
-    }
-
-    /// <summary>
-    /// 可连锁的效果
-    /// </summary>
-    public class ChainableEffect
-    {
-        public string card;
-        public int position;
-        public int index;
-        public int effect;
-    }
-
     public List<string>[] cardsJustDrawn;
     public List<ChainableEffect> chainableEffect;
 
@@ -99,4 +74,29 @@ public class DuelDataManager
         }
         */
     }
+}
+
+/// <summary>
+/// 卡牌发动效果以及受效果影响的卡牌记录
+/// </summary>
+public class EffectRecord
+{
+    public int turnNum;
+    public int duelPhase;
+    public int player;
+    public string card;
+    public int effect;
+    public List<string> effectCard;
+}
+
+/// <summary>
+/// 可连锁的效果
+/// </summary>
+public class ChainableEffect
+{
+    public string card;
+    public int position;
+    public int index;
+    public int effect;
+    public bool cost;
 }
