@@ -11,6 +11,7 @@ public class DuelOperationWrap
 		L.RegFunction("DrawCardOwn", DrawCardOwn);
 		L.RegFunction("DrawCardOps", DrawCardOps);
 		L.RegFunction("DrawThisCard", DrawThisCard);
+		L.RegFunction("ShowCard", ShowCard);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("duelData", get_duelData, set_duelData);
@@ -97,6 +98,23 @@ public class DuelOperationWrap
 			bool o = obj.DrawThisCard(arg0);
 			LuaDLL.lua_pushboolean(L, o);
 			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ShowCard(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+			string arg0 = ToLua.CheckString(L, 2);
+			obj.ShowCard(arg0);
+			return 0;
 		}
 		catch (Exception e)
 		{

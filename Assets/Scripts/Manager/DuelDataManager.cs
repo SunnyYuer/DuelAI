@@ -66,13 +66,6 @@ public class DuelDataManager
             cardData.LoadCardData(deck[i]);
             cardData.LoadCardData(extra[i]);
         }
-        /*
-        string allcode = "";
-        foreach (CardDataManager.Card card in cardDataManager.cardDic.Values)
-        {
-            allcode += card.code;
-        }
-        */
     }
 }
 

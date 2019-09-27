@@ -8,7 +8,7 @@ function c71703785()
 end
 
 function c71703785cost1()
-    print("马哈德发动需要代价")
+    Duel:ShowCard("71703785")
 end
 
 function c71703785effect1()

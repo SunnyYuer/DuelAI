@@ -250,17 +250,13 @@ public class Duel : MonoBehaviour
 
     public void SelectCardActivate()
     {
-        if (duelData.chainableEffect.Count == 1)
+        //由玩家选择或者AI选择
+        int select = 0;
+        if (duelData.chainableEffect[select].cost)
         {
-            Debug.Log(duelData.chainableEffect[0].cost);
-            luaCode.Run(luaCode.EffectFunStr(duelData.chainableEffect[0]));
+            luaCode.Run(luaCode.CostFunStr(duelData.chainableEffect[select]));
         }
-        else
-        {
-            //由玩家选择或者AI选择
-            int select = 0;
-            luaCode.Run(luaCode.EffectFunStr(duelData.chainableEffect[select]));
-        }
+        luaCode.Run(luaCode.EffectFunStr(duelData.chainableEffect[select]));
     }
 
     public IEnumerator DrawCardOwn(int num)

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 对lua开放的API
+/// </summary>
 public class DuelOperation : MonoBehaviour
 {
     private Duel duel;
@@ -60,5 +63,13 @@ public class DuelOperation : MonoBehaviour
     public bool DrawThisCard(string card)
     {
         return duelData.cardsJustDrawn[duelData.player].Contains(card);
+    }
+
+    /// <summary>
+    /// 把这张卡给对方观看
+    /// </summary>
+    public void ShowCard(string card)
+    {
+        Debug.Log("给对方观看卡牌  " + duelData.cardData.cardDic[card].name);
     }
 }
