@@ -21,6 +21,7 @@ public class DuelDataManager
     public string[] field;
     public string[][] special;
     public CardDataManager cardData;
+    public Dictionary<string, Card> cardDic;
     public List<string>[] cardsJustDrawn;
     public List<ChainableEffect> chainableEffect;
 
@@ -66,6 +67,7 @@ public class DuelDataManager
             cardData.LoadCardData(deck[i]);
             cardData.LoadCardData(extra[i]);
         }
+        cardDic = cardData.cardDic;
     }
 }
 

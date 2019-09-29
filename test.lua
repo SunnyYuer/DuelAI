@@ -8,9 +8,9 @@ function c71703785()
 end
 
 function c71703785cost1()
-    Duel:ShowCard("71703785")
+    Duel:ShowCard("")
 end
 
 function c71703785effect1()
-    print("马哈德发动效果")
+    Duel:SpecialSummon("")
 end

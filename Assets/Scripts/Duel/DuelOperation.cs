@@ -9,6 +9,9 @@ public class DuelOperation : MonoBehaviour
 {
     private Duel duel;
     public DuelDataManager duelData;
+    //当前运行效果的卡
+    public int cardPosition;
+    public int cardIndex;
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +24,17 @@ public class DuelOperation : MonoBehaviour
     void Update()
     {
         
+    }
+
+    /// <summary>
+    /// 设置当前运行效果的卡的位置
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="index"></param>
+    public void SetCardLocation(int position, int index)
+    {
+        cardPosition = position;
+        cardIndex = index;
     }
 
     /// <summary>
@@ -70,6 +84,25 @@ public class DuelOperation : MonoBehaviour
     /// </summary>
     public void ShowCard(string card)
     {
-        Debug.Log("给对方观看卡牌  " + duelData.cardData.cardDic[card].name);
+        if (card.Equals(""))
+        {
+            card = duelData.handcard[duelData.player][cardIndex];
+        }
+        Debug.Log("给对方观看卡牌  " + duelData.cardDic[card].name);
+    }
+
+    /// <summary>
+    /// 把这张卡特殊召唤
+    /// </summary>
+    /// <param name="card"></param>
+    public void SpecialSummon(string card)
+    {
+        if (card.Equals(""))
+        {
+            if (cardPosition == CardPosition.handcard)
+            {
+                duel.SpecialSummonFromHandOwn(cardIndex);
+            }
+        }
     }
 }

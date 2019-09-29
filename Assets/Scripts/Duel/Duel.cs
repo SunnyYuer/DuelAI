@@ -204,6 +204,7 @@ public class Duel : MonoBehaviour
         int i;
         for(i = 0; i < duelData.handcard[player].Count; i++)
         {
+            duelOperate.SetCardLocation(CardPosition.handcard, i);
             luaCode.Run("c"+ duelData.handcard[player][i]);
             while (chainableEffect.Count > 0)
             {
@@ -252,11 +253,13 @@ public class Duel : MonoBehaviour
     {
         //由玩家选择或者AI选择
         int select = 0;
+        ChainableEffect cEffect = duelData.chainableEffect[select];
+        duelOperate.SetCardLocation(cEffect.position, cEffect.index);
         if (duelData.chainableEffect[select].cost)
         {
-            luaCode.Run(luaCode.CostFunStr(duelData.chainableEffect[select]));
+            luaCode.Run(luaCode.CostFunStr(cEffect));
         }
-        luaCode.Run(luaCode.EffectFunStr(duelData.chainableEffect[select]));
+        luaCode.Run(luaCode.EffectFunStr(cEffect));
     }
 
     public IEnumerator DrawCardOwn(int num)
@@ -291,12 +294,7 @@ public class Duel : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 自己从手卡通常召唤
-    /// </summary>
-    /// <param name="index"></param>
-    /// <param name="position"></param>
-    public void NormalSummonFromHandCardOwn(int index, int position)
+    public void NormalSummonFromHandOwn(int index, int position)
     {
         handOwn.RemoveHandCard(index);
         monserOwn.ShowMonsterCard(index, position);
@@ -304,13 +302,28 @@ public class Duel : MonoBehaviour
         duelData.handcard[duelData.opWhoOwn].RemoveAt(index);
     }
 
-    /// <summary>
-    /// 对方从手卡通常召唤
-    /// </summary>
-    /// <param name="index"></param>
-    /// <param name="position"></param>
-    public void NormalSummonFromHandCardOps(int index, int position)
+    public void NormalSummonFromHandOps(int index, int position)
     {
+        handOps.RemoveHandCard(index);
+        monserOps.ShowMonsterCard(index, position);
+        duelData.monster[duelData.opWhoOps][position] = duelData.handcard[duelData.opWhoOps][index];
+        duelData.handcard[duelData.opWhoOps].RemoveAt(index);
+    }
+
+    public void SpecialSummonFromHandOwn(int index)
+    {
+        //由玩家选择或者AI选择
+        int position = 2;
+        handOwn.RemoveHandCard(index);
+        monserOwn.ShowMonsterCard(index, position);
+        duelData.monster[duelData.opWhoOwn][position] = duelData.handcard[duelData.opWhoOwn][index];
+        duelData.handcard[duelData.opWhoOwn].RemoveAt(index);
+    }
+
+    public void SpecialSummonFromHandOps(int index)
+    {
+        //由玩家选择或者AI选择
+        int position = 2;
         handOps.RemoveHandCard(index);
         monserOps.ShowMonsterCard(index, position);
         duelData.monster[duelData.opWhoOps][position] = duelData.handcard[duelData.opWhoOps][index];

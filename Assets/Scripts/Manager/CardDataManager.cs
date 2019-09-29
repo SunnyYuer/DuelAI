@@ -3,25 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class Card
+{
+    public string id;
+    public string name;
+    public string type;//卡牌类型
+    public string series;//卡牌系列
+
+    public string attribute;//怪兽属性
+    public int level;//怪兽星级
+    public string race;//怪兽种族
+    public int atk;
+    public int def;
+
+    public string describe;
+    public string code;
+}
+
 public class CardDataManager
 {
-    public class Card
-    {
-        public string id;
-        public string name;
-        public string type;//卡牌类型
-        public string series;//卡牌系列
-
-        public string attribute;//怪兽属性
-        public int level;//怪兽星级
-        public string race;//怪兽种族
-        public int atk;
-        public int def;
-
-        public string describe;
-        public string code;
-    }
-
     public Dictionary<string, Card> cardDic;
     public string allcode;
     private SQLManager sql;

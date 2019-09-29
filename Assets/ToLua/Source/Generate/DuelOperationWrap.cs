@@ -7,15 +7,37 @@ public class DuelOperationWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(DuelOperation), typeof(UnityEngine.MonoBehaviour));
+		L.RegFunction("SetCardLocation", SetCardLocation);
 		L.RegFunction("SetChainableEffect", SetChainableEffect);
 		L.RegFunction("DrawCardOwn", DrawCardOwn);
 		L.RegFunction("DrawCardOps", DrawCardOps);
 		L.RegFunction("DrawThisCard", DrawThisCard);
 		L.RegFunction("ShowCard", ShowCard);
+		L.RegFunction("SpecialSummon", SpecialSummon);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("duelData", get_duelData, set_duelData);
+		L.RegVar("cardPosition", get_cardPosition, set_cardPosition);
+		L.RegVar("cardIndex", get_cardIndex, set_cardIndex);
 		L.EndClass();
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetCardLocation(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+			obj.SetCardLocation(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -123,6 +145,23 @@ public class DuelOperationWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SpecialSummon(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+			string arg0 = ToLua.CheckString(L, 2);
+			obj.SpecialSummon(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int op_Equality(IntPtr L)
 	{
 		try
@@ -160,6 +199,44 @@ public class DuelOperationWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_cardPosition(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelOperation obj = (DuelOperation)o;
+			int ret = obj.cardPosition;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cardPosition on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_cardIndex(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelOperation obj = (DuelOperation)o;
+			int ret = obj.cardIndex;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cardIndex on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_duelData(IntPtr L)
 	{
 		object o = null;
@@ -175,6 +252,44 @@ public class DuelOperationWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index duelData on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_cardPosition(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelOperation obj = (DuelOperation)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.cardPosition = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cardPosition on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_cardIndex(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelOperation obj = (DuelOperation)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.cardIndex = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cardIndex on a nil value");
 		}
 	}
 }
