@@ -22,6 +22,8 @@ public class DuelDataManager
     public string[][] special;
     public CardDataManager cardData;
     public Dictionary<string, Card> cardDic;
+
+    //临时保存
     public List<string>[] cardsJustDrawn;
     public List<ChainableEffect> chainableEffect;
 
@@ -68,6 +70,14 @@ public class DuelDataManager
             cardData.LoadCardData(extra[i]);
         }
         cardDic = cardData.cardDic;
+    }
+
+    public bool IsPlayerOwn()
+    {
+        if (player == 0 || player == 2)
+            return true;
+        else
+            return false;
     }
 }
 

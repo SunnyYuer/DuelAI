@@ -2,7 +2,7 @@ DuelLayout = UnityEngine.GameObject.Find("DuelLayout(Clone)")
 Duel = DuelLayout:GetComponent("DuelOperation")
 
 function c71703785()
-    if(Duel:DrawThisCard("71703785")) then
+    if(Duel:DrawnCard("")) then
         Duel:SetChainableEffect(1, true)
     end
 end

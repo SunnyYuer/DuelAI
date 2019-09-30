@@ -11,7 +11,7 @@ public class DuelOperationWrap
 		L.RegFunction("SetChainableEffect", SetChainableEffect);
 		L.RegFunction("DrawCardOwn", DrawCardOwn);
 		L.RegFunction("DrawCardOps", DrawCardOps);
-		L.RegFunction("DrawThisCard", DrawThisCard);
+		L.RegFunction("DrawnCard", DrawnCard);
 		L.RegFunction("ShowCard", ShowCard);
 		L.RegFunction("SpecialSummon", SpecialSummon);
 		L.RegFunction("__eq", op_Equality);
@@ -110,14 +110,14 @@ public class DuelOperationWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int DrawThisCard(IntPtr L)
+	static int DrawnCard(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 2);
 			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
 			string arg0 = ToLua.CheckString(L, 2);
-			bool o = obj.DrawThisCard(arg0);
+			bool o = obj.DrawnCard(arg0);
 			LuaDLL.lua_pushboolean(L, o);
 			return 1;
 		}

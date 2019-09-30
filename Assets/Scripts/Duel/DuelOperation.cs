@@ -55,7 +55,7 @@ public class DuelOperation : MonoBehaviour
     public IEnumerator DrawCardOwn(int num)
     {
         yield return StartCoroutine(duel.DrawCardOwn(num));
-        duel.EffectChain(duelData.opWhoOwn);
+        yield return StartCoroutine(duel.EffectChain(duelData.opWhoOwn));
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ public class DuelOperation : MonoBehaviour
     public IEnumerator DrawCardOps(int num)
     {
         yield return StartCoroutine(duel.DrawCardOps(num));
-        duel.EffectChain(duelData.opWhoOps);
+        yield return StartCoroutine(duel.EffectChain(duelData.opWhoOps));
     }
 
     /// <summary>
@@ -74,9 +74,24 @@ public class DuelOperation : MonoBehaviour
     /// </summary>
     /// <param name="card"></param>
     /// <returns></returns>
-    public bool DrawThisCard(string card)
+    public bool DrawnCard(string card)
     {
-        return duelData.cardsJustDrawn[duelData.player].Contains(card);
+        //判断刚刚是否有抽卡
+        int drawNum = duelData.cardsJustDrawn[duelData.player].Count;
+        if (drawNum == 0) return false;
+        if (card.Equals(""))
+        {
+            //判断是否在手卡
+            if (cardPosition != CardPosition.handcard) return false;
+            //判断是否在抽到的卡中
+            int drawIndex = duelData.handcard[duelData.player].Count - drawNum;
+            if (cardIndex < drawIndex) return false;
+            else return true;
+        }
+        else
+        {
+            return duelData.cardsJustDrawn[duelData.player].Contains(card);
+        }
     }
 
     /// <summary>
@@ -101,7 +116,10 @@ public class DuelOperation : MonoBehaviour
         {
             if (cardPosition == CardPosition.handcard)
             {
-                duel.SpecialSummonFromHandOwn(cardIndex);
+                if (duelData.IsPlayerOwn())
+                    duel.SpecialSummonFromHandOwn(cardIndex);
+                else
+                    duel.SpecialSummonFromHandOps(cardIndex);
             }
         }
     }

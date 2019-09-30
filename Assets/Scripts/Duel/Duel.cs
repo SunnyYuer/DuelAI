@@ -127,18 +127,6 @@ public class Duel : MonoBehaviour
         {
             phaseText.text = "主一阶段";
             ChangeBattleButtonText();
-            /*
-            if (duelData.whoTurn == 0)
-            {
-                NormalSummonFromHandCardOwn(2, 2);
-                StartCoroutine(PhaseWait());
-            }
-            else
-            {
-                NormalSummonFromHandCardOps(2, 2);
-                StartCoroutine(PhaseWait());
-            }
-            */
         }
         if (duelData.duelPhase == 4)
         {
@@ -188,15 +176,18 @@ public class Duel : MonoBehaviour
         if (duelData.duelPhase == 3) StartCoroutine(ChangePhase(4));
     }
 
-    public void EffectChain(int player)
+    public IEnumerator EffectChain(int player)
     {
         duelData.player = player;
         ScanEffect(player);
-        SetCardOutLine();
+        if (duelData.IsPlayerOwn())  SetCardOutLine();
         if (duelData.chainableEffect.Count > 0)
         {
-            if(WantChain()) SelectCardActivate();
+            yield return StartCoroutine(WantChain());
+            if (Tip.select == 1) SelectCardActivate();
         }
+        duelData.cardsJustDrawn[player].Clear();
+        duelData.chainableEffect.Clear();
     }
 
     public void ScanEffect(int player)
@@ -243,10 +234,13 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public bool WantChain()
+    public IEnumerator WantChain()
     {
         //由玩家选择或者AI选择
-        return true;
+        Tip.content = "是否连锁？";
+        GameObject tipObject = (GameObject) Instantiate(Resources.Load("Prefabs/TipBackground"), transform);
+        Tip tip = tipObject.GetComponent<Tip>();
+        yield return StartCoroutine(tip.WaitForSelect());
     }
 
     public void SelectCardActivate()
@@ -265,7 +259,6 @@ public class Duel : MonoBehaviour
     public IEnumerator DrawCardOwn(int num)
     {
         int player = duelData.opWhoOwn;
-        duelData.cardsJustDrawn[player].Clear();
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
@@ -281,7 +274,6 @@ public class Duel : MonoBehaviour
     public IEnumerator DrawCardOps(int num)
     {
         int player = duelData.opWhoOps;
-        duelData.cardsJustDrawn[player].Clear();
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
