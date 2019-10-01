@@ -52,7 +52,7 @@ public class Duel : MonoBehaviour
         StartCoroutine(DrawCardOwn(5));
         StartCoroutine(DrawCardOps(5));
         //决斗开始
-        yield return 0;
+        yield return null;
     }
 
     // Update is called once per frame
