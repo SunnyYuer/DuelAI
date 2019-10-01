@@ -180,11 +180,12 @@ public class Duel : MonoBehaviour
     {
         duelData.player = player;
         ScanEffect(player);
-        if (duelData.IsPlayerOwn())  SetCardOutLine();
+        SetCardOutLine();
         if (duelData.chainableEffect.Count > 0)
         {
             yield return StartCoroutine(WantChain());
             if (Tip.select == 1) SelectCardActivate();
+            else CutCardOutLine();
         }
         duelData.cardsJustDrawn[player].Clear();
         duelData.chainableEffect.Clear();
@@ -225,6 +226,7 @@ public class Duel : MonoBehaviour
 
     public void SetCardOutLine()
     {
+        if (!duelData.IsPlayerOwn()) return;
         foreach(ChainableEffect cEffect in duelData.chainableEffect)
         {
             if (cEffect.position == CardPosition.handcard)
@@ -234,13 +236,32 @@ public class Duel : MonoBehaviour
         }
     }
 
+    public void CutCardOutLine()
+    {
+        if (!duelData.IsPlayerOwn()) return;
+        foreach (ChainableEffect cEffect in duelData.chainableEffect)
+        {
+            if (cEffect.position == CardPosition.handcard)
+            {
+                handOwn.CutOutLine(cEffect.index);
+            }
+        }
+    }
+
     public IEnumerator WantChain()
     {
         //由玩家选择或者AI选择
-        Tip.content = "是否连锁？";
-        GameObject tipObject = (GameObject) Instantiate(Resources.Load("Prefabs/TipBackground"), transform);
-        Tip tip = tipObject.GetComponent<Tip>();
-        yield return StartCoroutine(tip.WaitForSelect());
+        if (duelData.IsPlayerOwn())
+        {
+            Tip.content = "是否连锁？";
+            GameObject tipObject = (GameObject)Instantiate(Resources.Load("Prefabs/TipBackground"), transform);
+            Tip tip = tipObject.GetComponent<Tip>();
+            yield return StartCoroutine(tip.WaitForSelect());
+        }
+        else
+        {
+            Tip.select = 1;
+        }
     }
 
     public void SelectCardActivate()
@@ -249,10 +270,11 @@ public class Duel : MonoBehaviour
         int select = 0;
         ChainableEffect cEffect = duelData.chainableEffect[select];
         duelOperate.SetCardLocation(cEffect.position, cEffect.index);
-        if (duelData.chainableEffect[select].cost)
+        if (cEffect.cost)
         {
             luaCode.Run(luaCode.CostFunStr(cEffect));
         }
+        CutCardOutLine();
         luaCode.Run(luaCode.EffectFunStr(cEffect));
     }
 
