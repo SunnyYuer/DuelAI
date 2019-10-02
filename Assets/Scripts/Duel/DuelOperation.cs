@@ -54,8 +54,8 @@ public class DuelOperation : MonoBehaviour
     /// <returns></returns>
     public IEnumerator DrawCardOwn(int num)
     {
-        yield return StartCoroutine(duel.DrawCardOwn(num));
-        yield return StartCoroutine(duel.EffectChain(duelData.opWhoOwn));
+        yield return duel.DrawCardOwn(num);
+        yield return duel.EffectChain(duelData.opWhoOwn);
     }
 
     /// <summary>
@@ -65,8 +65,8 @@ public class DuelOperation : MonoBehaviour
     /// <returns></returns>
     public IEnumerator DrawCardOps(int num)
     {
-        yield return StartCoroutine(duel.DrawCardOps(num));
-        yield return StartCoroutine(duel.EffectChain(duelData.opWhoOps));
+        yield return duel.DrawCardOps(num);
+        yield return duel.EffectChain(duelData.opWhoOps);
     }
 
     /// <summary>

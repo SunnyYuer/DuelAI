@@ -113,9 +113,9 @@ public class Duel : MonoBehaviour
         {
             phaseText.text = "抽卡阶段";
             if (duelData.whoTurn == 0)
-                yield return StartCoroutine(duelOperate.DrawCardOwn(1));
+                yield return duelOperate.DrawCardOwn(1);
             else
-                yield return StartCoroutine(duelOperate.DrawCardOps(1));
+                yield return duelOperate.DrawCardOps(1);
             StartCoroutine(PhaseWait());
         }
         if (duelData.duelPhase == 2)
@@ -183,7 +183,7 @@ public class Duel : MonoBehaviour
         SetCardOutLine();
         if (duelData.chainableEffect.Count > 0)
         {
-            yield return StartCoroutine(WantChain());
+            yield return WantChain();
             if (Tip.select == 1) SelectCardActivate();
             else CutCardOutLine();
         }
@@ -256,7 +256,7 @@ public class Duel : MonoBehaviour
             Tip.content = "是否连锁？";
             GameObject tipObject = (GameObject)Instantiate(Resources.Load("Prefabs/TipBackground"), transform);
             Tip tip = tipObject.GetComponent<Tip>();
-            yield return StartCoroutine(tip.WaitForSelect());
+            yield return tip.WaitForSelect();
         }
         else
         {
