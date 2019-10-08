@@ -254,7 +254,7 @@ public class Duel : MonoBehaviour
         if (duelData.IsPlayerOwn())
         {
             Tip.content = "是否连锁？";
-            GameObject tipObject = (GameObject)Instantiate(Resources.Load("Prefabs/TipBackground"), transform);
+            GameObject tipObject = Instantiate(Resources.Load("Prefabs/TipBackground"), transform) as GameObject;
             Tip tip = tipObject.GetComponent<Tip>();
             yield return tip.WaitForSelect();
         }
@@ -308,6 +308,19 @@ public class Duel : MonoBehaviour
         }
     }
 
+    public List<int> GetMonsterPlace(int player)
+    {
+        List<int> place = new List<int>();
+        for (int i = 0; i < 5; i++)
+        {
+            if (string.IsNullOrEmpty(duelData.monster[player][i]))
+            {
+                place.Add(i);
+            }
+        }
+        return place;
+    }
+
     public void NormalSummonFromHandOwn(int index, int position)
     {
         handOwn.RemoveHandCard(index);
@@ -327,7 +340,7 @@ public class Duel : MonoBehaviour
     public void SpecialSummonFromHandOwn(int index)
     {
         //由玩家选择或者AI选择
-        int position = 2;
+        int position = monserOwn.MonsterPlace(GetMonsterPlace(duelData.opWhoOwn));
         handOwn.RemoveHandCard(index);
         monserOwn.ShowMonsterCard(index, position);
         duelData.monster[duelData.opWhoOwn][position] = duelData.handcard[duelData.opWhoOwn][index];
