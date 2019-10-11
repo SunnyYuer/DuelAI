@@ -81,9 +81,8 @@ public class DuelOperationWrap
 			ToLua.CheckArgsCount(L, 2);
 			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			System.Collections.IEnumerator o = obj.DrawCardOwn(arg0);
-			ToLua.Push(L, o);
-			return 1;
+			obj.DrawCardOwn(arg0);
+			return 0;
 		}
 		catch (Exception e)
 		{
@@ -99,9 +98,8 @@ public class DuelOperationWrap
 			ToLua.CheckArgsCount(L, 2);
 			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			System.Collections.IEnumerator o = obj.DrawCardOps(arg0);
-			ToLua.Push(L, o);
-			return 1;
+			obj.DrawCardOps(arg0);
+			return 0;
 		}
 		catch (Exception e)
 		{

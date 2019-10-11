@@ -52,10 +52,14 @@ public class DuelOperation : MonoBehaviour
     /// </summary>
     /// <param name="num"></param>
     /// <returns></returns>
-    public IEnumerator DrawCardOwn(int num)
+    public void DrawCardOwn(int num)
     {
-        yield return duel.DrawCardOwn(num);
-        yield return duel.EffectChain(duelData.opWhoOwn);
+        EventData eData = new EventData
+        {
+            gameEvent = GameEvent.drawcard,
+            drawNum = num
+        };
+        duelData.eventDate[duelData.opWhoOwn].Add(eData);
     }
 
     /// <summary>
@@ -63,10 +67,14 @@ public class DuelOperation : MonoBehaviour
     /// </summary>
     /// <param name="num"></param>
     /// <returns></returns>
-    public IEnumerator DrawCardOps(int num)
+    public void DrawCardOps(int num)
     {
-        yield return duel.DrawCardOps(num);
-        yield return duel.EffectChain(duelData.opWhoOps);
+        EventData eData = new EventData
+        {
+            gameEvent = GameEvent.drawcard,
+            drawNum = num
+        };
+        duelData.eventDate[duelData.opWhoOps].Add(eData);
     }
 
     /// <summary>

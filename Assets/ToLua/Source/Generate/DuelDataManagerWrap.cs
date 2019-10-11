@@ -30,6 +30,7 @@ public class DuelDataManagerWrap
 		L.RegVar("special", get_special, set_special);
 		L.RegVar("cardData", get_cardData, set_cardData);
 		L.RegVar("cardDic", get_cardDic, set_cardDic);
+		L.RegVar("eventDate", get_eventDate, set_eventDate);
 		L.RegVar("cardsJustDrawn", get_cardsJustDrawn, set_cardsJustDrawn);
 		L.RegVar("chainableEffect", get_chainableEffect, set_chainableEffect);
 		L.EndClass();
@@ -452,6 +453,25 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_eventDate(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			System.Collections.Generic.List<EventData>[] ret = obj.eventDate;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index eventDate on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_cardsJustDrawn(IntPtr L)
 	{
 		object o = null;
@@ -828,6 +848,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cardDic on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_eventDate(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			System.Collections.Generic.List<EventData>[] arg0 = ToLua.CheckObjectArray<System.Collections.Generic.List<EventData>>(L, 2);
+			obj.eventDate = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index eventDate on a nil value");
 		}
 	}
 

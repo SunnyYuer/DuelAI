@@ -24,6 +24,7 @@ public class DuelDataManager
     public Dictionary<string, Card> cardDic;
 
     //临时保存
+    public List<EventData>[] eventDate;
     public List<string>[] cardsJustDrawn;
     public List<ChainableEffect> chainableEffect;
 
@@ -47,6 +48,7 @@ public class DuelDataManager
         handcard = new List<string>[duelPeopleNum];
         monster = new string[duelPeopleNum][];
         magictrap = new string[duelPeopleNum][];
+        eventDate = new List<EventData>[duelPeopleNum];
         cardsJustDrawn = new List<string>[duelPeopleNum];
         for (int i = 0; i < duelPeopleNum; i++)
         {
@@ -57,6 +59,7 @@ public class DuelDataManager
             handcard[i] = new List<string>();
             monster[i] = new string[5];
             magictrap[i] = new string[5];
+            eventDate[i] = new List<EventData>();
             cardsJustDrawn[i] = new List<string>();
         }
         field = new string[2];
@@ -79,6 +82,15 @@ public class DuelDataManager
         else
             return false;
     }
+}
+
+/// <summary>
+/// 游戏事件产生的数据
+/// </summary>
+public class EventData
+{
+    public int gameEvent;
+    public int drawNum;
 }
 
 /// <summary>
