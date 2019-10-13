@@ -46,14 +46,14 @@ public class LuaCode
         }
     }
 
-    public string CostFunStr(ChainableEffect chainableEffect)
+    public string CostFunStr(CardEffect cardEffect)
     {
-        return "c" + chainableEffect.card + "cost" + chainableEffect.effect;
+        return "c" + cardEffect.card + "cost" + cardEffect.effect;
     }
 
-    public string EffectFunStr(ChainableEffect chainableEffect)
+    public string EffectFunStr(CardEffect cardEffect)
     {
-        return "c" + chainableEffect.card + "effect" + chainableEffect.effect;
+        return "c" + cardEffect.card + "effect" + cardEffect.effect;
     }
 
     public void Close()

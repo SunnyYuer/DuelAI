@@ -499,7 +499,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<ChainableEffect> ret = obj.chainableEffect;
+			System.Collections.Generic.List<CardEffect> ret = obj.chainableEffect;
 			ToLua.PushSealed(L, ret);
 			return 1;
 		}
@@ -898,7 +898,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<ChainableEffect> arg0 = (System.Collections.Generic.List<ChainableEffect>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<ChainableEffect>));
+			System.Collections.Generic.List<CardEffect> arg0 = (System.Collections.Generic.List<CardEffect>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<CardEffect>));
 			obj.chainableEffect = arg0;
 			return 0;
 		}

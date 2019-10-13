@@ -26,14 +26,14 @@ public class DuelDataManager
     //临时保存
     public List<EventData>[] eventDate;
     public List<string>[] cardsJustDrawn;
-    public List<ChainableEffect> chainableEffect;
+    public List<CardEffect> chainableEffect;
 
     public DuelDataManager(int peopleNum)
     {
         duelPeopleNum = peopleNum;
         InitialDeck();
         cardData = new CardDataManager();
-        chainableEffect = new List<ChainableEffect>();
+        chainableEffect = new List<CardEffect>();
         turnNum = 0;
         opWhoOwn = 0;//0或2
         opWhoOps = 1;//1或3
@@ -91,6 +91,26 @@ public class EventData
 {
     public int gameEvent;
     public int drawNum;
+    public DuelCard selectcard;
+}
+
+/// <summary>
+/// 记录卡牌的位置
+/// </summary>
+public class DuelCard
+{
+    public string card;
+    public int position;
+    public int index;
+}
+
+/// <summary>
+/// 可发动的卡牌效果
+/// </summary>
+public class CardEffect : DuelCard
+{
+    public int effect;
+    public bool cost;
 }
 
 /// <summary>
@@ -104,16 +124,4 @@ public class EffectRecord
     public string card;
     public int effect;
     public List<string> effectCard;
-}
-
-/// <summary>
-/// 可连锁的效果
-/// </summary>
-public class ChainableEffect
-{
-    public string card;
-    public int position;
-    public int index;
-    public int effect;
-    public bool cost;
 }

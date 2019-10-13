@@ -24,8 +24,8 @@ public class Duel : MonoBehaviour
     public AI ai;
 
     private bool changePhase;
-    private List<ChainableEffect> chainableEffect;
-    private ChainableEffect activateEffect;
+    private List<CardEffect> chainableEffect;
+    private CardEffect activateEffect;
 
     // Start is called before the first frame update
     IEnumerator Start()
@@ -38,7 +38,7 @@ public class Duel : MonoBehaviour
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         monserOwn = GameObject.Find("MonsterAreaOwn").GetComponent<MonsterOwn>();
         monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
-        chainableEffect = new List<ChainableEffect>();
+        chainableEffect = new List<CardEffect>();
         //读取卡组
         ReadDeckFile();
         //加载卡组数据
@@ -257,9 +257,9 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public void ActivateEffect(ChainableEffect cEffect, ref int phase)
+    public void ActivateEffect(CardEffect cEffect, ref int phase)
     {
-        duelOperate.SetCardLocation(cEffect.position, cEffect.index);
+        duelOperate.SetCardLocation(cEffect.card, cEffect.position, cEffect.index);
         if (phase == 1)
         {//发动阶段1，支付发动代价
             luaCode.Run(luaCode.CostFunStr(cEffect));
@@ -286,9 +286,8 @@ public class Duel : MonoBehaviour
             {//由玩家选择或者AI选择
                 int select = 0;
                 activateEffect = duelData.chainableEffect[select];
-                CutCardOutLine();
             }
-            else CutCardOutLine();
+            CutCardOutLine();
         }
     }
 
@@ -297,11 +296,11 @@ public class Duel : MonoBehaviour
         int i;
         for(i = 0; i < duelData.handcard[player].Count; i++)
         {
-            duelOperate.SetCardLocation(CardPosition.handcard, i);
+            duelOperate.SetCardLocation(duelData.handcard[player][i], CardPosition.handcard, i);
             luaCode.Run("c"+ duelData.handcard[player][i]);
             while (chainableEffect.Count > 0)
             {
-                ChainableEffect cEffect = new ChainableEffect
+                CardEffect cEffect = new CardEffect
                 {
                     card = duelData.handcard[player][i],
                     effect = chainableEffect[0].effect,
@@ -317,7 +316,7 @@ public class Duel : MonoBehaviour
 
     public void SetChainableEffect(int effect, bool cost)
     {
-        ChainableEffect cEffect = new ChainableEffect
+        CardEffect cEffect = new CardEffect
         {
             effect = effect,
             cost = cost
@@ -328,7 +327,7 @@ public class Duel : MonoBehaviour
     public void SetCardOutLine()
     {
         if (!duelData.IsPlayerOwn()) return;
-        foreach(ChainableEffect cEffect in duelData.chainableEffect)
+        foreach(CardEffect cEffect in duelData.chainableEffect)
         {
             if (cEffect.position == CardPosition.handcard)
             {
@@ -344,7 +343,7 @@ public class Duel : MonoBehaviour
             duelData.chainableEffect.Clear();
             return;
         }
-        foreach (ChainableEffect cEffect in duelData.chainableEffect)
+        foreach (CardEffect cEffect in duelData.chainableEffect)
         {
             if (cEffect.position == CardPosition.handcard)
             {
@@ -373,8 +372,7 @@ public class Duel : MonoBehaviour
     public IEnumerator DrawCardOwn(int num)
     {
         int player = duelData.opWhoOwn;
-        if (duelData.cardsJustDrawn[player].Count > 0)
-            duelData.cardsJustDrawn[player].Clear();
+        duelData.cardsJustDrawn[player].Clear();
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
@@ -390,8 +388,7 @@ public class Duel : MonoBehaviour
     public IEnumerator DrawCardOps(int num)
     {
         int player = duelData.opWhoOps;
-        if (duelData.cardsJustDrawn[player].Count > 0)
-            duelData.cardsJustDrawn[player].Clear();
+        duelData.cardsJustDrawn[player].Clear();
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);

@@ -9,9 +9,7 @@ public class DuelOperation : MonoBehaviour
 {
     private Duel duel;
     public DuelDataManager duelData;
-    //当前运行效果的卡
-    public int cardPosition;
-    public int cardIndex;
+    public DuelCard thiscard;//当前运行效果的卡
 
     // Start is called before the first frame update
     void Start()
@@ -29,12 +27,15 @@ public class DuelOperation : MonoBehaviour
     /// <summary>
     /// 设置当前运行效果的卡的位置
     /// </summary>
+    /// <param name="card"></param>
     /// <param name="position"></param>
     /// <param name="index"></param>
-    public void SetCardLocation(int position, int index)
+    public void SetCardLocation(string card, int position, int index)
     {
-        cardPosition = position;
-        cardIndex = index;
+        thiscard = new DuelCard();
+        thiscard.card = card;
+        thiscard.position = position;
+        thiscard.index = index;
     }
 
     /// <summary>
@@ -90,10 +91,10 @@ public class DuelOperation : MonoBehaviour
         if (card.Equals(""))
         {
             //判断是否在手卡
-            if (cardPosition != CardPosition.handcard) return false;
+            if (thiscard.position != CardPosition.handcard) return false;
             //判断是否在抽到的卡中
             int drawIndex = duelData.handcard[duelData.player].Count - drawNum;
-            if (cardIndex < drawIndex) return false;
+            if (thiscard.index < drawIndex) return false;
             else return true;
         }
         else
@@ -109,7 +110,7 @@ public class DuelOperation : MonoBehaviour
     {
         if (card.Equals(""))
         {
-            card = duelData.handcard[duelData.player][cardIndex];
+            card = thiscard.card;
         }
         Debug.Log("给对方观看卡牌  " + duelData.cardDic[card].name);
     }
@@ -122,12 +123,14 @@ public class DuelOperation : MonoBehaviour
     {
         if (card.Equals(""))
         {
-            if (cardPosition == CardPosition.handcard)
+            if (thiscard.position == CardPosition.handcard)
             {
-                if (duelData.IsPlayerOwn())
-                    duel.SpecialSummonFromHandOwn(cardIndex);
-                else
-                    duel.SpecialSummonFromHandOps(cardIndex);
+                EventData eData = new EventData
+                {
+                    gameEvent = GameEvent.specialsummon,
+                    selectcard = thiscard
+                };
+                duelData.eventDate[duelData.player].Add(eData);
             }
         }
     }
