@@ -82,6 +82,12 @@ public class DuelDataManager
         else
             return false;
     }
+
+    public void ChangePlayer()
+    {
+        if (player == opWhoOwn) player = opWhoOps;
+        else player = opWhoOwn;
+    }
 }
 
 /// <summary>
@@ -90,6 +96,7 @@ public class DuelDataManager
 public class EventData
 {
     public int gameEvent;
+    public int player;
     public int drawNum;
     public DuelCard selectcard;
 }

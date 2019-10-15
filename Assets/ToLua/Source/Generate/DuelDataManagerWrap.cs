@@ -10,6 +10,7 @@ public class DuelDataManagerWrap
 		L.RegFunction("InitialDeck", InitialDeck);
 		L.RegFunction("LoadDeckData", LoadDeckData);
 		L.RegFunction("IsPlayerOwn", IsPlayerOwn);
+		L.RegFunction("ChangePlayer", ChangePlayer);
 		L.RegFunction("New", _CreateDuelDataManager);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("duelPeopleNum", get_duelPeopleNum, set_duelPeopleNum);
@@ -103,6 +104,22 @@ public class DuelDataManagerWrap
 			bool o = obj.IsPlayerOwn();
 			LuaDLL.lua_pushboolean(L, o);
 			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ChangePlayer(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			DuelDataManager obj = (DuelDataManager)ToLua.CheckObject<DuelDataManager>(L, 1);
+			obj.ChangePlayer();
+			return 0;
 		}
 		catch (Exception e)
 		{

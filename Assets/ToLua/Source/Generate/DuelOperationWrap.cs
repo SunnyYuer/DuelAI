@@ -9,8 +9,7 @@ public class DuelOperationWrap
 		L.BeginClass(typeof(DuelOperation), typeof(UnityEngine.MonoBehaviour));
 		L.RegFunction("SetCardLocation", SetCardLocation);
 		L.RegFunction("SetChainableEffect", SetChainableEffect);
-		L.RegFunction("DrawCardOwn", DrawCardOwn);
-		L.RegFunction("DrawCardOps", DrawCardOps);
+		L.RegFunction("DrawCard", DrawCard);
 		L.RegFunction("DrawnCard", DrawnCard);
 		L.RegFunction("ShowCard", ShowCard);
 		L.RegFunction("SpecialSummon", SpecialSummon);
@@ -74,31 +73,15 @@ public class DuelOperationWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int DrawCardOwn(IntPtr L)
+	static int DrawCard(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
+			ToLua.CheckArgsCount(L, 3);
 			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			obj.DrawCardOwn(arg0);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int DrawCardOps(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 2);
-			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			obj.DrawCardOps(arg0);
+			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+			obj.DrawCard(arg0, arg1);
 			return 0;
 		}
 		catch (Exception e)

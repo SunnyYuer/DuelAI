@@ -49,6 +49,7 @@ public class Duel : MonoBehaviour
         deckOps.DeckUpdate();
         //初始化回合和阶段
         duelData.whoTurn = 0;
+        duelData.player = 0;
         duelData.duelPhase = 0;
         changePhase = true;
         //各自起手5张卡
@@ -57,8 +58,7 @@ public class Duel : MonoBehaviour
         yield return new WaitForSeconds(1);
         //决斗开始
         StartCoroutine(DuelPhase());
-        StartCoroutine(GameOwn());
-        StartCoroutine(GameOps());
+        StartCoroutine(Game());
     }
 
     // Update is called once per frame
@@ -118,10 +118,7 @@ public class Duel : MonoBehaviour
                 if (duelData.duelPhase == 1)
                 {
                     phaseText.text = "抽卡阶段";
-                    if (duelData.whoTurn == 0)
-                        duelOperate.DrawCardOwn(1);
-                    else
-                        duelOperate.DrawCardOps(1);
+                    duelOperate.DrawCard(0, 1);
                 }
                 if (duelData.duelPhase == 2)
                 {
@@ -157,6 +154,7 @@ public class Duel : MonoBehaviour
                 {
                     duelData.duelPhase = 0;
                     duelData.whoTurn = 1 - duelData.whoTurn;
+                    duelData.ChangePlayer();
                 }
             }
             yield return null;
@@ -195,57 +193,48 @@ public class Duel : MonoBehaviour
         if (duelData.duelPhase == 3) ChangePhase(4);
     }
 
-    public IEnumerator GameOwn()
+    public IEnumerator Game()
     {
         bool effectChain = false;
         int effectPhase = 0;
         while (true)
         {
             yield return null;
-            int player = duelData.opWhoOwn;
+            int player = duelData.player;
             if (effectPhase > 0) ActivateEffect(activateEffect, ref effectPhase);
             List<EventData> eDataList = duelData.eventDate[player];
             if (eDataList.Count == 0) continue;
             EventData eData = eDataList[0];
             if (eData.gameEvent == GameEvent.drawcard)
             {
-                yield return DrawCardOwn(eData.drawNum);
-                effectChain = true;
-            }
-            if (effectChain)
-            {
-                yield return EffectChain(player);
-                if (activateEffect != null)
-                {
-                    if (activateEffect.cost) effectPhase = 1;
-                    else effectPhase = 2;
+                if (eData.player == 0)
+                {//让自己抽卡
+                    if (duelData.IsPlayerOwn()) yield return DrawCardOwn(eData.drawNum);
+                    else yield return DrawCardOps(eData.drawNum);
                 }
-                effectChain = false;
-            }
-            eDataList.RemoveAt(0);
-        }
-    }
-
-    public IEnumerator GameOps()
-    {
-        bool effectChain = false;
-        int effectPhase = 0;
-        while (true)
-        {
-            yield return null;
-            int player = duelData.opWhoOps;
-            if (effectPhase > 0) ActivateEffect(activateEffect, ref effectPhase);
-            List<EventData> eDataList = duelData.eventDate[player];
-            if (eDataList.Count == 0) continue;
-            EventData eData = eDataList[0];
-            if (eData.gameEvent == GameEvent.drawcard)
-            {
-                yield return DrawCardOps(eData.drawNum);
+                if (eData.player == 1)
+                {//让对方抽卡
+                    if (duelData.IsPlayerOwn()) yield return DrawCardOps(eData.drawNum);
+                    else yield return DrawCardOwn(eData.drawNum);
+                }
+                if (eData.player == 2)
+                {//双方同时抽卡
+                    if (duelData.IsPlayerOwn())
+                    {
+                        StartCoroutine(DrawCardOps(eData.drawNum));
+                        yield return DrawCardOwn(eData.drawNum);
+                    }
+                    else
+                    {
+                        StartCoroutine(DrawCardOwn(eData.drawNum));
+                        yield return DrawCardOps(eData.drawNum);
+                    }
+                }
                 effectChain = true;
             }
             if (effectChain)
             {
-                yield return EffectChain(player);
+                yield return EffectChain();
                 if (activateEffect != null)
                 {
                     if (activateEffect.cost) effectPhase = 1;
@@ -273,10 +262,9 @@ public class Duel : MonoBehaviour
         else phase = 0;
     }
 
-    public IEnumerator EffectChain(int player)
+    public IEnumerator EffectChain()
     {
-        duelData.player = player;
-        ScanEffect(player);
+        ScanEffect();
         SetCardOutLine();
         activateEffect = null;
         if (duelData.chainableEffect.Count > 0)
@@ -291,8 +279,9 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public void ScanEffect(int player)
+    public void ScanEffect()
     {
+        int player = duelData.player;
         int i;
         for(i = 0; i < duelData.handcard[player].Count; i++)
         {
@@ -369,7 +358,7 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public IEnumerator DrawCardOwn(int num)
+    private IEnumerator DrawCardOwn(int num)
     {
         int player = duelData.opWhoOwn;
         duelData.cardsJustDrawn[player].Clear();
@@ -385,7 +374,7 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public IEnumerator DrawCardOps(int num)
+    private IEnumerator DrawCardOps(int num)
     {
         int player = duelData.opWhoOps;
         duelData.cardsJustDrawn[player].Clear();

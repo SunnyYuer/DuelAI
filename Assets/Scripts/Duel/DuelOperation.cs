@@ -32,10 +32,12 @@ public class DuelOperation : MonoBehaviour
     /// <param name="index"></param>
     public void SetCardLocation(string card, int position, int index)
     {
-        thiscard = new DuelCard();
-        thiscard.card = card;
-        thiscard.position = position;
-        thiscard.index = index;
+        thiscard = new DuelCard
+        {
+            card = card,
+            position = position,
+            index = index
+        };
     }
 
     /// <summary>
@@ -49,33 +51,19 @@ public class DuelOperation : MonoBehaviour
     }
 
     /// <summary>
-    /// 自己抽卡
+    /// 抽卡
     /// </summary>
+    /// <param name="who"></param>
     /// <param name="num"></param>
-    /// <returns></returns>
-    public void DrawCardOwn(int num)
+    public void DrawCard(int who, int num)
     {
         EventData eData = new EventData
         {
             gameEvent = GameEvent.drawcard,
+            player = who,
             drawNum = num
         };
         duelData.eventDate[duelData.opWhoOwn].Add(eData);
-    }
-
-    /// <summary>
-    /// 对方抽卡
-    /// </summary>
-    /// <param name="num"></param>
-    /// <returns></returns>
-    public void DrawCardOps(int num)
-    {
-        EventData eData = new EventData
-        {
-            gameEvent = GameEvent.drawcard,
-            drawNum = num
-        };
-        duelData.eventDate[duelData.opWhoOps].Add(eData);
     }
 
     /// <summary>
