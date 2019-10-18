@@ -317,13 +317,19 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public bool CheckEffect(int gameEvent)
+    public bool EffectCheck(int gameEvent)
     {//检查效果能否发动
         if (gameEvent == GameEvent.specialsummon)
         {
             List<int> place = GetMonsterPlace();
             if (place.Count == 0) return false;
         }
+        return true;
+    }
+
+    public bool PhaseCheck()
+    {
+        if (duelData.effectChain) return false;
         return true;
     }
 

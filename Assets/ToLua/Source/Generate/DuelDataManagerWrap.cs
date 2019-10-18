@@ -20,6 +20,7 @@ public class DuelDataManagerWrap
 		L.RegVar("opWhoOwn", get_opWhoOwn, set_opWhoOwn);
 		L.RegVar("opWhoOps", get_opWhoOps, set_opWhoOps);
 		L.RegVar("player", get_player, set_player);
+		L.RegVar("effectChain", get_effectChain, set_effectChain);
 		L.RegVar("deck", get_deck, set_deck);
 		L.RegVar("extra", get_extra, set_extra);
 		L.RegVar("grave", get_grave, set_grave);
@@ -257,6 +258,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index player on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_effectChain(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			bool ret = obj.effectChain;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index effectChain on a nil value");
 		}
 	}
 
@@ -656,6 +676,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index player on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_effectChain(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.effectChain = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index effectChain on a nil value");
 		}
 	}
 

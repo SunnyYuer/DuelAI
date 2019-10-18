@@ -10,6 +10,7 @@ public class DuelOperation : MonoBehaviour
     private Duel duel;
     public DuelDataManager duelData;
     public DuelCard thiscard;//当前运行效果的卡
+    public bool activatable;//卡牌能否发动
 
     // Start is called before the first frame update
     void Start()
@@ -38,29 +39,38 @@ public class DuelOperation : MonoBehaviour
             position = position,
             index = index
         };
+        activatable = true;
     }
 
     /// <summary>
-    /// 阶段主动效果检测能否发动
+    /// 检查效果能否发动
     /// </summary>
-    /// <returns></returns>
-    public bool PhaseCheck()
+    /// <param name="effectEvent"></param>
+    public void SetEffectEvent(int effectEvent)
     {
-        if (duelData.effectChain) return false;
-        return true;
+        activatable = duel.EffectCheck(effectEvent);
+    }
+
+    /// <summary>
+    /// 设置可发动的效果，之后可以进行发动
+    /// </summary>
+    /// <param name="effect"></param>
+    /// <param name="cost"></param>
+    public void SetActivatableEffect(int effect, bool cost = false)
+    {
+        activatable = duel.PhaseCheck();
+        activatable = true;
     }
 
     /// <summary>
     /// 设置可连锁的效果，之后可选择以进行发动
     /// </summary>
     /// <param name="effect"></param>
-    /// <param name="effectEvent"></param>
     /// <param name="cost"></param>
-    /// <param name="costEvent"></param>
-    public void SetChainableEffect(int effect, int effectEvent, bool cost = false, int costEvent = 0)
+    public void SetChainableEffect(int effect, bool cost = false)
     {
-        if(duel.CheckEffect(costEvent) && duel.CheckEffect(effectEvent))
-            duel.SetChainableEffect(effect, cost);
+        if(activatable) duel.SetChainableEffect(effect, cost);
+        activatable = true;
     }
 
     /// <summary>

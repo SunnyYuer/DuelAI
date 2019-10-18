@@ -8,6 +8,8 @@ public class DuelOperationWrap
 	{
 		L.BeginClass(typeof(DuelOperation), typeof(UnityEngine.MonoBehaviour));
 		L.RegFunction("SetCardLocation", SetCardLocation);
+		L.RegFunction("SetEffectEvent", SetEffectEvent);
+		L.RegFunction("SetActivatableEffect", SetActivatableEffect);
 		L.RegFunction("SetChainableEffect", SetChainableEffect);
 		L.RegFunction("DrawCard", DrawCard);
 		L.RegFunction("DrawnCard", DrawnCard);
@@ -17,6 +19,7 @@ public class DuelOperationWrap
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("duelData", get_duelData, set_duelData);
 		L.RegVar("thiscard", get_thiscard, set_thiscard);
+		L.RegVar("activatable", get_activatable, set_activatable);
 		L.EndClass();
 	}
 
@@ -40,37 +43,75 @@ public class DuelOperationWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetEffectEvent(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.SetEffectEvent(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetActivatableEffect(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				obj.SetActivatableEffect(arg0);
+				return 0;
+			}
+			else if (count == 3)
+			{
+				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+				obj.SetActivatableEffect(arg0, arg1);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelOperation.SetActivatableEffect");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int SetChainableEffect(IntPtr L)
 	{
 		try
 		{
 			int count = LuaDLL.lua_gettop(L);
 
-			if (count == 3)
+			if (count == 2)
 			{
 				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
 				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+				obj.SetChainableEffect(arg0);
+				return 0;
+			}
+			else if (count == 3)
+			{
+				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
 				obj.SetChainableEffect(arg0, arg1);
-				return 0;
-			}
-			else if (count == 4)
-			{
-				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
-				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
-				obj.SetChainableEffect(arg0, arg1, arg2);
-				return 0;
-			}
-			else if (count == 5)
-			{
-				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
-				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
-				int arg3 = (int)LuaDLL.luaL_checknumber(L, 5);
-				obj.SetChainableEffect(arg0, arg1, arg2, arg3);
 				return 0;
 			}
 			else
@@ -211,6 +252,25 @@ public class DuelOperationWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_activatable(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelOperation obj = (DuelOperation)o;
+			bool ret = obj.activatable;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index activatable on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_duelData(IntPtr L)
 	{
 		object o = null;
@@ -245,6 +305,25 @@ public class DuelOperationWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index thiscard on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_activatable(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelOperation obj = (DuelOperation)o;
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.activatable = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index activatable on a nil value");
 		}
 	}
 }
