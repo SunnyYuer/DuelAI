@@ -67,7 +67,7 @@ public class Duel : MonoBehaviour
         
     }
 
-    public void OnQuitClick()
+    private void OnQuitClick()
     {
         StopAllCoroutines();
         luaCode.Close();
@@ -101,7 +101,7 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public IEnumerator DuelPhase()
+    private IEnumerator DuelPhase()
     {
         while (true)
         {
@@ -175,27 +175,26 @@ public class Duel : MonoBehaviour
         else endTurnButton.SetActive(false);
     }
 
-    public void OnEndTurnButtonClick()
+    private void OnEndTurnButtonClick()
     {
         ChangePhase(6);
     }
 
-    public void ChangeBattleButtonText()
+    private void ChangeBattleButtonText()
     {
         Text buttonText = battleButton.GetComponentInChildren<Text>();
         if (duelData.duelPhase == 3) buttonText.text = "开始战斗";
         if (duelData.duelPhase == 4) buttonText.text = "结束战斗";
     }
 
-    public void OnBattleButtonClick()
+    private void OnBattleButtonClick()
     {
         if (duelData.duelPhase == 4) ChangePhase(5);
         if (duelData.duelPhase == 3) ChangePhase(4);
     }
 
-    public IEnumerator Game()
+    private IEnumerator Game()
     {
-        bool effectChain = false;
         int effectPhase = 0;
         while (true)
         {
@@ -230,9 +229,24 @@ public class Duel : MonoBehaviour
                         yield return DrawCardOps(eData.drawNum);
                     }
                 }
-                effectChain = true;
+                duelData.effectChain = true;
             }
-            if (effectChain)
+            if (eData.gameEvent == GameEvent.specialsummon)
+            {
+                yield return ChooseMonsterPlace();
+                if (eData.selectcard.position == CardPosition.handcard)
+                {
+                    if (duelData.IsPlayerOwn())
+                    {
+                        SpecialSummonFromHandOwn(eData.selectcard.index, MonsterOwn.placeSelect);
+                    }
+                    else
+                    {
+                        SpecialSummonFromHandOps(eData.selectcard.index, MonsterOps.placeSelect);
+                    }
+                }
+            }
+            if (duelData.effectChain)
             {
                 yield return EffectChain();
                 if (activateEffect != null)
@@ -240,7 +254,7 @@ public class Duel : MonoBehaviour
                     if (activateEffect.cost) effectPhase = 1;
                     else effectPhase = 2;
                 }
-                effectChain = false;
+                duelData.effectChain = false;
             }
             eDataList.RemoveAt(0);
         }
@@ -303,6 +317,16 @@ public class Duel : MonoBehaviour
         }
     }
 
+    public bool CheckEffect(int gameEvent)
+    {//检查效果能否发动
+        if (gameEvent == GameEvent.specialsummon)
+        {
+            List<int> place = GetMonsterPlace();
+            if (place.Count == 0) return false;
+        }
+        return true;
+    }
+
     public void SetChainableEffect(int effect, bool cost)
     {
         CardEffect cEffect = new CardEffect
@@ -342,9 +366,10 @@ public class Duel : MonoBehaviour
         duelData.chainableEffect.Clear();
     }
 
-    public IEnumerator WantChain()
+    private IEnumerator WantChain()
     {
         //由玩家选择或者AI选择
+        /*
         if (duelData.IsPlayerOwn())
         {
             Tip.content = "是否连锁？";
@@ -356,6 +381,9 @@ public class Duel : MonoBehaviour
         {
             Tip.select = 1;
         }
+        */
+        Tip.select = 1;
+        yield return null;
     }
 
     private IEnumerator DrawCardOwn(int num)
@@ -390,8 +418,9 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public List<int> GetMonsterPlace(int player)
+    public List<int> GetMonsterPlace()
     {
+        int player = duelData.player;
         List<int> place = new List<int>();
         for (int i = 0; i < 5; i++)
         {
@@ -401,6 +430,23 @@ public class Duel : MonoBehaviour
             }
         }
         return place;
+    }
+
+    private IEnumerator ChooseMonsterPlace()
+    {
+        List<int> place = GetMonsterPlace();
+        //由玩家选择或者AI选择
+        int select = 0;
+        if (duelData.IsPlayerOwn())
+        {
+            //yield return monserOwn.MonsterPlace(place);
+            MonsterOwn.placeSelect = place[select];
+        }
+        else
+        {
+            MonsterOps.placeSelect = place[select];
+        }
+        yield return null;
     }
 
     public void NormalSummonFromHandOwn(int index, int position)
@@ -419,21 +465,16 @@ public class Duel : MonoBehaviour
         duelData.handcard[duelData.opWhoOps].RemoveAt(index);
     }
 
-    public void SpecialSummonFromHandOwn(int index)
+    private void SpecialSummonFromHandOwn(int index, int position)
     {
-        //由玩家选择或者AI选择
-        //int position = monserOwn.MonsterPlace(GetMonsterPlace(duelData.opWhoOwn));
-        int position = 2;
         handOwn.RemoveHandCard(index);
         monserOwn.ShowMonsterCard(index, position);
         duelData.monster[duelData.opWhoOwn][position] = duelData.handcard[duelData.opWhoOwn][index];
         duelData.handcard[duelData.opWhoOwn].RemoveAt(index);
     }
 
-    public void SpecialSummonFromHandOps(int index)
+    private void SpecialSummonFromHandOps(int index, int position)
     {
-        //由玩家选择或者AI选择
-        int position = 2;
         handOps.RemoveHandCard(index);
         monserOps.ShowMonsterCard(index, position);
         duelData.monster[duelData.opWhoOps][position] = duelData.handcard[duelData.opWhoOps][index];

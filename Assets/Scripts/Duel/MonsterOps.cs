@@ -5,6 +5,7 @@ using UnityEngine;
 public class MonsterOps : MonoBehaviour
 {
     public Transform monsterArea;
+    public static int placeSelect;
 
     // Start is called before the first frame update
     void Start()

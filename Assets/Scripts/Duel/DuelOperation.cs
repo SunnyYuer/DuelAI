@@ -41,13 +41,26 @@ public class DuelOperation : MonoBehaviour
     }
 
     /// <summary>
+    /// 阶段主动效果检测能否发动
+    /// </summary>
+    /// <returns></returns>
+    public bool PhaseCheck()
+    {
+        if (duelData.effectChain) return false;
+        return true;
+    }
+
+    /// <summary>
     /// 设置可连锁的效果，之后可选择以进行发动
     /// </summary>
     /// <param name="effect"></param>
+    /// <param name="effectEvent"></param>
     /// <param name="cost"></param>
-    public void SetChainableEffect(int effect, bool cost = false)
+    /// <param name="costEvent"></param>
+    public void SetChainableEffect(int effect, int effectEvent, bool cost = false, int costEvent = 0)
     {
-        duel.SetChainableEffect(effect, cost);
+        if(duel.CheckEffect(costEvent) && duel.CheckEffect(effectEvent))
+            duel.SetChainableEffect(effect, cost);
     }
 
     /// <summary>
@@ -63,7 +76,7 @@ public class DuelOperation : MonoBehaviour
             player = who,
             drawNum = num
         };
-        duelData.eventDate[duelData.opWhoOwn].Add(eData);
+        duelData.eventDate[duelData.player].Add(eData);
     }
 
     /// <summary>

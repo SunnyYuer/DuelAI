@@ -46,19 +46,31 @@ public class DuelOperationWrap
 		{
 			int count = LuaDLL.lua_gettop(L);
 
-			if (count == 2)
+			if (count == 3)
 			{
 				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
 				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-				obj.SetChainableEffect(arg0);
+				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+				obj.SetChainableEffect(arg0, arg1);
 				return 0;
 			}
-			else if (count == 3)
+			else if (count == 4)
 			{
 				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
 				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
-				obj.SetChainableEffect(arg0, arg1);
+				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
+				obj.SetChainableEffect(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 5)
+			{
+				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
+				int arg3 = (int)LuaDLL.luaL_checknumber(L, 5);
+				obj.SetChainableEffect(arg0, arg1, arg2, arg3);
 				return 0;
 			}
 			else

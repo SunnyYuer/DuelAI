@@ -11,6 +11,7 @@ public class DuelDataManager
     public int opWhoOwn;//友方谁在操作
     public int opWhoOps;//敌方谁在操作
     public int player;//在操作的玩家
+    public bool effectChain;//是否正在连锁
     public List<string>[] deck;
     public List<string>[] extra;
     public List<string>[] grave;
@@ -37,6 +38,7 @@ public class DuelDataManager
         turnNum = 0;
         opWhoOwn = 0;//0或2
         opWhoOps = 1;//1或3
+        effectChain = false;
     }
 
     public void InitialDeck()
