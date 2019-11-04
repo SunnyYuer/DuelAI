@@ -245,6 +245,7 @@ public class Duel : MonoBehaviour
                         SpecialSummonFromHandOps(eData.selectcard.index, MonsterOps.placeSelect);
                     }
                 }
+                duelData.effectChain = true;
             }
             if (duelData.effectChain)
             {
@@ -254,7 +255,17 @@ public class Duel : MonoBehaviour
                     if (activateEffect.cost) effectPhase = 1;
                     else effectPhase = 2;
                 }
-                duelData.effectChain = false;
+                else
+                {
+                    duelData.effectChain = false;
+                }
+            }
+            if (!duelData.effectChain)
+            {
+                if (duelData.duelPhase == 1)
+                {
+                    ChangePhase(2);
+                }
             }
             eDataList.RemoveAt(0);
         }
