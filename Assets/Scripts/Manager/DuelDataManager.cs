@@ -93,6 +93,35 @@ public class DuelDataManager
 }
 
 /// <summary>
+/// 决斗时的卡牌
+/// </summary>
+public class DuelCard
+{
+    public string card;
+    public int position;
+    public int index;
+    public List<DuelBuff> buffList;
+}
+
+/// <summary>
+/// 决斗时产生的增减益状态
+/// </summary>
+public class DuelBuff
+{
+    public Dictionary<string, object> buff;
+    /*
+    attnew  string  新的怪兽属性
+    levelnew  int  新的怪兽星级
+    levelcha  int  怪兽星级改变的数值
+    racenew  string  新的怪兽种族
+    atkcha  int  攻击力改变的数值
+    atkmul  double  攻击力改变为几倍
+    defcha  int  防御力改变的数值
+    defmul  double  防御力改变为几倍
+    */
+}
+
+/// <summary>
 /// 游戏事件产生的数据
 /// </summary>
 public class EventData
@@ -101,16 +130,6 @@ public class EventData
     public int player;
     public int drawNum;
     public DuelCard selectcard;
-}
-
-/// <summary>
-/// 记录卡牌的位置
-/// </summary>
-public class DuelCard
-{
-    public string card;
-    public int position;
-    public int index;
 }
 
 /// <summary>

@@ -403,6 +403,11 @@ public class Duel : MonoBehaviour
         yield return null;
     }
 
+    private IEnumerator Battle()
+    {
+        yield return null;
+    }
+
     private IEnumerator DrawCardOwn(int num)
     {
         int player = duelData.opWhoOwn;
