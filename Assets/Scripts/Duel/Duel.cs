@@ -24,7 +24,6 @@ public class Duel : MonoBehaviour
     public AI ai;
 
     private bool changePhase;
-    private List<CardEffect> chainableEffect;
     private CardEffect activateEffect;
 
     // Start is called before the first frame update
@@ -38,7 +37,6 @@ public class Duel : MonoBehaviour
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         monserOwn = GameObject.Find("MonsterAreaOwn").GetComponent<MonsterOwn>();
         monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
-        chainableEffect = new List<CardEffect>();
         //读取卡组
         ReadDeckFile();
         //加载卡组数据
@@ -271,17 +269,17 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public void ActivateEffect(CardEffect cEffect, ref int phase)
+    public void ActivateEffect(CardEffect cardEffect, ref int phase)
     {
-        duelOperate.SetCardLocation(cEffect.card, cEffect.position, cEffect.index);
+        duelOperate.SetThisCard(cardEffect.duelcard);
         if (phase == 1)
         {//发动阶段1，支付发动代价
-            luaCode.Run(luaCode.CostFunStr(cEffect));
+            luaCode.Run(luaCode.CostFunStr(cardEffect));
         }
         if (phase == 2)
         {//发动阶段2，发动效果
-            luaCode.Run(luaCode.EffectFunStr(cEffect));
-            cEffect = null;
+            luaCode.Run(luaCode.EffectFunStr(cardEffect));
+            cardEffect = null;
         }
         if (phase == 1) phase++;
         else phase = 0;
@@ -310,21 +308,8 @@ public class Duel : MonoBehaviour
         int i;
         for(i = 0; i < duelData.handcard[player].Count; i++)
         {
-            duelOperate.SetCardLocation(duelData.handcard[player][i], CardPosition.handcard, i);
-            luaCode.Run("c"+ duelData.handcard[player][i]);
-            while (chainableEffect.Count > 0)
-            {
-                CardEffect cEffect = new CardEffect
-                {
-                    card = duelData.handcard[player][i],
-                    effect = chainableEffect[0].effect,
-                    cost = chainableEffect[0].cost,
-                    position = CardPosition.handcard,
-                    index = i
-                };
-                duelData.chainableEffect.Add(cEffect);
-                chainableEffect.RemoveAt(0);
-            }
+            duelOperate.SetThisCard(duelData.handcard[player][i], CardPosition.handcard, i);
+            luaCode.Run("c"+ duelData.handcard[player][i].card);
         }
     }
 
@@ -344,24 +329,25 @@ public class Duel : MonoBehaviour
         return true;
     }
 
-    public void SetChainableEffect(int effect, bool cost)
+    public void SetChainableEffect(DuelCard duelcard, int effect, bool cost)
     {
-        CardEffect cEffect = new CardEffect
+        CardEffect cardEffect = new CardEffect
         {
+            duelcard = duelcard,
             effect = effect,
             cost = cost
         };
-        chainableEffect.Add(cEffect);
+        duelData.chainableEffect.Add(cardEffect);
     }
 
     public void SetCardOutLine()
     {
         if (!duelData.IsPlayerOwn()) return;
-        foreach(CardEffect cEffect in duelData.chainableEffect)
+        foreach (CardEffect cardEffect in duelData.chainableEffect)
         {
-            if (cEffect.position == CardPosition.handcard)
+            if (cardEffect.duelcard.position == CardPosition.handcard)
             {
-                handOwn.SetOutLine(cEffect.index);
+                handOwn.SetOutLine(cardEffect.duelcard.index);
             }
         }
     }
@@ -373,11 +359,11 @@ public class Duel : MonoBehaviour
             duelData.chainableEffect.Clear();
             return;
         }
-        foreach (CardEffect cEffect in duelData.chainableEffect)
+        foreach (CardEffect cardEffect in duelData.chainableEffect)
         {
-            if (cEffect.position == CardPosition.handcard)
+            if (cardEffect.duelcard.position == CardPosition.handcard)
             {
-                handOwn.CutOutLine(cEffect.index);
+                handOwn.CutOutLine(cardEffect.duelcard.index);
             }
         }
         duelData.chainableEffect.Clear();
@@ -416,7 +402,12 @@ public class Duel : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
             handOwn.AddHandCardFromDeck();
-            duelData.handcard[player].Add(duelData.deck[player][0]);
+            DuelCard duelcard = new DuelCard
+            {
+                card = duelData.deck[player][0],
+                buffList = new List<DuelBuff>()
+            };
+            duelData.handcard[player].Add(duelcard);
             duelData.cardsJustDrawn[player].Add(duelData.deck[player][0]);
             duelData.deck[player].RemoveAt(0);
             deckOwn.DeckUpdate();
@@ -432,7 +423,12 @@ public class Duel : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
             handOps.AddHandCardFromDeck();
-            duelData.handcard[player].Add(duelData.deck[player][0]);
+            DuelCard duelcard = new DuelCard
+            {
+                card = duelData.deck[player][0],
+                buffList = new List<DuelBuff>()
+            };
+            duelData.handcard[player].Add(duelcard);
             duelData.cardsJustDrawn[player].Add(duelData.deck[player][0]);
             duelData.deck[player].RemoveAt(0);
             deckOps.DeckUpdate();
@@ -446,7 +442,7 @@ public class Duel : MonoBehaviour
         List<int> place = new List<int>();
         for (int i = 0; i < 5; i++)
         {
-            if (string.IsNullOrEmpty(duelData.monster[player][i]))
+            if (duelData.monster[player][i] == null)
             {
                 place.Add(i);
             }

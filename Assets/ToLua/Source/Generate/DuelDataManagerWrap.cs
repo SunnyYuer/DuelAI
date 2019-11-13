@@ -365,7 +365,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<string>[] ret = obj.handcard;
+			System.Collections.Generic.List<DuelCard>[] ret = obj.handcard;
 			ToLua.Push(L, ret);
 			return 1;
 		}
@@ -384,7 +384,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			string[][] ret = obj.monster;
+			DuelCard[][] ret = obj.monster;
 			ToLua.Push(L, ret);
 			return 1;
 		}
@@ -403,7 +403,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			string[][] ret = obj.magictrap;
+			DuelCard[][] ret = obj.magictrap;
 			ToLua.Push(L, ret);
 			return 1;
 		}
@@ -422,7 +422,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			string[] ret = obj.field;
+			DuelCard[] ret = obj.field;
 			ToLua.Push(L, ret);
 			return 1;
 		}
@@ -441,7 +441,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			string[][] ret = obj.special;
+			DuelCard[][] ret = obj.special;
 			ToLua.Push(L, ret);
 			return 1;
 		}
@@ -783,7 +783,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<string>[] arg0 = ToLua.CheckObjectArray<System.Collections.Generic.List<string>>(L, 2);
+			System.Collections.Generic.List<DuelCard>[] arg0 = ToLua.CheckObjectArray<System.Collections.Generic.List<DuelCard>>(L, 2);
 			obj.handcard = arg0;
 			return 0;
 		}
@@ -802,7 +802,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			string[][] arg0 = ToLua.CheckObjectArray<string[]>(L, 2);
+			DuelCard[][] arg0 = ToLua.CheckObjectArray<DuelCard[]>(L, 2);
 			obj.monster = arg0;
 			return 0;
 		}
@@ -821,7 +821,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			string[][] arg0 = ToLua.CheckObjectArray<string[]>(L, 2);
+			DuelCard[][] arg0 = ToLua.CheckObjectArray<DuelCard[]>(L, 2);
 			obj.magictrap = arg0;
 			return 0;
 		}
@@ -840,7 +840,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			string[] arg0 = ToLua.CheckStringArray(L, 2);
+			DuelCard[] arg0 = ToLua.CheckObjectArray<DuelCard>(L, 2);
 			obj.field = arg0;
 			return 0;
 		}
@@ -859,7 +859,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			string[][] arg0 = ToLua.CheckObjectArray<string[]>(L, 2);
+			DuelCard[][] arg0 = ToLua.CheckObjectArray<DuelCard[]>(L, 2);
 			obj.special = arg0;
 			return 0;
 		}

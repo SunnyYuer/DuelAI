@@ -16,11 +16,11 @@ public class DuelDataManager
     public List<string>[] extra;
     public List<string>[] grave;
     public List<string>[] except;
-    public List<string>[] handcard;
-    public string[][] monster;
-    public string[][] magictrap;
-    public string[] field;
-    public string[][] special;
+    public List<DuelCard>[] handcard;
+    public DuelCard[][] monster;
+    public DuelCard[][] magictrap;
+    public DuelCard[] field;
+    public DuelCard[][] special;
     public CardDataManager cardData;
     public Dictionary<string, Card> cardDic;
 
@@ -47,9 +47,9 @@ public class DuelDataManager
         extra = new List<string>[duelPeopleNum];
         grave = new List<string>[duelPeopleNum];
         except = new List<string>[duelPeopleNum];
-        handcard = new List<string>[duelPeopleNum];
-        monster = new string[duelPeopleNum][];
-        magictrap = new string[duelPeopleNum][];
+        handcard = new List<DuelCard>[duelPeopleNum];
+        monster = new DuelCard[duelPeopleNum][];
+        magictrap = new DuelCard[duelPeopleNum][];
         eventDate = new List<EventData>[duelPeopleNum];
         cardsJustDrawn = new List<string>[duelPeopleNum];
         for (int i = 0; i < duelPeopleNum; i++)
@@ -58,13 +58,13 @@ public class DuelDataManager
             extra[i] = new List<string>();
             grave[i] = new List<string>();
             except[i] = new List<string>();
-            handcard[i] = new List<string>();
-            monster[i] = new string[5];
-            magictrap[i] = new string[5];
+            handcard[i] = new List<DuelCard>();
+            monster[i] = new DuelCard[5];
+            magictrap[i] = new DuelCard[5];
             eventDate[i] = new List<EventData>();
             cardsJustDrawn[i] = new List<string>();
         }
-        field = new string[2];
+        field = new DuelCard[2];
     }
 
     public void LoadDeckData()
@@ -108,17 +108,9 @@ public class DuelCard
 /// </summary>
 public class DuelBuff
 {
-    public Dictionary<string, object> buff;
-    /*
-    attnew  string  新的怪兽属性
-    levelnew  int  新的怪兽星级
-    levelcha  int  怪兽星级改变的数值
-    racenew  string  新的怪兽种族
-    atkcha  int  攻击力改变的数值
-    atkmul  double  攻击力改变为几倍
-    defcha  int  防御力改变的数值
-    defmul  double  防御力改变为几倍
-    */
+    public DuelCard fromcard;//buff来源
+    public Dictionary<int, object> buff;
+    public int turns;//buff持续回合类型
 }
 
 /// <summary>
@@ -135,8 +127,9 @@ public class EventData
 /// <summary>
 /// 可发动的卡牌效果
 /// </summary>
-public class CardEffect : DuelCard
+public class CardEffect
 {
+    public DuelCard duelcard;
     public int effect;
     public bool cost;
 }

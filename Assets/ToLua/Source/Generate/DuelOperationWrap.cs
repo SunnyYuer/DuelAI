@@ -7,7 +7,7 @@ public class DuelOperationWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(DuelOperation), typeof(UnityEngine.MonoBehaviour));
-		L.RegFunction("SetCardLocation", SetCardLocation);
+		L.RegFunction("SetThisCard", SetThisCard);
 		L.RegFunction("SetEffectEvent", SetEffectEvent);
 		L.RegFunction("SetActivatableEffect", SetActivatableEffect);
 		L.RegFunction("SetChainableEffect", SetChainableEffect);
@@ -24,17 +24,32 @@ public class DuelOperationWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SetCardLocation(IntPtr L)
+	static int SetThisCard(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 4);
-			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
-			string arg0 = ToLua.CheckString(L, 2);
-			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-			int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
-			obj.SetCardLocation(arg0, arg1, arg2);
-			return 0;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+				DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
+				obj.SetThisCard(arg0);
+				return 0;
+			}
+			else if (count == 4)
+			{
+				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+				DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
+				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+				int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
+				obj.SetThisCard(arg0, arg1, arg2);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelOperation.SetThisCard");
+			}
 		}
 		catch (Exception e)
 		{

@@ -28,17 +28,24 @@ public class DuelOperation : MonoBehaviour
     /// <summary>
     /// 设置当前运行效果的卡的位置
     /// </summary>
-    /// <param name="card"></param>
+    /// <param name="duelcard"></param>
+    public void SetThisCard(DuelCard duelcard)
+    {
+        thiscard = duelcard;
+        activatable = true;
+    }
+
+    /// <summary>
+    /// 设置当前运行效果的卡的位置
+    /// </summary>
+    /// <param name="duelcard"></param>
     /// <param name="position"></param>
     /// <param name="index"></param>
-    public void SetCardLocation(string card, int position, int index)
+    public void SetThisCard(DuelCard duelcard, int position, int index)
     {
-        thiscard = new DuelCard
-        {
-            card = card,
-            position = position,
-            index = index
-        };
+        thiscard = duelcard;
+        thiscard.position = position;
+        thiscard.index = index;
         activatable = true;
     }
 
@@ -69,7 +76,7 @@ public class DuelOperation : MonoBehaviour
     /// <param name="cost"></param>
     public void SetChainableEffect(int effect, bool cost = false)
     {
-        if(activatable) duel.SetChainableEffect(effect, cost);
+        if (activatable) duel.SetChainableEffect(thiscard, effect, cost);
         activatable = true;
     }
 
