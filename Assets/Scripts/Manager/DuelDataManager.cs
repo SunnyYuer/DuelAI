@@ -119,9 +119,7 @@ public class DuelBuff
 public class EventData
 {
     public int gameEvent;
-    public int player;
-    public int drawNum;
-    public DuelCard selectcard;
+    public Dictionary<string, object> data;
 }
 
 /// <summary>

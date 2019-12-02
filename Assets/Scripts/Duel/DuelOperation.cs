@@ -90,8 +90,11 @@ public class DuelOperation : MonoBehaviour
         EventData eData = new EventData
         {
             gameEvent = GameEvent.drawcard,
-            player = who,
-            drawNum = num
+            data = new Dictionary<string, object>
+            {
+                { "player", who },
+                { "drawnum", num }
+            }
         };
         duelData.eventDate[duelData.player].Add(eData);
     }
@@ -146,7 +149,10 @@ public class DuelOperation : MonoBehaviour
                 EventData eData = new EventData
                 {
                     gameEvent = GameEvent.specialsummon,
-                    selectcard = thiscard
+                    data = new Dictionary<string, object>
+                    {
+                        { "selectcard", thiscard }
+                    }
                 };
                 duelData.eventDate[duelData.player].Add(eData);
             }

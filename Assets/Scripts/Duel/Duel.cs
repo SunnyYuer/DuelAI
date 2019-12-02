@@ -204,43 +204,46 @@ public class Duel : MonoBehaviour
             EventData eData = eDataList[0];
             if (eData.gameEvent == GameEvent.drawcard)
             {
-                if (eData.player == 0)
+                int drawplayer = (int)eData.data["player"];
+                int drawnum = (int)eData.data["drawnum"];
+                if (drawplayer == 0)
                 {//让自己抽卡
-                    if (duelData.IsPlayerOwn()) yield return DrawCardOwn(eData.drawNum);
-                    else yield return DrawCardOps(eData.drawNum);
+                    if (duelData.IsPlayerOwn()) yield return DrawCardOwn(drawnum);
+                    else yield return DrawCardOps(drawnum);
                 }
-                if (eData.player == 1)
+                if (drawplayer == 1)
                 {//让对方抽卡
-                    if (duelData.IsPlayerOwn()) yield return DrawCardOps(eData.drawNum);
-                    else yield return DrawCardOwn(eData.drawNum);
+                    if (duelData.IsPlayerOwn()) yield return DrawCardOps(drawnum);
+                    else yield return DrawCardOwn(drawnum);
                 }
-                if (eData.player == 2)
+                if (drawplayer == 2)
                 {//双方同时抽卡
                     if (duelData.IsPlayerOwn())
                     {
-                        StartCoroutine(DrawCardOps(eData.drawNum));
-                        yield return DrawCardOwn(eData.drawNum);
+                        StartCoroutine(DrawCardOps(drawnum));
+                        yield return DrawCardOwn(drawnum);
                     }
                     else
                     {
-                        StartCoroutine(DrawCardOwn(eData.drawNum));
-                        yield return DrawCardOps(eData.drawNum);
+                        StartCoroutine(DrawCardOwn(drawnum));
+                        yield return DrawCardOps(drawnum);
                     }
                 }
                 duelData.effectChain = true;
             }
             if (eData.gameEvent == GameEvent.specialsummon)
             {
+                DuelCard selectcard = eData.data["selectcard"] as DuelCard;
                 yield return ChooseMonsterPlace();
-                if (eData.selectcard.position == CardPosition.handcard)
+                if (selectcard.position == CardPosition.handcard)
                 {
                     if (duelData.IsPlayerOwn())
                     {
-                        SpecialSummonFromHandOwn(eData.selectcard.index, MonsterOwn.placeSelect);
+                        SpecialSummonFromHandOwn(selectcard.index, MonsterOwn.placeSelect);
                     }
                     else
                     {
-                        SpecialSummonFromHandOps(eData.selectcard.index, MonsterOps.placeSelect);
+                        SpecialSummonFromHandOps(selectcard.index, MonsterOps.placeSelect);
                     }
                 }
                 duelData.effectChain = true;
