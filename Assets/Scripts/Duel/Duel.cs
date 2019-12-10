@@ -29,11 +29,11 @@ public class Duel : MonoBehaviour
     // Start is called before the first frame update
     IEnumerator Start()
     {
-        duelOperate = gameObject.GetComponent<DuelOperation>();
         duelData = new DuelDataManager(2);
         luaCode = new LuaCode();
         spriteManager = new CardSpriteManager();
-        ai = new AI();
+        ai = new AI(duelData);
+        duelOperate = gameObject.GetComponent<DuelOperation>();
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         monserOwn = GameObject.Find("MonsterAreaOwn").GetComponent<MonsterOwn>();
         monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
@@ -43,16 +43,16 @@ public class Duel : MonoBehaviour
         duelData.LoadDeckData();
         luaCode.SetCode(duelData.cardData.allcode);
         //放置卡组
-        deckOwn.DeckUpdate();
-        deckOps.DeckUpdate();
+        deckOwn.DeckUpdate(0);
+        deckOps.DeckUpdate(1);
         //初始化回合和阶段
-        duelData.whoTurn = 0;
         duelData.player = 0;
+        duelData.opWho = 0;
         duelData.duelPhase = 0;
         changePhase = true;
         //各自起手5张卡
-        StartCoroutine(DrawCardOwn(5));
-        StartCoroutine(DrawCardOps(5));
+        StartCoroutine(DrawCardOwn(0, 5));
+        StartCoroutine(DrawCardOps(1, 5));
         yield return new WaitForSeconds(1);
         //决斗开始
         StartCoroutine(DuelPhase());
@@ -99,6 +99,16 @@ public class Duel : MonoBehaviour
         }
     }
 
+    public bool IsPlayerOwn(int who)
+    {
+            return ai.IsPlayerOwn(who);
+    }
+
+    public int GetOppPlayer(int who)
+    {
+        return ai.GetOppPlayer(who);
+    }
+
     private IEnumerator DuelPhase()
     {
         while (true)
@@ -109,7 +119,7 @@ public class Duel : MonoBehaviour
                 if (duelData.duelPhase == 0)
                 {
                     duelData.turnNum++;
-                    if (duelData.whoTurn == 0) phaseText.text = "我的回合";
+                    if (IsPlayerOwn(duelData.player)) phaseText.text = "我的回合";
                     else phaseText.text = "对方回合";
                     changePhase = true;
                 }
@@ -132,6 +142,7 @@ public class Duel : MonoBehaviour
                 {
                     phaseText.text = "战斗阶段";
                     ChangeBattleButtonText();
+                    yield return Battle();
                 }
                 if (duelData.duelPhase == 5)
                 {
@@ -151,8 +162,7 @@ public class Duel : MonoBehaviour
                 if (duelData.duelPhase >= 7)
                 {
                     duelData.duelPhase = 0;
-                    duelData.whoTurn = 1 - duelData.whoTurn;
-                    duelData.ChangePlayer();
+                    duelData.ChangeNextPlayer();
                 }
             }
             yield return null;
@@ -197,7 +207,7 @@ public class Duel : MonoBehaviour
         while (true)
         {
             yield return null;
-            int player = duelData.player;
+            int player = duelData.opWho;
             if (effectPhase > 0) ActivateEffect(activateEffect, ref effectPhase);
             List<EventData> eDataList = duelData.eventDate[player];
             if (eDataList.Count == 0) continue;
@@ -206,27 +216,22 @@ public class Duel : MonoBehaviour
             {
                 int drawplayer = (int)eData.data["player"];
                 int drawnum = (int)eData.data["drawnum"];
-                if (drawplayer == 0)
-                {//让自己抽卡
-                    if (duelData.IsPlayerOwn()) yield return DrawCardOwn(drawnum);
-                    else yield return DrawCardOps(drawnum);
-                }
-                if (drawplayer == 1)
-                {//让对方抽卡
-                    if (duelData.IsPlayerOwn()) yield return DrawCardOps(drawnum);
-                    else yield return DrawCardOwn(drawnum);
+                if (drawplayer == 0 || drawplayer == 1)
+                {//自己或对方抽卡
+                    if (IsPlayerOwn(player)) yield return DrawCardOwn(player, drawnum);
+                    else yield return DrawCardOps(player, drawnum);
                 }
                 if (drawplayer == 2)
                 {//双方同时抽卡
-                    if (duelData.IsPlayerOwn())
+                    if (IsPlayerOwn(player))
                     {
-                        StartCoroutine(DrawCardOps(drawnum));
-                        yield return DrawCardOwn(drawnum);
+                        StartCoroutine(DrawCardOps(GetOppPlayer(player), drawnum));
+                        yield return DrawCardOwn(player, drawnum);
                     }
                     else
                     {
-                        StartCoroutine(DrawCardOwn(drawnum));
-                        yield return DrawCardOps(drawnum);
+                        StartCoroutine(DrawCardOwn(GetOppPlayer(player), drawnum));
+                        yield return DrawCardOps(player, drawnum);
                     }
                 }
                 duelData.effectChain = true;
@@ -237,7 +242,7 @@ public class Duel : MonoBehaviour
                 yield return ChooseMonsterPlace();
                 if (selectcard.position == CardPosition.handcard)
                 {
-                    if (duelData.IsPlayerOwn())
+                    if (IsPlayerOwn(player))
                     {
                         SpecialSummonFromHandOwn(selectcard.index, MonsterOwn.placeSelect);
                     }
@@ -307,7 +312,7 @@ public class Duel : MonoBehaviour
 
     public void ScanEffect()
     {
-        int player = duelData.player;
+        int player = duelData.opWho;
         int i;
         for(i = 0; i < duelData.handcard[player].Count; i++)
         {
@@ -345,7 +350,7 @@ public class Duel : MonoBehaviour
 
     public void SetCardOutLine()
     {
-        if (!duelData.IsPlayerOwn()) return;
+        if (!IsPlayerOwn(duelData.opWho)) return;
         foreach (CardEffect cardEffect in duelData.chainableEffect)
         {
             if (cardEffect.duelcard.position == CardPosition.handcard)
@@ -357,7 +362,7 @@ public class Duel : MonoBehaviour
 
     public void CutCardOutLine()
     {
-        if (!duelData.IsPlayerOwn())
+        if (!IsPlayerOwn(duelData.opWho))
         {
             duelData.chainableEffect.Clear();
             return;
@@ -394,54 +399,58 @@ public class Duel : MonoBehaviour
 
     private IEnumerator Battle()
     {
+        int player = duelData.player;
+        for (int i = 0; i < 5; i++)
+        {
+
+        }
+        ai.GetAttackTarget();
         yield return null;
     }
 
-    private IEnumerator DrawCardOwn(int num)
+    private IEnumerator DrawCardOwn(int playerOwn, int num)
     {
-        int player = duelData.opWhoOwn;
-        duelData.cardsJustDrawn[player].Clear();
+        duelData.cardsJustDrawn[playerOwn].Clear();
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
-            handOwn.AddHandCardFromDeck();
+            handOwn.AddHandCardFromDeck(playerOwn);
             DuelCard duelcard = new DuelCard
             {
-                card = duelData.deck[player][0],
+                card = duelData.deck[playerOwn][0],
                 buffList = new List<DuelBuff>()
             };
-            duelData.handcard[player].Add(duelcard);
-            duelData.cardsJustDrawn[player].Add(duelData.deck[player][0]);
-            duelData.deck[player].RemoveAt(0);
-            deckOwn.DeckUpdate();
+            duelData.handcard[playerOwn].Add(duelcard);
+            duelData.cardsJustDrawn[playerOwn].Add(duelData.deck[playerOwn][0]);
+            duelData.deck[playerOwn].RemoveAt(0);
+            deckOwn.DeckUpdate(playerOwn);
             num--;
         }
     }
 
-    private IEnumerator DrawCardOps(int num)
+    private IEnumerator DrawCardOps(int playerOps, int num)
     {
-        int player = duelData.opWhoOps;
-        duelData.cardsJustDrawn[player].Clear();
+        duelData.cardsJustDrawn[playerOps].Clear();
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
-            handOps.AddHandCardFromDeck();
+            handOps.AddHandCardFromDeck(playerOps);
             DuelCard duelcard = new DuelCard
             {
-                card = duelData.deck[player][0],
+                card = duelData.deck[playerOps][0],
                 buffList = new List<DuelBuff>()
             };
-            duelData.handcard[player].Add(duelcard);
-            duelData.cardsJustDrawn[player].Add(duelData.deck[player][0]);
-            duelData.deck[player].RemoveAt(0);
-            deckOps.DeckUpdate();
+            duelData.handcard[playerOps].Add(duelcard);
+            duelData.cardsJustDrawn[playerOps].Add(duelData.deck[playerOps][0]);
+            duelData.deck[playerOps].RemoveAt(0);
+            deckOps.DeckUpdate(playerOps);
             num--;
         }
     }
 
     public List<int> GetMonsterPlace()
     {
-        int player = duelData.player;
+        int player = duelData.opWho;
         List<int> place = new List<int>();
         for (int i = 0; i < 5; i++)
         {
@@ -458,7 +467,7 @@ public class Duel : MonoBehaviour
         List<int> place = GetMonsterPlace();
         //由玩家选择或者AI选择
         int select = 0;
-        if (duelData.IsPlayerOwn())
+        if (IsPlayerOwn(duelData.opWho))
         {
             //yield return monserOwn.MonsterPlace(place);
             MonsterOwn.placeSelect = place[select];
@@ -474,31 +483,31 @@ public class Duel : MonoBehaviour
     {
         handOwn.RemoveHandCard(index);
         monserOwn.ShowMonsterCard(index, position);
-        duelData.monster[duelData.opWhoOwn][position] = duelData.handcard[duelData.opWhoOwn][index];
-        duelData.handcard[duelData.opWhoOwn].RemoveAt(index);
+        duelData.monster[duelData.opWho][position] = duelData.handcard[duelData.opWho][index];
+        duelData.handcard[duelData.opWho].RemoveAt(index);
     }
 
     public void NormalSummonFromHandOps(int index, int position)
     {
         handOps.RemoveHandCard(index);
         monserOps.ShowMonsterCard(index, position);
-        duelData.monster[duelData.opWhoOps][position] = duelData.handcard[duelData.opWhoOps][index];
-        duelData.handcard[duelData.opWhoOps].RemoveAt(index);
+        duelData.monster[duelData.opWho][position] = duelData.handcard[duelData.opWho][index];
+        duelData.handcard[duelData.opWho].RemoveAt(index);
     }
 
     private void SpecialSummonFromHandOwn(int index, int position)
     {
         handOwn.RemoveHandCard(index);
         monserOwn.ShowMonsterCard(index, position);
-        duelData.monster[duelData.opWhoOwn][position] = duelData.handcard[duelData.opWhoOwn][index];
-        duelData.handcard[duelData.opWhoOwn].RemoveAt(index);
+        duelData.monster[duelData.opWho][position] = duelData.handcard[duelData.opWho][index];
+        duelData.handcard[duelData.opWho].RemoveAt(index);
     }
 
     private void SpecialSummonFromHandOps(int index, int position)
     {
         handOps.RemoveHandCard(index);
         monserOps.ShowMonsterCard(index, position);
-        duelData.monster[duelData.opWhoOps][position] = duelData.handcard[duelData.opWhoOps][index];
-        duelData.handcard[duelData.opWhoOps].RemoveAt(index);
+        duelData.monster[duelData.opWho][position] = duelData.handcard[duelData.opWho][index];
+        duelData.handcard[duelData.opWho].RemoveAt(index);
     }
 }

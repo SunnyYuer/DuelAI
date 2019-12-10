@@ -6,11 +6,9 @@ public class DuelDataManager
 {
     public int duelPeopleNum;
     public int turnNum;
-    public int whoTurn;//0自己回合，1对方回合
     public int duelPhase;
-    public int opWhoOwn;//友方谁在操作
-    public int opWhoOps;//敌方谁在操作
-    public int player;//在操作的玩家
+    public int player;//当前回合的玩家，0或2为友方，1或3为敌方
+    public int opWho;//在效果处理的玩家
     public bool effectChain;//是否正在连锁
     public List<string>[] deck;
     public List<string>[] extra;
@@ -36,8 +34,6 @@ public class DuelDataManager
         cardData = new CardDataManager();
         chainableEffect = new List<CardEffect>();
         turnNum = 0;
-        opWhoOwn = 0;//0或2
-        opWhoOps = 1;//1或3
         effectChain = false;
     }
 
@@ -77,18 +73,11 @@ public class DuelDataManager
         cardDic = cardData.cardDic;
     }
 
-    public bool IsPlayerOwn()
+    public void ChangeNextPlayer()
     {
-        if (player == 0 || player == 2)
-            return true;
-        else
-            return false;
-    }
-
-    public void ChangePlayer()
-    {
-        if (player == opWhoOwn) player = opWhoOps;
-        else player = opWhoOwn;
+        player++;
+        if (player == duelPeopleNum) player = 0;
+        opWho = player;
     }
 }
 

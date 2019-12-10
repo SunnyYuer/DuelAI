@@ -25,9 +25,9 @@ public class HandCardOps : MonoBehaviour
 
     }
 
-    public void AddHandCardFromDeck()
+    public void AddHandCardFromDeck(int playerOps)
     {
-        List<string> deck = Duel.duelData.deck[Duel.duelData.opWhoOps];
+        List<string> deck = Duel.duelData.deck[playerOps];
         if (deck.Count > 0)
         {
             GameObject handcard = Instantiate(card, handcardlist);

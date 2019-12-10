@@ -9,17 +9,14 @@ public class DuelDataManagerWrap
 		L.BeginClass(typeof(DuelDataManager), typeof(System.Object));
 		L.RegFunction("InitialDeck", InitialDeck);
 		L.RegFunction("LoadDeckData", LoadDeckData);
-		L.RegFunction("IsPlayerOwn", IsPlayerOwn);
-		L.RegFunction("ChangePlayer", ChangePlayer);
+		L.RegFunction("ChangeNextPlayer", ChangeNextPlayer);
 		L.RegFunction("New", _CreateDuelDataManager);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("duelPeopleNum", get_duelPeopleNum, set_duelPeopleNum);
 		L.RegVar("turnNum", get_turnNum, set_turnNum);
-		L.RegVar("whoTurn", get_whoTurn, set_whoTurn);
 		L.RegVar("duelPhase", get_duelPhase, set_duelPhase);
-		L.RegVar("opWhoOwn", get_opWhoOwn, set_opWhoOwn);
-		L.RegVar("opWhoOps", get_opWhoOps, set_opWhoOps);
 		L.RegVar("player", get_player, set_player);
+		L.RegVar("opWho", get_opWho, set_opWho);
 		L.RegVar("effectChain", get_effectChain, set_effectChain);
 		L.RegVar("deck", get_deck, set_deck);
 		L.RegVar("extra", get_extra, set_extra);
@@ -96,30 +93,13 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int IsPlayerOwn(IntPtr L)
+	static int ChangeNextPlayer(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
 			DuelDataManager obj = (DuelDataManager)ToLua.CheckObject<DuelDataManager>(L, 1);
-			bool o = obj.IsPlayerOwn();
-			LuaDLL.lua_pushboolean(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ChangePlayer(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			DuelDataManager obj = (DuelDataManager)ToLua.CheckObject<DuelDataManager>(L, 1);
-			obj.ChangePlayer();
+			obj.ChangeNextPlayer();
 			return 0;
 		}
 		catch (Exception e)
@@ -167,25 +147,6 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_whoTurn(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			DuelDataManager obj = (DuelDataManager)o;
-			int ret = obj.whoTurn;
-			LuaDLL.lua_pushinteger(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index whoTurn on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_duelPhase(IntPtr L)
 	{
 		object o = null;
@@ -205,44 +166,6 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_opWhoOwn(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			DuelDataManager obj = (DuelDataManager)o;
-			int ret = obj.opWhoOwn;
-			LuaDLL.lua_pushinteger(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index opWhoOwn on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_opWhoOps(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			DuelDataManager obj = (DuelDataManager)o;
-			int ret = obj.opWhoOps;
-			LuaDLL.lua_pushinteger(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index opWhoOps on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_player(IntPtr L)
 	{
 		object o = null;
@@ -258,6 +181,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index player on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_opWho(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			int ret = obj.opWho;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index opWho on a nil value");
 		}
 	}
 
@@ -585,25 +527,6 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_whoTurn(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			DuelDataManager obj = (DuelDataManager)o;
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			obj.whoTurn = arg0;
-			return 0;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index whoTurn on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_duelPhase(IntPtr L)
 	{
 		object o = null;
@@ -623,44 +546,6 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_opWhoOwn(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			DuelDataManager obj = (DuelDataManager)o;
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			obj.opWhoOwn = arg0;
-			return 0;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index opWhoOwn on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_opWhoOps(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			DuelDataManager obj = (DuelDataManager)o;
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			obj.opWhoOps = arg0;
-			return 0;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index opWhoOps on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_player(IntPtr L)
 	{
 		object o = null;
@@ -676,6 +561,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index player on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_opWho(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.opWho = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index opWho on a nil value");
 		}
 	}
 

@@ -96,7 +96,8 @@ public class DuelOperation : MonoBehaviour
                 { "drawnum", num }
             }
         };
-        duelData.eventDate[duelData.player].Add(eData);
+        if (who == 1) duelData.opWho = duel.GetOppPlayer(duelData.opWho);
+        duelData.eventDate[duelData.opWho].Add(eData);
     }
 
     /// <summary>
@@ -107,20 +108,20 @@ public class DuelOperation : MonoBehaviour
     public bool DrawnCard(string card)
     {
         //判断刚刚是否有抽卡
-        int drawNum = duelData.cardsJustDrawn[duelData.player].Count;
+        int drawNum = duelData.cardsJustDrawn[duelData.opWho].Count;
         if (drawNum == 0) return false;
         if (card.Equals(""))
         {
             //判断是否在手卡
             if (thiscard.position != CardPosition.handcard) return false;
             //判断是否在抽到的卡中
-            int drawIndex = duelData.handcard[duelData.player].Count - drawNum;
+            int drawIndex = duelData.handcard[duelData.opWho].Count - drawNum;
             if (thiscard.index < drawIndex) return false;
             else return true;
         }
         else
         {
-            return duelData.cardsJustDrawn[duelData.player].Contains(card);
+            return duelData.cardsJustDrawn[duelData.opWho].Contains(card);
         }
     }
 
@@ -154,7 +155,7 @@ public class DuelOperation : MonoBehaviour
                         { "selectcard", thiscard }
                     }
                 };
-                duelData.eventDate[duelData.player].Add(eData);
+                duelData.eventDate[duelData.opWho].Add(eData);
             }
         }
     }

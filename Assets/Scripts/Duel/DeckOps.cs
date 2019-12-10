@@ -21,9 +21,9 @@ public class DeckOps : MonoBehaviour, IPointerClickHandler
         
     }
 
-    public void DeckUpdate()
+    public void DeckUpdate(int playerOps)
     {
-        List<string> deck = Duel.duelData.deck[Duel.duelData.opWhoOps];
+        List<string> deck = Duel.duelData.deck[playerOps];
         if (deck.Count > 0)
             image.sprite = Duel.spriteManager.GetCardSprite(deck[0], false);
         else
