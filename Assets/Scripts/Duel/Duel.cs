@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class Duel : MonoBehaviour
 {
     public GameObject mainLayout;
+    public Text LPOwn;
+    public Text LPOps;
     public DeckOwn deckOwn;
     public DeckOps deckOps;
     public HandCardOwn handOwn;
@@ -45,11 +47,13 @@ public class Duel : MonoBehaviour
         //放置卡组
         deckOwn.DeckUpdate(0);
         deckOps.DeckUpdate(1);
-        //初始化回合和阶段
+        //初始化先攻，阶段，生命值
         duelData.player = 0;
         duelData.opWho = 0;
         duelData.duelPhase = 0;
         changePhase = true;
+        LPOwnUpdate(8000);
+        LPOpsUpdate(8000);
         //各自起手5张卡
         StartCoroutine(DrawCardOwn(0, 5));
         StartCoroutine(DrawCardOps(1, 5));
@@ -97,6 +101,18 @@ public class Duel : MonoBehaviour
             duelData.extra[1].Add(strs[i]);
             i++;
         }
+    }
+
+    public void LPOwnUpdate(int lp)
+    {
+        duelData.LP[0] = lp;
+        LPOwn.text = "LP  " + lp;
+    }
+
+    public void LPOpsUpdate(int lp)
+    {
+        duelData.LP[1] = lp;
+        LPOps.text = "LP  " + lp;
     }
 
     public bool IsPlayerOwn(int who)
@@ -399,12 +415,40 @@ public class Duel : MonoBehaviour
 
     private IEnumerator Battle()
     {
-        int player = duelData.player;
-        for (int i = 0; i < 5; i++)
+        int player = duelData.player;//攻击方
+        int playerOpp = GetOppPlayer(player);//被攻击方
+        int target = ai.GetAttackTarget();
+        for (int i = 0; i < duelData.areaNum; i++)
         {
-
+            if (duelData.monster[player][i] != null)
+            {
+                if (target == -1)
+                {//直接攻击对方
+                    int atk = duelData.cardDic[duelData.monster[player][i].card].atk;
+                    if (IsPlayerOwn(player)) LPOpsUpdate(duelData.LP[1] - atk);
+                    else LPOwnUpdate(duelData.LP[0] - atk);
+                }
+                else
+                {//攻击选定的目标
+                    int atk1 = duelData.cardDic[duelData.monster[player][i].card].atk;
+                    int atk2 = duelData.cardDic[duelData.monster[playerOpp][target].card].atk;
+                    if (atk1 > atk2)
+                    {
+                        if (IsPlayerOwn(player)) LPOpsUpdate(duelData.LP[1] - (atk1 - atk2));
+                        else LPOwnUpdate(duelData.LP[0] - (atk1 - atk2));
+                    }
+                    if (atk1 == atk2)
+                    {
+                        
+                    }
+                    if (atk1 < atk2)
+                    {
+                        if (IsPlayerOwn(player)) LPOwnUpdate(duelData.LP[0] - (atk2 - atk1));
+                        else LPOpsUpdate(duelData.LP[1] - (atk2 - atk1));
+                    }
+                }
+            }
         }
-        ai.GetAttackTarget();
         yield return null;
     }
 
@@ -452,7 +496,7 @@ public class Duel : MonoBehaviour
     {
         int player = duelData.opWho;
         List<int> place = new List<int>();
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < duelData.areaNum; i++)
         {
             if (duelData.monster[player][i] == null)
             {

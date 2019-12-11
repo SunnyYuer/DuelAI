@@ -717,7 +717,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: LP  8000
+  m_Text: LP  0
 --- !u!1 &6791702180043783973
 GameObject:
   m_ObjectHideFlags: 0
@@ -886,7 +886,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: LP  8000
+  m_Text: LP  0
 --- !u!1 &6791702180285451696
 GameObject:
   m_ObjectHideFlags: 0
@@ -1733,6 +1733,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainLayout: {fileID: 8344503884013952710, guid: a78711cb244002d46b00664ad0ae8398,
     type: 3}
+  LPOwn: {fileID: 6791702180096512850}
+  LPOps: {fileID: 6791702179941635201}
   deckOwn: {fileID: 1236780718351047031}
   deckOps: {fileID: 6430187799037395263}
   handOwn: {fileID: 8371625762274328373}
@@ -1752,8 +1754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a9098d9d5bb65c49a88dca28aea9e69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardPosition: 0
-  cardIndex: 0
+  activatable: 0
 --- !u!1 &6791702181814629270
 GameObject:
   m_ObjectHideFlags: 0

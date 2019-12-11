@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class DuelDataManager
 {
-    public int duelPeopleNum;
+    public int playerNum;
+    public int areaNum;//场上怪兽区域或魔法陷阱区域的数量
     public int turnNum;
     public int duelPhase;
     public int player;//当前回合的玩家，0或2为友方，1或3为敌方
     public int opWho;//在效果处理的玩家
     public bool effectChain;//是否正在连锁
+    public int[] LP;
     public List<string>[] deck;
     public List<string>[] extra;
     public List<string>[] grave;
@@ -17,7 +19,7 @@ public class DuelDataManager
     public List<DuelCard>[] handcard;
     public DuelCard[][] monster;
     public DuelCard[][] magictrap;
-    public DuelCard[] field;
+    public DuelCard[] fieldcard;
     public DuelCard[][] special;
     public CardDataManager cardData;
     public Dictionary<string, Card> cardDic;
@@ -29,43 +31,45 @@ public class DuelDataManager
 
     public DuelDataManager(int peopleNum)
     {
-        duelPeopleNum = peopleNum;
-        InitialDeck();
+        playerNum = peopleNum;
+        areaNum = 5;
+        InitialArray();
         cardData = new CardDataManager();
         chainableEffect = new List<CardEffect>();
         turnNum = 0;
         effectChain = false;
     }
 
-    public void InitialDeck()
+    public void InitialArray()
     {
-        deck = new List<string>[duelPeopleNum];
-        extra = new List<string>[duelPeopleNum];
-        grave = new List<string>[duelPeopleNum];
-        except = new List<string>[duelPeopleNum];
-        handcard = new List<DuelCard>[duelPeopleNum];
-        monster = new DuelCard[duelPeopleNum][];
-        magictrap = new DuelCard[duelPeopleNum][];
-        eventDate = new List<EventData>[duelPeopleNum];
-        cardsJustDrawn = new List<string>[duelPeopleNum];
-        for (int i = 0; i < duelPeopleNum; i++)
+        deck = new List<string>[playerNum];
+        extra = new List<string>[playerNum];
+        grave = new List<string>[playerNum];
+        except = new List<string>[playerNum];
+        handcard = new List<DuelCard>[playerNum];
+        monster = new DuelCard[playerNum][];
+        magictrap = new DuelCard[playerNum][];
+        eventDate = new List<EventData>[playerNum];
+        cardsJustDrawn = new List<string>[playerNum];
+        for (int i = 0; i < playerNum; i++)
         {
             deck[i] = new List<string>();
             extra[i] = new List<string>();
             grave[i] = new List<string>();
             except[i] = new List<string>();
             handcard[i] = new List<DuelCard>();
-            monster[i] = new DuelCard[5];
-            magictrap[i] = new DuelCard[5];
+            monster[i] = new DuelCard[areaNum];
+            magictrap[i] = new DuelCard[areaNum];
             eventDate[i] = new List<EventData>();
             cardsJustDrawn[i] = new List<string>();
         }
-        field = new DuelCard[2];
+        LP = new int[2];
+        fieldcard = new DuelCard[2];
     }
 
     public void LoadDeckData()
     {
-        for (int i = 0; i < duelPeopleNum; i++)
+        for (int i = 0; i < playerNum; i++)
         {
             cardData.LoadCardData(deck[i]);
             cardData.LoadCardData(extra[i]);
@@ -76,7 +80,7 @@ public class DuelDataManager
     public void ChangeNextPlayer()
     {
         player++;
-        if (player == duelPeopleNum) player = 0;
+        if (player == playerNum) player = 0;
         opWho = player;
     }
 }

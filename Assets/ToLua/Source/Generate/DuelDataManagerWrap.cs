@@ -7,17 +7,19 @@ public class DuelDataManagerWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(DuelDataManager), typeof(System.Object));
-		L.RegFunction("InitialDeck", InitialDeck);
+		L.RegFunction("InitialArray", InitialArray);
 		L.RegFunction("LoadDeckData", LoadDeckData);
 		L.RegFunction("ChangeNextPlayer", ChangeNextPlayer);
 		L.RegFunction("New", _CreateDuelDataManager);
 		L.RegFunction("__tostring", ToLua.op_ToString);
-		L.RegVar("duelPeopleNum", get_duelPeopleNum, set_duelPeopleNum);
+		L.RegVar("playerNum", get_playerNum, set_playerNum);
+		L.RegVar("areaNum", get_areaNum, set_areaNum);
 		L.RegVar("turnNum", get_turnNum, set_turnNum);
 		L.RegVar("duelPhase", get_duelPhase, set_duelPhase);
 		L.RegVar("player", get_player, set_player);
 		L.RegVar("opWho", get_opWho, set_opWho);
 		L.RegVar("effectChain", get_effectChain, set_effectChain);
+		L.RegVar("LP", get_LP, set_LP);
 		L.RegVar("deck", get_deck, set_deck);
 		L.RegVar("extra", get_extra, set_extra);
 		L.RegVar("grave", get_grave, set_grave);
@@ -25,7 +27,7 @@ public class DuelDataManagerWrap
 		L.RegVar("handcard", get_handcard, set_handcard);
 		L.RegVar("monster", get_monster, set_monster);
 		L.RegVar("magictrap", get_magictrap, set_magictrap);
-		L.RegVar("field", get_field, set_field);
+		L.RegVar("fieldcard", get_fieldcard, set_fieldcard);
 		L.RegVar("special", get_special, set_special);
 		L.RegVar("cardData", get_cardData, set_cardData);
 		L.RegVar("cardDic", get_cardDic, set_cardDic);
@@ -61,13 +63,13 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int InitialDeck(IntPtr L)
+	static int InitialArray(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
 			DuelDataManager obj = (DuelDataManager)ToLua.CheckObject<DuelDataManager>(L, 1);
-			obj.InitialDeck();
+			obj.InitialArray();
 			return 0;
 		}
 		catch (Exception e)
@@ -109,7 +111,7 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_duelPeopleNum(IntPtr L)
+	static int get_playerNum(IntPtr L)
 	{
 		object o = null;
 
@@ -117,13 +119,32 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			int ret = obj.duelPeopleNum;
+			int ret = obj.playerNum;
 			LuaDLL.lua_pushinteger(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index duelPeopleNum on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index playerNum on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_areaNum(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			int ret = obj.areaNum;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index areaNum on a nil value");
 		}
 	}
 
@@ -219,6 +240,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index effectChain on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_LP(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			int[] ret = obj.LP;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index LP on a nil value");
 		}
 	}
 
@@ -356,7 +396,7 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_field(IntPtr L)
+	static int get_fieldcard(IntPtr L)
 	{
 		object o = null;
 
@@ -364,13 +404,13 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			DuelCard[] ret = obj.field;
+			DuelCard[] ret = obj.fieldcard;
 			ToLua.Push(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index field on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index fieldcard on a nil value");
 		}
 	}
 
@@ -489,7 +529,7 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_duelPeopleNum(IntPtr L)
+	static int set_playerNum(IntPtr L)
 	{
 		object o = null;
 
@@ -498,12 +538,31 @@ public class DuelDataManagerWrap
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			obj.duelPeopleNum = arg0;
+			obj.playerNum = arg0;
 			return 0;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index duelPeopleNum on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index playerNum on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_areaNum(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.areaNum = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index areaNum on a nil value");
 		}
 	}
 
@@ -599,6 +658,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index effectChain on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_LP(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			int[] arg0 = ToLua.CheckNumberArray<int>(L, 2);
+			obj.LP = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index LP on a nil value");
 		}
 	}
 
@@ -736,7 +814,7 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_field(IntPtr L)
+	static int set_fieldcard(IntPtr L)
 	{
 		object o = null;
 
@@ -745,12 +823,12 @@ public class DuelDataManagerWrap
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
 			DuelCard[] arg0 = ToLua.CheckObjectArray<DuelCard>(L, 2);
-			obj.field = arg0;
+			obj.fieldcard = arg0;
 			return 0;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index field on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index fieldcard on a nil value");
 		}
 	}
 
