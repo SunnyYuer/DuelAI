@@ -151,6 +151,12 @@ public class Main : MonoBehaviour
             File.WriteAllBytes(writepath, webRequest.downloadHandler.data);
     }
 
+    /*
+     * zip数据包的规则设定
+     * 1.version.txt的修改时间作为zip包的版本时间
+     * 2.version.txt要保证为最新修改，并最后一个压缩进zip包中
+     * 3.因为最后写入zip文件的会被先读出来，所以需要修改的文件先压缩进zip包里，再压缩version.txt
+     */
     public int GetUpdateNum()
     {
         int num = 0;
