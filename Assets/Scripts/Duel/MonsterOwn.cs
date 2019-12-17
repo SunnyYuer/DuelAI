@@ -19,15 +19,27 @@ public class MonsterOwn : MonoBehaviour
 
     }
 
-    public void ShowMonsterCard(int index, int position)
+    public void ShowMonsterCard(DuelCard duelcard, int position, int mean)
     {
-        List<DuelCard> handcard = Duel.duelData.handcard[Duel.duelData.opWho];
-        Sprite sprite = Duel.spriteManager.GetCardSprite(handcard[index].card, false);
-        if(sprite == null)
-            monsterArea.GetChild(position).GetComponent<Renderer>().material.mainTexture = null;
+        Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.card, false);
+        Transform montrans = monsterArea.GetChild(position);
+        if (mean == 1)
+        {//表侧攻击表示
+            montrans.rotation = Quaternion.Euler(90, 0, 0);
+        }
+        if (mean == 2)
+        {//表侧守备表示
+            montrans.rotation = Quaternion.Euler(90, 0, 90);
+        }
+        if (mean == 3)
+        {//里侧守备表示
+            montrans.rotation = Quaternion.Euler(90, 0, 90);
+        }
+        if (sprite == null)
+            montrans.GetComponent<Renderer>().material.mainTexture = null;
         else
-            monsterArea.GetChild(position).GetComponent<Renderer>().material.mainTexture = sprite.texture;
-        monsterArea.GetChild(position).gameObject.SetActive(true);
+            montrans.GetComponent<Renderer>().material.mainTexture = sprite.texture;
+        montrans.gameObject.SetActive(true);
     }
 
     public IEnumerator MonsterPlace(List<int> place)

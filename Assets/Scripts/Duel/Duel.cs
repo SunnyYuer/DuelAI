@@ -255,16 +255,17 @@ public class Duel : MonoBehaviour
             if (eData.gameEvent == GameEvent.specialsummon)
             {
                 DuelCard selectcard = eData.data["selectcard"] as DuelCard;
-                yield return ChooseMonsterPlace();
+                yield return SelectMonsterPlace();
+                int mean = SelectMonsterMeans();
                 if (selectcard.position == CardPosition.handcard)
                 {
                     if (IsPlayerOwn(player))
                     {
-                        SpecialSummonFromHandOwn(selectcard.index, MonsterOwn.placeSelect);
+                        SpecialSummonFromHandOwn(selectcard, MonsterOwn.placeSelect, mean);
                     }
                     else
                     {
-                        SpecialSummonFromHandOps(selectcard.index, MonsterOps.placeSelect);
+                        SpecialSummonFromHandOps(selectcard, MonsterOps.placeSelect, mean);
                     }
                 }
                 duelData.effectChain = true;
@@ -506,7 +507,7 @@ public class Duel : MonoBehaviour
         return place;
     }
 
-    private IEnumerator ChooseMonsterPlace()
+    private IEnumerator SelectMonsterPlace()
     {
         List<int> place = GetMonsterPlace();
         //由玩家选择或者AI选择
@@ -523,35 +524,41 @@ public class Duel : MonoBehaviour
         yield return null;
     }
 
-    public void NormalSummonFromHandOwn(int index, int position)
-    {
-        handOwn.RemoveHandCard(index);
-        monserOwn.ShowMonsterCard(index, position);
-        duelData.monster[duelData.opWho][position] = duelData.handcard[duelData.opWho][index];
-        duelData.handcard[duelData.opWho].RemoveAt(index);
+    private int SelectMonsterMeans()
+    {//特殊召唤时的怪物表示选择
+        //由玩家选择或者AI选择
+        return 2;
     }
 
-    public void NormalSummonFromHandOps(int index, int position)
+    public void NormalSummonFromHandOwn(DuelCard duelcard, int position, int mean)
     {
-        handOps.RemoveHandCard(index);
-        monserOps.ShowMonsterCard(index, position);
-        duelData.monster[duelData.opWho][position] = duelData.handcard[duelData.opWho][index];
-        duelData.handcard[duelData.opWho].RemoveAt(index);
+        handOwn.RemoveHandCard(duelcard.index);
+        monserOwn.ShowMonsterCard(duelcard, position, mean);
+        duelData.monster[duelData.opWho][position] = duelcard;
+        duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
     }
 
-    private void SpecialSummonFromHandOwn(int index, int position)
+    public void NormalSummonFromHandOps(DuelCard duelcard, int position, int mean)
     {
-        handOwn.RemoveHandCard(index);
-        monserOwn.ShowMonsterCard(index, position);
-        duelData.monster[duelData.opWho][position] = duelData.handcard[duelData.opWho][index];
-        duelData.handcard[duelData.opWho].RemoveAt(index);
+        handOps.RemoveHandCard(duelcard.index);
+        monserOps.ShowMonsterCard(duelcard, position, mean);
+        duelData.monster[duelData.opWho][position] = duelcard;
+        duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
     }
 
-    private void SpecialSummonFromHandOps(int index, int position)
+    private void SpecialSummonFromHandOwn(DuelCard duelcard, int position, int mean)
     {
-        handOps.RemoveHandCard(index);
-        monserOps.ShowMonsterCard(index, position);
-        duelData.monster[duelData.opWho][position] = duelData.handcard[duelData.opWho][index];
-        duelData.handcard[duelData.opWho].RemoveAt(index);
+        handOwn.RemoveHandCard(duelcard.index);
+        monserOwn.ShowMonsterCard(duelcard, position, mean);
+        duelData.monster[duelData.opWho][position] = duelcard;
+        duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
+    }
+
+    private void SpecialSummonFromHandOps(DuelCard duelcard, int position, int mean)
+    {
+        handOps.RemoveHandCard(duelcard.index);
+        monserOps.ShowMonsterCard(duelcard, position, mean);
+        duelData.monster[duelData.opWho][position] = duelcard;
+        duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
     }
 }
