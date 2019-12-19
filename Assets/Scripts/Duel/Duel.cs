@@ -423,6 +423,7 @@ public class Duel : MonoBehaviour
         {
             if (duelData.monster[player][i] != null)
             {
+                Debug.Log("mean "+duelData.monster[player][i].mean);
                 if (target == -1)
                 {//直接攻击对方
                     int atk = duelData.cardDic[duelData.monster[player][i].card].atk;
@@ -527,13 +528,17 @@ public class Duel : MonoBehaviour
     private int SelectMonsterMeans()
     {//特殊召唤时的怪物表示选择
         //由玩家选择或者AI选择
-        return 2;
+        if (IsPlayerOwn(duelData.opWho))
+            return CardMean.faceupatk;
+        else
+            return CardMean.faceupdef;
     }
 
     public void NormalSummonFromHandOwn(DuelCard duelcard, int position, int mean)
     {
         handOwn.RemoveHandCard(duelcard.index);
         monserOwn.ShowMonsterCard(duelcard, position, mean);
+        duelcard.mean = mean;
         duelData.monster[duelData.opWho][position] = duelcard;
         duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
     }
@@ -542,6 +547,7 @@ public class Duel : MonoBehaviour
     {
         handOps.RemoveHandCard(duelcard.index);
         monserOps.ShowMonsterCard(duelcard, position, mean);
+        duelcard.mean = mean;
         duelData.monster[duelData.opWho][position] = duelcard;
         duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
     }
@@ -550,6 +556,7 @@ public class Duel : MonoBehaviour
     {
         handOwn.RemoveHandCard(duelcard.index);
         monserOwn.ShowMonsterCard(duelcard, position, mean);
+        duelcard.mean = mean;
         duelData.monster[duelData.opWho][position] = duelcard;
         duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
     }
@@ -558,6 +565,7 @@ public class Duel : MonoBehaviour
     {
         handOps.RemoveHandCard(duelcard.index);
         monserOps.ShowMonsterCard(duelcard, position, mean);
+        duelcard.mean = mean;
         duelData.monster[duelData.opWho][position] = duelcard;
         duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
     }

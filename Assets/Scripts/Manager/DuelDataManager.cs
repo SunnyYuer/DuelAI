@@ -93,6 +93,7 @@ public class DuelCard
     public string card;
     public int position;
     public int index;
+    public int mean;//在场上的表示状态
     public List<DuelBuff> buffList;
 }
 

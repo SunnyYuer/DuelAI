@@ -23,15 +23,15 @@ public class MonsterOps : MonoBehaviour
     {
         Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.card, false);
         Transform montrans = monsterArea.GetChild(position);
-        if (mean == 1)
+        if (mean == CardMean.faceupatk)
         {//表侧攻击表示
             montrans.rotation = Quaternion.Euler(90, 180, 0);
         }
-        if (mean == 2)
+        if (mean == CardMean.faceupdef)
         {//表侧守备表示
             montrans.rotation = Quaternion.Euler(90, 180, 90);
         }
-        if (mean == 3)
+        if (mean == CardMean.facedowndef)
         {//里侧守备表示
             montrans.rotation = Quaternion.Euler(90, 180, 90);
         }
