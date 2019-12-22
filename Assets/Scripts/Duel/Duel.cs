@@ -418,35 +418,56 @@ public class Duel : MonoBehaviour
     {
         int player = duelData.player;//攻击方
         int playerOpp = GetOppPlayer(player);//被攻击方
-        int target = ai.GetAttackTarget();
         for (int i = 0; i < duelData.areaNum; i++)
         {
-            if (duelData.monster[player][i] != null)
+            DuelCard monster = duelData.monster[player][i];
+            if (monster != null)
             {
-                Debug.Log("mean "+duelData.monster[player][i].mean);
+                //没有表侧攻击表示就不能攻击，特殊情况再添加
+                if (monster.mean != CardMean.faceupatk) continue;
+                //选择攻击目标
+                int target = ai.GetAttackTarget();
                 if (target == -1)
                 {//直接攻击对方
-                    int atk = duelData.cardDic[duelData.monster[player][i].card].atk;
+                    int atk = duelData.cardDic[monster.card].atk;
                     if (IsPlayerOwn(player)) LPOpsUpdate(duelData.LP[1] - atk);
                     else LPOwnUpdate(duelData.LP[0] - atk);
                 }
                 else
                 {//攻击选定的目标
-                    int atk1 = duelData.cardDic[duelData.monster[player][i].card].atk;
-                    int atk2 = duelData.cardDic[duelData.monster[playerOpp][target].card].atk;
-                    if (atk1 > atk2)
-                    {
-                        if (IsPlayerOwn(player)) LPOpsUpdate(duelData.LP[1] - (atk1 - atk2));
-                        else LPOwnUpdate(duelData.LP[0] - (atk1 - atk2));
+                    DuelCard monsterOpp = duelData.monster[playerOpp][target];
+                    if (monsterOpp.mean == CardMean.faceupatk)
+                    {//对方的怪兽处于攻击表示
+                        int atk1 = duelData.cardDic[monster.card].atk;
+                        int atk2 = duelData.cardDic[monsterOpp.card].atk;
+                        if (atk1 > atk2)
+                        {
+                            if (IsPlayerOwn(player)) LPOpsUpdate(duelData.LP[1] - (atk1 - atk2));
+                            else LPOwnUpdate(duelData.LP[0] - (atk1 - atk2));
+                        }
+                        if (atk1 == atk2)
+                        {
+
+                        }
+                        if (atk1 < atk2)
+                        {
+                            if (IsPlayerOwn(player)) LPOwnUpdate(duelData.LP[0] - (atk2 - atk1));
+                            else LPOpsUpdate(duelData.LP[1] - (atk2 - atk1));
+                        }
                     }
-                    if (atk1 == atk2)
-                    {
-                        
-                    }
-                    if (atk1 < atk2)
-                    {
-                        if (IsPlayerOwn(player)) LPOwnUpdate(duelData.LP[0] - (atk2 - atk1));
-                        else LPOpsUpdate(duelData.LP[1] - (atk2 - atk1));
+                    else
+                    {//对方的怪兽处于防御表示
+                        int atk1 = duelData.cardDic[monster.card].atk;
+                        int def2 = duelData.cardDic[monsterOpp.card].def;
+                        if (atk1 > def2)
+                        {
+                            Debug.Log("击败对方怪兽");
+                        }
+                        if (atk1 < def2)
+                        {
+                            if (IsPlayerOwn(player)) LPOwnUpdate(duelData.LP[0] - (def2 - atk1));
+                            else LPOpsUpdate(duelData.LP[1] - (def2 - atk1));
+                        }
                     }
                 }
             }
@@ -526,7 +547,7 @@ public class Duel : MonoBehaviour
     }
 
     private int SelectMonsterMeans()
-    {//特殊召唤时的怪物表示选择
+    {//特殊召唤时的怪兽表示选择
         //由玩家选择或者AI选择
         if (IsPlayerOwn(duelData.opWho))
             return CardMean.faceupatk;

@@ -17,7 +17,7 @@ public class CardPosition
 
 public class CardMean
 {
-    //怪物
+    //怪兽
     public const int faceupatk = 1;
     public const int faceupdef = 2;
     public const int facedowndef = 3;
