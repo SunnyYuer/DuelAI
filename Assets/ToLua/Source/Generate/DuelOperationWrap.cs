@@ -8,9 +8,11 @@ public class DuelOperationWrap
 	{
 		L.BeginClass(typeof(DuelOperation), typeof(UnityEngine.MonoBehaviour));
 		L.RegFunction("SetThisCard", SetThisCard);
+		L.RegFunction("InActivePhase", InActivePhase);
 		L.RegFunction("SetEffectEvent", SetEffectEvent);
 		L.RegFunction("SetActivatableEffect", SetActivatableEffect);
 		L.RegFunction("SetChainableEffect", SetChainableEffect);
+		L.RegFunction("SetCounterableEffect", SetCounterableEffect);
 		L.RegFunction("DrawCard", DrawCard);
 		L.RegFunction("DrawnCard", DrawnCard);
 		L.RegFunction("ShowCard", ShowCard);
@@ -50,6 +52,23 @@ public class DuelOperationWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelOperation.SetThisCard");
 			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int InActivePhase(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+			bool o = obj.InActivePhase();
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{
@@ -132,6 +151,39 @@ public class DuelOperationWrap
 			else
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelOperation.SetChainableEffect");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetCounterableEffect(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				obj.SetCounterableEffect(arg0);
+				return 0;
+			}
+			else if (count == 3)
+			{
+				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+				obj.SetCounterableEffect(arg0, arg1);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelOperation.SetCounterableEffect");
 			}
 		}
 		catch (Exception e)

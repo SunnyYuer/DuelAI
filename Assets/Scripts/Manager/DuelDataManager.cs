@@ -10,7 +10,6 @@ public class DuelDataManager
     public int duelPhase;
     public int player;//当前回合的玩家，0或2为友方，1或3为敌方
     public int opWho;//在效果处理的玩家
-    public bool effectChain;//是否正在连锁
     public int[] LP;
     public List<string>[] deck;
     public List<string>[] extra;
@@ -24,10 +23,15 @@ public class DuelDataManager
     public CardDataManager cardData;
     public Dictionary<string, Card> cardDic;
 
+    //效果连锁
+    public List<CardEffect> chainEffect;
+    public List<CardEffect> waitEffect;//不入连锁，等待连锁完后要发动的效果
+    public bool effectChain;//是否正在连锁
+
     //临时保存
-    public List<EventData>[] eventDate;
+    public List<CardEffect> activatableEffect;
+    public List<EventData> eventDate;
     public List<string>[] cardsJustDrawn;
-    public List<CardEffect> chainableEffect;
 
     public DuelDataManager(int peopleNum)
     {
@@ -35,7 +39,10 @@ public class DuelDataManager
         areaNum = 5;
         InitialArray();
         cardData = new CardDataManager();
-        chainableEffect = new List<CardEffect>();
+        chainEffect = new List<CardEffect>();
+        waitEffect = new List<CardEffect>();
+        eventDate = new List<EventData>();
+        activatableEffect = new List<CardEffect>();
         turnNum = 0;
         effectChain = false;
     }
@@ -49,7 +56,6 @@ public class DuelDataManager
         handcard = new List<DuelCard>[playerNum];
         monster = new DuelCard[playerNum][];
         magictrap = new DuelCard[playerNum][];
-        eventDate = new List<EventData>[playerNum];
         cardsJustDrawn = new List<string>[playerNum];
         for (int i = 0; i < playerNum; i++)
         {
@@ -60,7 +66,6 @@ public class DuelDataManager
             handcard[i] = new List<DuelCard>();
             monster[i] = new DuelCard[areaNum];
             magictrap[i] = new DuelCard[areaNum];
-            eventDate[i] = new List<EventData>();
             cardsJustDrawn[i] = new List<string>();
         }
         LP = new int[2];
@@ -91,9 +96,11 @@ public class DuelDataManager
 public class DuelCard
 {
     public string card;
+    public int owner;//原本持有者
+    public int controller;//控制者
     public int position;
     public int index;
-    public int mean;//在场上的表示状态
+    public int mean;//在场上的表示形式
     public List<DuelBuff> buffList;
 }
 
@@ -112,6 +119,7 @@ public class DuelBuff
 /// </summary>
 public class EventData
 {
+    public int oplayer;//产生事件的玩家
     public int gameEvent;
     public Dictionary<string, object> data;
 }
@@ -123,6 +131,7 @@ public class CardEffect
 {
     public DuelCard duelcard;
     public int effect;
+    public int speed;
     public bool cost;
 }
 

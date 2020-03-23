@@ -50,6 +50,19 @@ public class DuelOperation : MonoBehaviour
     }
 
     /// <summary>
+    /// 是否在可以发动主动效果的阶段中
+    /// </summary>
+    /// <returns></returns>
+    public bool InActivePhase()
+    {
+        if (duelData.duelPhase == 3 || duelData.duelPhase == 5)
+        {
+            if (!duelData.effectChain) return true;
+        }
+        return false;
+    }
+
+    /// <summary>
     /// 检查效果能否发动
     /// </summary>
     /// <param name="effectEvent"></param>
@@ -59,24 +72,35 @@ public class DuelOperation : MonoBehaviour
     }
 
     /// <summary>
-    /// 设置可发动的效果，之后可以进行发动
+    /// 设置1速的效果，之后可以进行发动
     /// </summary>
     /// <param name="effect"></param>
     /// <param name="cost"></param>
     public void SetActivatableEffect(int effect, bool cost = false)
     {
-        activatable = duel.PhaseCheck();
+        if (activatable) duel.SetActivatableEffect(thiscard, effect, 1, cost);
         activatable = true;
     }
 
     /// <summary>
-    /// 设置可连锁的效果，之后可选择以进行发动
+    /// 设置2速的效果，之后可选择以进行发动
     /// </summary>
     /// <param name="effect"></param>
     /// <param name="cost"></param>
     public void SetChainableEffect(int effect, bool cost = false)
     {
-        if (activatable) duel.SetChainableEffect(thiscard, effect, cost);
+        if (activatable) duel.SetActivatableEffect(thiscard, effect, 2, cost);
+        activatable = true;
+    }
+
+    /// <summary>
+    /// 设置3速的效果，之后可选择以进行发动
+    /// </summary>
+    /// <param name="effect"></param>
+    /// <param name="cost"></param>
+    public void SetCounterableEffect(int effect, bool cost = false)
+    {
+        if (activatable) duel.SetActivatableEffect(thiscard, effect, 3, cost);
         activatable = true;
     }
 
@@ -89,15 +113,15 @@ public class DuelOperation : MonoBehaviour
     {
         EventData eData = new EventData
         {
+            oplayer = duelData.opWho,
             gameEvent = GameEvent.drawcard,
             data = new Dictionary<string, object>
             {
-                { "player", who },
+                { "drawplayer", who },
                 { "drawnum", num }
             }
         };
-        if (who == 1) duelData.opWho = duel.GetOppPlayer(duelData.opWho);
-        duelData.eventDate[duelData.opWho].Add(eData);
+        duelData.eventDate.Add(eData);
     }
 
     /// <summary>
@@ -149,13 +173,14 @@ public class DuelOperation : MonoBehaviour
             {
                 EventData eData = new EventData
                 {
+                    oplayer = duelData.opWho,
                     gameEvent = GameEvent.specialsummon,
                     data = new Dictionary<string, object>
                     {
-                        { "selectcard", thiscard }
+                        { "monstercard", thiscard }
                     }
                 };
-                duelData.eventDate[duelData.opWho].Add(eData);
+                duelData.eventDate.Add(eData);
             }
         }
     }
