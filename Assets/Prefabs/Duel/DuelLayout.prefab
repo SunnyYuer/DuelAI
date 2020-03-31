@@ -1290,7 +1290,7 @@ GameObject:
   - component: {fileID: 6791702180420478461}
   - component: {fileID: 6791702180420478459}
   - component: {fileID: 6791702180420478460}
-  - component: {fileID: 8804180899492588051}
+  - component: {fileID: 465669882450082892}
   m_Layer: 5
   m_Name: GraveImageOwn
   m_TagString: Untagged
@@ -1355,7 +1355,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!114 &8804180899492588051
+--- !u!114 &465669882450082892
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1364,11 +1364,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6791702180420478462}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20f0adc6959353f40974277d50e7d91b, type: 3}
+  m_Script: {fileID: 11500000, guid: 80d3859b8a97d9f40b9b71833226d2aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 6791702180420478460}
-  decknum: {fileID: 8538202934511831296}
+  gravenum: {fileID: 8538202934511831296}
 --- !u!1 &6791702180713398990
 GameObject:
   m_ObjectHideFlags: 0
@@ -1455,7 +1455,7 @@ GameObject:
   - component: {fileID: 6791702180735255598}
   - component: {fileID: 6791702180735255596}
   - component: {fileID: 6791702180735255597}
-  - component: {fileID: 3447251479157042882}
+  - component: {fileID: 5321595397359002823}
   m_Layer: 5
   m_Name: GraveImageOps
   m_TagString: Untagged
@@ -1520,7 +1520,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!114 &3447251479157042882
+--- !u!114 &5321595397359002823
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1529,11 +1529,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6791702180735255599}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d13f634cddf982d40a731cea934528e6, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e389cae461a362459d709844a2bc828, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 6791702180735255597}
-  decknum: {fileID: 20939172423128392}
+  gravenum: {fileID: 20939172423128392}
 --- !u!1 &6791702180797271488
 GameObject:
   m_ObjectHideFlags: 0
@@ -2089,6 +2089,8 @@ MonoBehaviour:
   LPOps: {fileID: 6791702179941635201}
   deckOwn: {fileID: 1236780718351047031}
   deckOps: {fileID: 6430187799037395263}
+  graveOwn: {fileID: 465669882450082892}
+  graveOps: {fileID: 5321595397359002823}
   handOwn: {fileID: 8371625762274328373}
   handOps: {fileID: 7961374815630919330}
   endTurnButton: {fileID: 8406949217961765362}

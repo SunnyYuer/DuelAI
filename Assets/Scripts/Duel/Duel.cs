@@ -11,6 +11,8 @@ public class Duel : MonoBehaviour
     public Text LPOps;
     public DeckOwn deckOwn;
     public DeckOps deckOps;
+    public GraveOwn graveOwn;
+    public GraveOps graveOps;
     public HandCardOwn handOwn;
     public HandCardOps handOps;
     private MonsterOwn monserOwn;
@@ -330,7 +332,7 @@ public class Duel : MonoBehaviour
         int i;
         for(i = 0; i < duelData.handcard[player].Count; i++)
         {
-            duelOperate.SetThisCard(duelData.handcard[player][i], CardPosition.handcard, i);
+            duelOperate.SetThisCard(duelData.handcard[player][i]);
             luaCode.Run("c"+ duelData.handcard[player][i].card);
         }
     }
@@ -406,67 +408,6 @@ public class Duel : MonoBehaviour
         yield return null;
     }
 
-    private IEnumerator Battle()
-    {
-        int player = duelData.player;//攻击方
-        int playerOpp = GetOppPlayer(player);//被攻击方
-        for (int i = 0; i < duelData.areaNum; i++)
-        {
-            DuelCard monster = duelData.monster[player][i];
-            if (monster != null)
-            {
-                //没有表侧攻击表示就不能攻击，特殊情况再添加
-                if (monster.mean != CardMean.faceupatk) continue;
-                //选择攻击目标
-                int target = ai.GetAttackTarget();
-                if (target == -1)
-                {//直接攻击对方
-                    int atk = duelData.cardDic[monster.card].atk;
-                    if (IsPlayerOwn(player)) LPOpsUpdate(duelData.LP[1] - atk);
-                    else LPOwnUpdate(duelData.LP[0] - atk);
-                }
-                else
-                {//攻击选定的目标
-                    DuelCard monsterOpp = duelData.monster[playerOpp][target];
-                    if (monsterOpp.mean == CardMean.faceupatk)
-                    {//对方的怪兽处于攻击表示
-                        int atk1 = duelData.cardDic[monster.card].atk;
-                        int atk2 = duelData.cardDic[monsterOpp.card].atk;
-                        if (atk1 > atk2)
-                        {
-                            if (IsPlayerOwn(player)) LPOpsUpdate(duelData.LP[1] - (atk1 - atk2));
-                            else LPOwnUpdate(duelData.LP[0] - (atk1 - atk2));
-                        }
-                        if (atk1 == atk2)
-                        {
-
-                        }
-                        if (atk1 < atk2)
-                        {
-                            if (IsPlayerOwn(player)) LPOwnUpdate(duelData.LP[0] - (atk2 - atk1));
-                            else LPOpsUpdate(duelData.LP[1] - (atk2 - atk1));
-                        }
-                    }
-                    else
-                    {//对方的怪兽处于防御表示
-                        int atk1 = duelData.cardDic[monster.card].atk;
-                        int def2 = duelData.cardDic[monsterOpp.card].def;
-                        if (atk1 > def2)
-                        {
-                            Debug.Log("击败对方怪兽");
-                        }
-                        if (atk1 < def2)
-                        {
-                            if (IsPlayerOwn(player)) LPOwnUpdate(duelData.LP[0] - (def2 - atk1));
-                            else LPOpsUpdate(duelData.LP[1] - (def2 - atk1));
-                        }
-                    }
-                }
-            }
-        }
-        yield return null;
-    }
-
     private IEnumerator DrawCardOwn(int playerOwn, int num)
     {
         duelData.cardsJustDrawn[playerOwn].Clear();
@@ -479,6 +420,8 @@ public class Duel : MonoBehaviour
                 card = duelData.deck[playerOwn][0],
                 owner = playerOwn,
                 controller = playerOwn,
+                position = CardPosition.handcard,
+                index = duelData.handcard[playerOwn].Count,
                 buffList = new List<DuelBuff>()
             };
             duelData.handcard[playerOwn].Add(duelcard);
@@ -501,6 +444,8 @@ public class Duel : MonoBehaviour
                 card = duelData.deck[playerOps][0],
                 owner = playerOps,
                 controller = playerOps,
+                position = CardPosition.handcard,
+                index = duelData.handcard[playerOps].Count,
                 buffList = new List<DuelBuff>()
             };
             duelData.handcard[playerOps].Add(duelcard);
@@ -526,7 +471,7 @@ public class Duel : MonoBehaviour
     }
 
     private IEnumerator SelectMonsterPlace()
-    {
+    {//选择怪兽放置
         List<int> place = GetMonsterPlace();
         //由玩家选择或者AI选择
         int select = 0;
@@ -548,42 +493,122 @@ public class Duel : MonoBehaviour
         if (IsPlayerOwn(duelData.opWho))
             return CardMean.faceupatk;
         else
-            return CardMean.faceupdef;
+            return CardMean.faceupatk;
     }
 
-    public void NormalSummonFromHandOwn(DuelCard duelcard, int position, int mean)
+    public void NormalSummonFromHandOwn(DuelCard duelcard, int place, int mean)
     {
         handOwn.RemoveHandCard(duelcard.index);
-        monserOwn.ShowMonsterCard(duelcard, position, mean);
-        duelcard.mean = mean;
-        duelData.monster[duelData.opWho][position] = duelcard;
         duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
+        duelcard.position = CardPosition.monster;
+        duelcard.index = place;
+        duelcard.mean = mean;
+        duelData.monster[duelData.opWho][place] = duelcard;
+        monserOwn.ShowMonsterCard(duelcard);
     }
 
-    public void NormalSummonFromHandOps(DuelCard duelcard, int position, int mean)
+    public void NormalSummonFromHandOps(DuelCard duelcard, int place, int mean)
     {
         handOps.RemoveHandCard(duelcard.index);
-        monserOps.ShowMonsterCard(duelcard, position, mean);
-        duelcard.mean = mean;
-        duelData.monster[duelData.opWho][position] = duelcard;
         duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
+        duelcard.position = CardPosition.monster;
+        duelcard.index = place;
+        duelcard.mean = mean;
+        duelData.monster[duelData.opWho][place] = duelcard;
+        monserOps.ShowMonsterCard(duelcard);
     }
 
-    private void SpecialSummonFromHandOwn(DuelCard duelcard, int position, int mean)
+    private void SpecialSummonFromHandOwn(DuelCard duelcard, int place, int mean)
     {
         handOwn.RemoveHandCard(duelcard.index);
-        monserOwn.ShowMonsterCard(duelcard, position, mean);
-        duelcard.mean = mean;
-        duelData.monster[duelData.opWho][position] = duelcard;
         duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
+        duelcard.position = CardPosition.monster;
+        duelcard.index = place;
+        duelcard.mean = mean;
+        duelData.monster[duelData.opWho][place] = duelcard;
+        monserOwn.ShowMonsterCard(duelcard);
     }
 
-    private void SpecialSummonFromHandOps(DuelCard duelcard, int position, int mean)
+    private void SpecialSummonFromHandOps(DuelCard duelcard, int place, int mean)
     {
         handOps.RemoveHandCard(duelcard.index);
-        monserOps.ShowMonsterCard(duelcard, position, mean);
-        duelcard.mean = mean;
-        duelData.monster[duelData.opWho][position] = duelcard;
         duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
+        duelcard.position = CardPosition.monster;
+        duelcard.index = place;
+        duelcard.mean = mean;
+        duelData.monster[duelData.opWho][place] = duelcard;
+        monserOps.ShowMonsterCard(duelcard);
+    }
+
+    private IEnumerator Battle()
+    {
+        int atkplayer = duelData.player;//攻击方
+        int antiplayer = GetOppPlayer(atkplayer);//被攻击方
+        for (int i = 0; i < duelData.areaNum; i++)
+        {
+            DuelCard atkmonster = duelData.monster[atkplayer][i];
+            if (atkmonster == null) continue;
+            //没有表侧攻击表示就不能攻击，特殊情况再添加
+            if (atkmonster.mean != CardMean.faceupatk) continue;
+            //选择攻击目标
+            int target = ai.GetAttackTarget();
+            if (target == -1)
+            {//直接攻击对方
+                int atk = duelData.cardDic[atkmonster.card].atk;
+                if (IsPlayerOwn(atkplayer)) LPOpsUpdate(duelData.LP[1] - atk);
+                else LPOwnUpdate(duelData.LP[0] - atk);
+            }
+            else
+            {//攻击选定的目标
+                DuelCard antimonster = duelData.monster[antiplayer][target];
+                if (antimonster.mean == CardMean.faceupatk)
+                {//对方的怪兽处于攻击表示
+                    int atk1 = duelData.cardDic[atkmonster.card].atk;
+                    int atk2 = duelData.cardDic[antimonster.card].atk;
+                    if (atk1 > atk2)
+                    {
+                        if (IsPlayerOwn(atkplayer)) LPOpsUpdate(duelData.LP[1] - (atk1 - atk2));
+                        else LPOwnUpdate(duelData.LP[0] - (atk1 - atk2));
+                        DestroyCard(antimonster, 0);
+                    }
+                    if (atk1 == atk2)
+                    {
+                        DestroyCard(atkmonster, 0);
+                        DestroyCard(antimonster, 0);
+                    }
+                    if (atk1 < atk2)
+                    {
+                        if (IsPlayerOwn(atkplayer)) LPOwnUpdate(duelData.LP[0] - (atk2 - atk1));
+                        else LPOpsUpdate(duelData.LP[1] - (atk2 - atk1));
+                        DestroyCard(atkmonster, 0);
+                    }
+                }
+                else
+                {//对方的怪兽处于防御表示
+                    int atk1 = duelData.cardDic[atkmonster.card].atk;
+                    int def2 = duelData.cardDic[antimonster.card].def;
+                    if (atk1 > def2)
+                    {
+                        DestroyCard(antimonster, 0);
+                    }
+                    if (atk1 <= def2)
+                    {
+                        if (IsPlayerOwn(atkplayer)) LPOwnUpdate(duelData.LP[0] - (def2 - atk1));
+                        else LPOpsUpdate(duelData.LP[1] - (def2 - atk1));
+                    }
+                }
+            }
+        }
+        yield return null;
+    }
+
+    public void DestroyCard(DuelCard card, int way)
+    {
+        if (IsPlayerOwn(card.controller)) monserOwn.HideMonsterCard(card);
+        else monserOps.HideMonsterCard(card);
+        duelData.monster[card.controller][card.index] = null;
+        duelData.grave[card.owner].Insert(0, card.card);
+        if (IsPlayerOwn(card.owner)) graveOwn.GraveUpdate(card.owner);
+        else graveOps.GraveUpdate(card.owner);
     }
 }

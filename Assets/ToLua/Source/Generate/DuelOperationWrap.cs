@@ -30,28 +30,11 @@ public class DuelOperationWrap
 	{
 		try
 		{
-			int count = LuaDLL.lua_gettop(L);
-
-			if (count == 2)
-			{
-				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
-				DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
-				obj.SetThisCard(arg0);
-				return 0;
-			}
-			else if (count == 4)
-			{
-				DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
-				DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
-				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-				int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
-				obj.SetThisCard(arg0, arg1, arg2);
-				return 0;
-			}
-			else
-			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelOperation.SetThisCard");
-			}
+			ToLua.CheckArgsCount(L, 2);
+			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+			DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
+			obj.SetThisCard(arg0);
+			return 0;
 		}
 		catch (Exception e)
 		{

@@ -19,26 +19,32 @@ public class MonsterOps : MonoBehaviour
         
     }
 
-    public void ShowMonsterCard(DuelCard duelcard, int position, int mean)
+    public void ShowMonsterCard(DuelCard duelcard)
     {
+        Transform montrans = monsterArea.GetChild(duelcard.index);
         Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.card, false);
-        Transform montrans = monsterArea.GetChild(position);
-        if (mean == CardMean.faceupatk)
-        {//表侧攻击表示
-            montrans.rotation = Quaternion.Euler(90, 180, 0);
-        }
-        if (mean == CardMean.faceupdef)
-        {//表侧守备表示
-            montrans.rotation = Quaternion.Euler(90, 180, 90);
-        }
-        if (mean == CardMean.facedowndef)
-        {//里侧守备表示
-            montrans.rotation = Quaternion.Euler(90, 180, 90);
-        }
         if (sprite == null)
             montrans.GetComponent<Renderer>().material.mainTexture = null;
         else
             montrans.GetComponent<Renderer>().material.mainTexture = sprite.texture;
+        if (duelcard.mean == CardMean.faceupatk)
+        {//表侧攻击表示
+            montrans.rotation = Quaternion.Euler(90, 180, 0);
+        }
+        if (duelcard.mean == CardMean.faceupdef)
+        {//表侧守备表示
+            montrans.rotation = Quaternion.Euler(90, 180, 90);
+        }
+        if (duelcard.mean == CardMean.facedowndef)
+        {//里侧守备表示
+            montrans.rotation = Quaternion.Euler(90, 180, 90);
+        }
         montrans.gameObject.SetActive(true);
+    }
+
+    public void HideMonsterCard(DuelCard duelcard)
+    {
+        Transform montrans = monsterArea.GetChild(duelcard.index);
+        montrans.gameObject.SetActive(false);
     }
 }

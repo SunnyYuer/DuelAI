@@ -26,26 +26,12 @@ public class DuelOperation : MonoBehaviour
     }
 
     /// <summary>
-    /// 设置当前运行效果的卡的位置
+    /// 设置当前运行效果的卡
     /// </summary>
     /// <param name="duelcard"></param>
     public void SetThisCard(DuelCard duelcard)
     {
         thiscard = duelcard;
-        activatable = true;
-    }
-
-    /// <summary>
-    /// 设置当前运行效果的卡的位置
-    /// </summary>
-    /// <param name="duelcard"></param>
-    /// <param name="position"></param>
-    /// <param name="index"></param>
-    public void SetThisCard(DuelCard duelcard, int position, int index)
-    {
-        thiscard = duelcard;
-        thiscard.position = position;
-        thiscard.index = index;
         activatable = true;
     }
 
