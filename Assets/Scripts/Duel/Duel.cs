@@ -53,9 +53,8 @@ public class Duel : MonoBehaviour
         LPOwnUpdate(8000);
         LPOpsUpdate(8000);
         //各自起手5张卡
-        StartCoroutine(DrawCardOwn(0, 5));
-        StartCoroutine(DrawCardOps(1, 5));
-        yield return new WaitForSeconds(1);
+        yield return DrawCard(0, 5);
+        yield return DrawCard(1, 5);
         //决斗开始
         StartCoroutine(DuelPhase(duelData.duelPhase));
         StartCoroutine(Game());
@@ -220,28 +219,18 @@ public class Duel : MonoBehaviour
                     int drawnum = (int)eData.data["drawnum"];
                     if (drawplayer == 0)
                     {//自己抽卡
-                        if (IsPlayerOwn(player)) yield return DrawCardOwn(player, drawnum);
-                        else yield return DrawCardOps(player, drawnum);
+                        yield return DrawCard(player, drawnum);
                     }
                     if (drawplayer == 1)
                     {//对方抽卡
-                        if (IsPlayerOwn(player)) yield return DrawCardOps(GetOppPlayer(player), drawnum);
-                        else yield return DrawCardOwn(GetOppPlayer(player), drawnum);
+                        yield return DrawCard(GetOppPlayer(player), drawnum);
                     }
                     if (drawplayer == 2)
                     {//双方同时抽卡
                      //同时行动时，先处理回合玩家
                         player = duelData.player;
-                        if (IsPlayerOwn(player))
-                        {
-                            yield return DrawCardOwn(player, drawnum);
-                            yield return DrawCardOps(GetOppPlayer(player), drawnum);
-                        }
-                        else
-                        {
-                            yield return DrawCardOps(player, drawnum);
-                            yield return DrawCardOwn(GetOppPlayer(player), drawnum);
-                        }
+                        yield return DrawCard(player, drawnum);
+                        yield return DrawCard(GetOppPlayer(player), drawnum);
                     }
                     break;
                 case GameEvent.specialsummon:
@@ -250,14 +239,7 @@ public class Duel : MonoBehaviour
                     int mean = SelectMonsterMeans();
                     if (monstercard.position == CardPosition.handcard)
                     {
-                        if (IsPlayerOwn(player))
-                        {
-                            SpecialSummonFromHandOwn(monstercard, MonsterOwn.placeSelect, mean);
-                        }
-                        else
-                        {
-                            SpecialSummonFromHandOps(monstercard, MonsterOps.placeSelect, mean);
-                        }
+                        SpecialSummonFromHand(monstercard, MonsterOwn.placeSelect, mean);
                     }
                     break;
                 default:
@@ -408,50 +390,28 @@ public class Duel : MonoBehaviour
         yield return null;
     }
 
-    private IEnumerator DrawCardOwn(int playerOwn, int num)
+    private IEnumerator DrawCard(int player, int num)
     {
-        duelData.cardsJustDrawn[playerOwn].Clear();
+        duelData.cardsJustDrawn[player].Clear();
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
-            handOwn.AddHandCardFromDeck(playerOwn);
+            if (IsPlayerOwn(player)) handOwn.AddHandCardFromDeck(player);
+            else handOps.AddHandCardFromDeck(player);
             DuelCard duelcard = new DuelCard
             {
-                card = duelData.deck[playerOwn][0],
-                owner = playerOwn,
-                controller = playerOwn,
+                card = duelData.deck[player][0],
+                owner = player,
+                controller = player,
                 position = CardPosition.handcard,
-                index = duelData.handcard[playerOwn].Count,
+                index = duelData.handcard[player].Count,
                 buffList = new List<DuelBuff>()
             };
-            duelData.handcard[playerOwn].Add(duelcard);
-            duelData.cardsJustDrawn[playerOwn].Add(duelData.deck[playerOwn][0]);
-            duelData.deck[playerOwn].RemoveAt(0);
-            deckOwn.DeckUpdate(playerOwn);
-            num--;
-        }
-    }
-
-    private IEnumerator DrawCardOps(int playerOps, int num)
-    {
-        duelData.cardsJustDrawn[playerOps].Clear();
-        while (num > 0)
-        {
-            yield return new WaitForSeconds(0.1f);
-            handOps.AddHandCardFromDeck(playerOps);
-            DuelCard duelcard = new DuelCard
-            {
-                card = duelData.deck[playerOps][0],
-                owner = playerOps,
-                controller = playerOps,
-                position = CardPosition.handcard,
-                index = duelData.handcard[playerOps].Count,
-                buffList = new List<DuelBuff>()
-            };
-            duelData.handcard[playerOps].Add(duelcard);
-            duelData.cardsJustDrawn[playerOps].Add(duelData.deck[playerOps][0]);
-            duelData.deck[playerOps].RemoveAt(0);
-            deckOps.DeckUpdate(playerOps);
+            duelData.handcard[player].Add(duelcard);
+            duelData.cardsJustDrawn[player].Add(duelData.deck[player][0]);
+            duelData.deck[player].RemoveAt(0);
+            if (IsPlayerOwn(player)) deckOwn.DeckUpdate(player);
+            else deckOps.DeckUpdate(player);
             num--;
         }
     }
@@ -496,48 +456,30 @@ public class Duel : MonoBehaviour
             return CardMean.faceupatk;
     }
 
-    public void NormalSummonFromHandOwn(DuelCard duelcard, int place, int mean)
+    public void NormalSummonFromHand(DuelCard duelcard, int place, int mean)
     {
-        handOwn.RemoveHandCard(duelcard.index);
-        duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
+        if (IsPlayerOwn(duelcard.controller)) handOwn.RemoveHandCard(duelcard.index);
+        else handOps.RemoveHandCard(duelcard.index);
+        duelData.handcard[duelcard.controller].RemoveAt(duelcard.index);
         duelcard.position = CardPosition.monster;
         duelcard.index = place;
         duelcard.mean = mean;
-        duelData.monster[duelData.opWho][place] = duelcard;
-        monserOwn.ShowMonsterCard(duelcard);
+        duelData.monster[duelcard.controller][place] = duelcard;
+        if (IsPlayerOwn(duelcard.controller)) monserOwn.ShowMonsterCard(duelcard);
+        else monserOps.ShowMonsterCard(duelcard);
     }
 
-    public void NormalSummonFromHandOps(DuelCard duelcard, int place, int mean)
+    private void SpecialSummonFromHand(DuelCard duelcard, int place, int mean)
     {
-        handOps.RemoveHandCard(duelcard.index);
-        duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
+        if (IsPlayerOwn(duelcard.controller)) handOwn.RemoveHandCard(duelcard.index);
+        else handOps.RemoveHandCard(duelcard.index);
+        duelData.handcard[duelcard.controller].RemoveAt(duelcard.index);
         duelcard.position = CardPosition.monster;
         duelcard.index = place;
         duelcard.mean = mean;
-        duelData.monster[duelData.opWho][place] = duelcard;
-        monserOps.ShowMonsterCard(duelcard);
-    }
-
-    private void SpecialSummonFromHandOwn(DuelCard duelcard, int place, int mean)
-    {
-        handOwn.RemoveHandCard(duelcard.index);
-        duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
-        duelcard.position = CardPosition.monster;
-        duelcard.index = place;
-        duelcard.mean = mean;
-        duelData.monster[duelData.opWho][place] = duelcard;
-        monserOwn.ShowMonsterCard(duelcard);
-    }
-
-    private void SpecialSummonFromHandOps(DuelCard duelcard, int place, int mean)
-    {
-        handOps.RemoveHandCard(duelcard.index);
-        duelData.handcard[duelData.opWho].RemoveAt(duelcard.index);
-        duelcard.position = CardPosition.monster;
-        duelcard.index = place;
-        duelcard.mean = mean;
-        duelData.monster[duelData.opWho][place] = duelcard;
-        monserOps.ShowMonsterCard(duelcard);
+        duelData.monster[duelcard.controller][place] = duelcard;
+        if (IsPlayerOwn(duelcard.controller)) monserOwn.ShowMonsterCard(duelcard);
+        else monserOps.ShowMonsterCard(duelcard);
     }
 
     private IEnumerator Battle()
@@ -602,13 +544,13 @@ public class Duel : MonoBehaviour
         yield return null;
     }
 
-    public void DestroyCard(DuelCard card, int way)
+    public void DestroyCard(DuelCard duelcard, int way)
     {
-        if (IsPlayerOwn(card.controller)) monserOwn.HideMonsterCard(card);
-        else monserOps.HideMonsterCard(card);
-        duelData.monster[card.controller][card.index] = null;
-        duelData.grave[card.owner].Insert(0, card.card);
-        if (IsPlayerOwn(card.owner)) graveOwn.GraveUpdate(card.owner);
-        else graveOps.GraveUpdate(card.owner);
+        if (IsPlayerOwn(duelcard.controller)) monserOwn.HideMonsterCard(duelcard);
+        else monserOps.HideMonsterCard(duelcard);
+        duelData.monster[duelcard.controller][duelcard.index] = null;
+        duelData.grave[duelcard.owner].Insert(0, duelcard.card);
+        if (IsPlayerOwn(duelcard.owner)) graveOwn.GraveUpdate(duelcard.owner);
+        else graveOps.GraveUpdate(duelcard.owner);
     }
 }
