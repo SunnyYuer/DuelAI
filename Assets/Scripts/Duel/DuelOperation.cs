@@ -9,7 +9,8 @@ public class DuelOperation : MonoBehaviour
 {
     private Duel duel;
     public DuelDataManager duelData;
-    public DuelCard thiscard;//当前运行效果的卡
+    public DuelCard thiscard;//当前卡
+    public bool precheck;//发动效果和支付代价前预先检查能否执行
     public bool activatable;//卡牌能否发动
 
     // Start is called before the first frame update
@@ -26,12 +27,13 @@ public class DuelOperation : MonoBehaviour
     }
 
     /// <summary>
-    /// 设置当前运行效果的卡
+    /// 设置当前卡
     /// </summary>
     /// <param name="duelcard"></param>
     public void SetThisCard(DuelCard duelcard)
     {
         thiscard = duelcard;
+        precheck = false;
         activatable = true;
     }
 
@@ -51,10 +53,9 @@ public class DuelOperation : MonoBehaviour
     /// <summary>
     /// 检查效果能否发动
     /// </summary>
-    /// <param name="effectEvent"></param>
-    public void SetEffectEvent(int effectEvent)
+    public void Precheck()
     {
-        activatable = duel.EffectCheck(effectEvent);
+        precheck = true;
     }
 
     /// <summary>
@@ -64,6 +65,7 @@ public class DuelOperation : MonoBehaviour
     /// <param name="cost"></param>
     public void SetActivatableEffect(int effect, bool cost = false)
     {
+        precheck = false;
         if (activatable) duel.SetActivatableEffect(thiscard, effect, 1, cost);
         activatable = true;
     }
@@ -75,6 +77,7 @@ public class DuelOperation : MonoBehaviour
     /// <param name="cost"></param>
     public void SetChainableEffect(int effect, bool cost = false)
     {
+        precheck = false;
         if (activatable) duel.SetActivatableEffect(thiscard, effect, 2, cost);
         activatable = true;
     }
@@ -86,28 +89,9 @@ public class DuelOperation : MonoBehaviour
     /// <param name="cost"></param>
     public void SetCounterableEffect(int effect, bool cost = false)
     {
+        precheck = false;
         if (activatable) duel.SetActivatableEffect(thiscard, effect, 3, cost);
         activatable = true;
-    }
-
-    /// <summary>
-    /// 抽卡
-    /// </summary>
-    /// <param name="who"></param>
-    /// <param name="num"></param>
-    public void DrawCard(int who, int num)
-    {
-        EventData eData = new EventData
-        {
-            oplayer = duelData.opWho,
-            gameEvent = GameEvent.drawcard,
-            data = new Dictionary<string, object>
-            {
-                { "drawplayer", who },
-                { "drawnum", num }
-            }
-        };
-        duelData.eventDate.Add(eData);
     }
 
     /// <summary>
@@ -136,10 +120,32 @@ public class DuelOperation : MonoBehaviour
     }
 
     /// <summary>
+    /// 抽卡
+    /// </summary>
+    /// <param name="who"></param>
+    /// <param name="num"></param>
+    public void DrawCard(int who, int num)
+    {
+        if (precheck) return;
+        EventData eData = new EventData
+        {
+            oplayer = duelData.opWho,
+            gameEvent = GameEvent.drawcard,
+            data = new Dictionary<string, object>
+            {
+                { "drawplayer", who },
+                { "drawnum", num }
+            }
+        };
+        duelData.eventDate.Add(eData);
+    }
+
+    /// <summary>
     /// 把这张卡给对方观看
     /// </summary>
     public void ShowCard(string card)
     {
+        if (precheck) return;
         if (card.Equals(""))
         {
             card = thiscard.card;
@@ -153,21 +159,23 @@ public class DuelOperation : MonoBehaviour
     /// <param name="card"></param>
     public void SpecialSummon(string card)
     {
+        if (precheck)
+        {
+            if (!duel.SpecialSummonCheck()) activatable = false;
+            return;
+        }
         if (card.Equals(""))
         {
-            if (thiscard.position == CardPosition.handcard)
+            EventData eData = new EventData
             {
-                EventData eData = new EventData
+                oplayer = duelData.opWho,
+                gameEvent = GameEvent.specialsummon,
+                data = new Dictionary<string, object>
                 {
-                    oplayer = duelData.opWho,
-                    gameEvent = GameEvent.specialsummon,
-                    data = new Dictionary<string, object>
-                    {
-                        { "monstercard", thiscard }
-                    }
-                };
-                duelData.eventDate.Add(eData);
-            }
+                    { "monstercard", thiscard }
+                }
+            };
+            duelData.eventDate.Add(eData);
         }
     }
 }

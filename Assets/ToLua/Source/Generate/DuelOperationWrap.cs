@@ -9,18 +9,19 @@ public class DuelOperationWrap
 		L.BeginClass(typeof(DuelOperation), typeof(UnityEngine.MonoBehaviour));
 		L.RegFunction("SetThisCard", SetThisCard);
 		L.RegFunction("InActivePhase", InActivePhase);
-		L.RegFunction("SetEffectEvent", SetEffectEvent);
+		L.RegFunction("Precheck", Precheck);
 		L.RegFunction("SetActivatableEffect", SetActivatableEffect);
 		L.RegFunction("SetChainableEffect", SetChainableEffect);
 		L.RegFunction("SetCounterableEffect", SetCounterableEffect);
-		L.RegFunction("DrawCard", DrawCard);
 		L.RegFunction("DrawnCard", DrawnCard);
+		L.RegFunction("DrawCard", DrawCard);
 		L.RegFunction("ShowCard", ShowCard);
 		L.RegFunction("SpecialSummon", SpecialSummon);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("duelData", get_duelData, set_duelData);
 		L.RegVar("thiscard", get_thiscard, set_thiscard);
+		L.RegVar("precheck", get_precheck, set_precheck);
 		L.RegVar("activatable", get_activatable, set_activatable);
 		L.EndClass();
 	}
@@ -60,14 +61,13 @@ public class DuelOperationWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SetEffectEvent(IntPtr L)
+	static int Precheck(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
+			ToLua.CheckArgsCount(L, 1);
 			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			obj.SetEffectEvent(arg0);
+			obj.Precheck();
 			return 0;
 		}
 		catch (Exception e)
@@ -176,24 +176,6 @@ public class DuelOperationWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int DrawCard(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 3);
-			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-			obj.DrawCard(arg0, arg1);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int DrawnCard(IntPtr L)
 	{
 		try
@@ -204,6 +186,24 @@ public class DuelOperationWrap
 			bool o = obj.DrawnCard(arg0);
 			LuaDLL.lua_pushboolean(L, o);
 			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DrawCard(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+			obj.DrawCard(arg0, arg1);
+			return 0;
 		}
 		catch (Exception e)
 		{
@@ -302,6 +302,25 @@ public class DuelOperationWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_precheck(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelOperation obj = (DuelOperation)o;
+			bool ret = obj.precheck;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index precheck on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_activatable(IntPtr L)
 	{
 		object o = null;
@@ -355,6 +374,25 @@ public class DuelOperationWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index thiscard on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_precheck(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelOperation obj = (DuelOperation)o;
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.precheck = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index precheck on a nil value");
 		}
 	}
 

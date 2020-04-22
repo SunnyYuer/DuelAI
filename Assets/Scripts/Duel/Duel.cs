@@ -33,7 +33,7 @@ public class Duel : MonoBehaviour
         duelData = new DuelDataManager(2);
         luaCode = new LuaCode();
         spriteManager = new CardSpriteManager();
-        ai = new AI(duelData);
+        ai = new AI(duelData, this);
         duelOperate = gameObject.GetComponent<DuelOperation>();
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         monserOwn = GameObject.Find("MonsterAreaOwn").GetComponent<MonsterOwn>();
@@ -112,16 +112,6 @@ public class Duel : MonoBehaviour
         LPOps.text = "LP  " + lp;
     }
 
-    public bool IsPlayerOwn(int who)
-    {
-        return ai.IsPlayerOwn(who);
-    }
-
-    public int GetOppPlayer(int who)
-    {
-        return ai.GetOppPlayer(who);
-    }
-
     private IEnumerator DuelPhase(int phase)
     {
         duelData.duelPhase = phase;
@@ -165,7 +155,7 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public IEnumerator EndPhase()
+    private IEnumerator EndPhase()
     {
         yield return new WaitForSeconds(1);
         duelData.duelPhase++;
@@ -177,7 +167,7 @@ public class Duel : MonoBehaviour
         StartCoroutine(DuelPhase(duelData.duelPhase));
     }
 
-    public void PhaseButtonShow()
+    private void PhaseButtonShow()
     {
         if (duelData.duelPhase >= 3 && duelData.duelPhase <= 4) battleButton.SetActive(true);
         else battleButton.SetActive(false);
@@ -249,7 +239,7 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public IEnumerator WaitGameEvent()
+    private IEnumerator WaitGameEvent()
     {
         while (duelData.eventDate.Count > 0)
         {
@@ -257,21 +247,21 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public IEnumerator PayCost(CardEffect cardEffect)
+    private IEnumerator PayCost(CardEffect cardEffect)
     {
         duelOperate.SetThisCard(cardEffect.duelcard);
         luaCode.Run(luaCode.CostFunStr(cardEffect));
         yield return WaitGameEvent();
     }
 
-    public IEnumerator ActivateEffect(CardEffect cardEffect)
+    private IEnumerator ActivateEffect(CardEffect cardEffect)
     {
         duelOperate.SetThisCard(cardEffect.duelcard);
         luaCode.Run(luaCode.EffectFunStr(cardEffect));
         yield return WaitGameEvent();
     }
 
-    public IEnumerator EffectChain()
+    private IEnumerator EffectChain()
     {
         bool chain = true;
         while (chain)
@@ -307,7 +297,7 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public void ScanEffect()
+    private void ScanEffect()
     {
         int player = duelData.opWho;
         Debug.Log("扫描效果 player="+player);
@@ -329,16 +319,6 @@ public class Duel : MonoBehaviour
             cost = cost
         };
         duelData.activatableEffect.Add(cardEffect);
-    }
-
-    public bool EffectCheck(int gameEvent)
-    {//检查效果能否发动
-        if (gameEvent == GameEvent.specialsummon)
-        {
-            List<int> place = GetMonsterPlace();
-            if (place.Count == 0) return false;
-        }
-        return true;
     }
 
     public void SetCardOutLine()
@@ -416,20 +396,6 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public List<int> GetMonsterPlace()
-    {
-        int player = duelData.opWho;
-        List<int> place = new List<int>();
-        for (int i = 0; i < duelData.areaNum; i++)
-        {
-            if (duelData.monster[player][i] == null)
-            {
-                place.Add(i);
-            }
-        }
-        return place;
-    }
-
     private IEnumerator SelectMonsterPlace()
     {//选择怪兽放置
         List<int> place = GetMonsterPlace();
@@ -456,7 +422,7 @@ public class Duel : MonoBehaviour
             return CardMean.faceupatk;
     }
 
-    public void NormalSummonFromHand(DuelCard duelcard, int place, int mean)
+    private void NormalSummonFromHand(DuelCard duelcard, int place, int mean)
     {
         if (IsPlayerOwn(duelcard.controller)) handOwn.RemoveHandCard(duelcard.index);
         else handOps.RemoveHandCard(duelcard.index);
@@ -544,7 +510,7 @@ public class Duel : MonoBehaviour
         yield return null;
     }
 
-    public void DestroyCard(DuelCard duelcard, int way)
+    private void DestroyCard(DuelCard duelcard, int way)
     {
         if (IsPlayerOwn(duelcard.controller)) monserOwn.HideMonsterCard(duelcard);
         else monserOps.HideMonsterCard(duelcard);
@@ -553,4 +519,49 @@ public class Duel : MonoBehaviour
         if (IsPlayerOwn(duelcard.owner)) graveOwn.GraveUpdate(duelcard.owner);
         else graveOps.GraveUpdate(duelcard.owner);
     }
+
+    /* 对决斗的判断 */
+    public bool IsPlayerOwn(int who)
+    {
+        if (who == 0 || who == 2)
+            return true;
+        else
+            return false;
+    }
+
+    public int GetOppPlayer(int who)
+    {//获取对立的玩家
+        int oppPlayer = who;
+        oppPlayer++;
+        if (oppPlayer == duelData.playerNum) oppPlayer = 0;
+        return oppPlayer;
+    }
+
+    public List<int> GetMonsterPlace()
+    {//获取可放置的位置
+        int player = duelData.opWho;
+        List<int> place = new List<int>();
+        for (int i = 0; i < duelData.areaNum; i++)
+        {
+            if (duelData.monster[player][i] == null)
+            {
+                place.Add(i);
+            }
+        }
+        return place;
+    }
+
+    public bool MonsterPlaceCheck()
+    {//检查是否有足够召唤的位置
+        List<int> place = GetMonsterPlace();
+        if (place.Count == 0) return false;
+        return true;
+    }
+
+    public bool SpecialSummonCheck()
+    {//检查能否特殊召唤
+        if (!MonsterPlaceCheck()) return false;
+        return true;
+    }
+    /* 对决斗的判断 */
 }
