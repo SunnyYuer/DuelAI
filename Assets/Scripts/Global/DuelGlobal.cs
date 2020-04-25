@@ -2,6 +2,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class CardType
+{
+    public const string monster = "怪兽";
+    public const string magic = "魔法";
+    public const string trap = "陷阱";
+}
+
+public class MonsterType
+{
+    public const string normal = "通常";
+    public const string effect = "效果";
+    public const string flip = "反转";
+}
+
+public class MagicType
+{
+    public const string normal = "通常";
+    public const string quick = "速攻";
+    public const string continuous = "永续";
+    public const string equip = "装备";
+    public const string field = "场地";
+}
+
+public class TrapType
+{
+    public const string normal = "通常";
+    public const string continuous = "永续";
+    public const string counter = "反击";
+}
+
 public class CardPosition
 {
     public const int deck = 1;

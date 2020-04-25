@@ -137,6 +137,7 @@ public class Duel : MonoBehaviour
             case 3:
                 phaseText.text = "主一阶段";
                 ChangeBattleButtonText();
+                ai.DuelPhase3();
                 break;
             case 4:
                 phaseText.text = "战斗阶段";
@@ -551,10 +552,34 @@ public class Duel : MonoBehaviour
         return place;
     }
 
+    public List<int> GetCanNormalSummon()
+    {//获取手卡中可以通常召唤的怪兽
+        int player = duelData.opWho;
+        List<int> monster = new List<int>();
+        for (int i = 0; i < duelData.handcard[player].Count; i++)
+        {
+            DuelCard duelcard = duelData.handcard[player][i];
+            if (duelData.cardDic[duelcard.card].type.Contains(CardType.monster))
+            {
+                if (duelData.cardDic[duelcard.card].level <= 4)
+                {
+                    monster.Add(i);
+                }
+            }
+        }
+        return monster;
+    }
+
     public bool MonsterPlaceCheck()
     {//检查是否有足够召唤的位置
         List<int> place = GetMonsterPlace();
         if (place.Count == 0) return false;
+        return true;
+    }
+
+    public bool NormalSummonCheck()
+    {//检查能否通常召唤
+        if (!MonsterPlaceCheck()) return false;
         return true;
     }
 
