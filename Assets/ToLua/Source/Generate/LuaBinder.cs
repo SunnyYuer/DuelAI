@@ -9,7 +9,7 @@ public static class LuaBinder
 	{
 		float t = Time.realtimeSinceStartup;
 		L.BeginModule(null);
-		DuelOperationWrap.Register(L);
+		DuelEventWrap.Register(L);
 		DuelDataManagerWrap.Register(L);
 		LuaInterface_DebuggerWrap.Register(L);
 		LuaProfilerWrap.Register(L);

@@ -22,10 +22,10 @@ public class Duel : MonoBehaviour
     public GameObject battleButton;
     public static CardSpriteManager spriteManager;
     public static Sprite UIMask;
-    private DuelOperation duelOperate;
+    private DuelEvent duelEvent;
     public static DuelDataManager duelData;
     public LuaCode luaCode;
-    public AI ai;
+    public DuelAI duelAI;
 
     // Start is called before the first frame update
     IEnumerator Start()
@@ -33,8 +33,8 @@ public class Duel : MonoBehaviour
         duelData = new DuelDataManager(2);
         luaCode = new LuaCode();
         spriteManager = new CardSpriteManager();
-        duelOperate = gameObject.GetComponent<DuelOperation>();
-        ai = new AI(this, duelOperate);
+        duelEvent = gameObject.GetComponent<DuelEvent>();
+        duelAI = new DuelAI(this, duelEvent);
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         monserOwn = GameObject.Find("MonsterAreaOwn").GetComponent<MonsterOwn>();
         monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
@@ -125,7 +125,7 @@ public class Duel : MonoBehaviour
                 break;
             case 1:
                 phaseText.text = "抽卡阶段";
-                duelOperate.DrawCard(0, 1);
+                duelEvent.DrawCard(0, 1);
                 yield return WaitGameEvent();
                 yield return EffectChain();
                 StartCoroutine(EndPhase());
@@ -137,7 +137,7 @@ public class Duel : MonoBehaviour
             case 3:
                 phaseText.text = "主一阶段";
                 ChangeBattleButtonText();
-                ai.DuelPhase3();
+                duelAI.DuelPhase3();
                 break;
             case 4:
                 phaseText.text = "战斗阶段";
@@ -255,14 +255,14 @@ public class Duel : MonoBehaviour
 
     private IEnumerator PayCost(CardEffect cardEffect)
     {
-        duelOperate.SetThisCard(cardEffect.duelcard);
+        duelEvent.SetThisCard(cardEffect.duelcard);
         luaCode.Run(luaCode.CostFunStr(cardEffect));
         yield return WaitGameEvent();
     }
 
     private IEnumerator ActivateEffect(CardEffect cardEffect)
     {
-        duelOperate.SetThisCard(cardEffect.duelcard);
+        duelEvent.SetThisCard(cardEffect.duelcard);
         luaCode.Run(luaCode.EffectFunStr(cardEffect));
         yield return WaitGameEvent();
     }
@@ -310,7 +310,7 @@ public class Duel : MonoBehaviour
         int i;
         for(i = 0; i < duelData.handcard[player].Count; i++)
         {
-            duelOperate.SetThisCard(duelData.handcard[player][i]);
+            duelEvent.SetThisCard(duelData.handcard[player][i]);
             luaCode.Run("c"+ duelData.handcard[player][i].card);
         }
     }
@@ -465,7 +465,7 @@ public class Duel : MonoBehaviour
             //没有表侧攻击表示就不能攻击，特殊情况再添加
             if (atkmonster.mean != CardMean.faceupatk) continue;
             //选择攻击目标
-            int target = ai.GetAttackTarget();
+            int target = duelAI.GetAttackTarget();
             if (target == -1)
             {//直接攻击对方
                 int atk = duelData.cardDic[atkmonster.card].atk;

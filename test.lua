@@ -1,5 +1,5 @@
 DuelLayout = UnityEngine.GameObject.Find("DuelLayout(Clone)")
-Duel = DuelLayout:GetComponent("DuelOperation")
+Duel = DuelLayout:GetComponent("DuelEvent")
 
 function c71703785()
     if(Duel:InActivePhase()) then
