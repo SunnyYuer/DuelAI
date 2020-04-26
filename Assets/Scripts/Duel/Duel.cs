@@ -33,8 +33,8 @@ public class Duel : MonoBehaviour
         duelData = new DuelDataManager(2);
         luaCode = new LuaCode();
         spriteManager = new CardSpriteManager();
-        ai = new AI(duelData, this);
         duelOperate = gameObject.GetComponent<DuelOperation>();
+        ai = new AI(this, duelOperate);
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         monserOwn = GameObject.Find("MonsterAreaOwn").GetComponent<MonsterOwn>();
         monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
@@ -223,6 +223,11 @@ public class Duel : MonoBehaviour
                         yield return DrawCard(player, drawnum);
                         yield return DrawCard(GetOppPlayer(player), drawnum);
                     }
+                    break;
+                case GameEvent.normalsummon:
+                    int index = (int)eData.data["handcardindex"];
+                    yield return SelectMonsterPlace();
+                    NormalSummonFromHand(duelData.handcard[player][index], 1, CardMean.faceupatk);
                     break;
                 case GameEvent.specialsummon:
                     DuelCard monstercard = eData.data["monstercard"] as DuelCard;

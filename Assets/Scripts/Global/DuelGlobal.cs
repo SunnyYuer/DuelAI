@@ -62,7 +62,8 @@ public class CardMean
 public class GameEvent
 {
     public const int drawcard = 1;
-    public const int specialsummon = 2;
+    public const int normalsummon = 2;
+    public const int specialsummon = 3;
 }
 
 public class BuffType

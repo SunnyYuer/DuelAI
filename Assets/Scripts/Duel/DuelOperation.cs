@@ -154,6 +154,25 @@ public class DuelOperation : MonoBehaviour
     }
 
     /// <summary>
+    /// 手卡的一只怪兽通常召唤
+    /// </summary>
+    /// <param name="index"></param>
+    public void NormalSummon(int index)
+    {
+        if (precheck) return;
+        EventData eData = new EventData
+        {
+            oplayer = duelData.opWho,
+            gameEvent = GameEvent.normalsummon,
+            data = new Dictionary<string, object>
+                {
+                    { "handcardindex", index }
+                }
+        };
+        duelData.eventDate.Add(eData);
+    }
+
+    /// <summary>
     /// 把这张卡特殊召唤
     /// </summary>
     /// <param name="card"></param>

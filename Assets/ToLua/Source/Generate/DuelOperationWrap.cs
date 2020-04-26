@@ -16,6 +16,7 @@ public class DuelOperationWrap
 		L.RegFunction("DrawnCard", DrawnCard);
 		L.RegFunction("DrawCard", DrawCard);
 		L.RegFunction("ShowCard", ShowCard);
+		L.RegFunction("NormalSummon", NormalSummon);
 		L.RegFunction("SpecialSummon", SpecialSummon);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
@@ -220,6 +221,23 @@ public class DuelOperationWrap
 			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
 			string arg0 = ToLua.CheckString(L, 2);
 			obj.ShowCard(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int NormalSummon(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DuelOperation obj = (DuelOperation)ToLua.CheckObject<DuelOperation>(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.NormalSummon(arg0);
 			return 0;
 		}
 		catch (Exception e)
