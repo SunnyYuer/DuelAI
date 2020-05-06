@@ -227,15 +227,16 @@ public class Duel : MonoBehaviour
                 case GameEvent.normalsummon:
                     int index = (int)eData.data["handcardindex"];
                     yield return SelectMonsterPlace();
-                    NormalSummonFromHand(duelData.handcard[player][index], 1, CardMean.faceupatk);
+                    int mean = SelectMonsterMean(eData.gameEvent);
+                    NormalSummonFromHand(duelData.handcard[player][index], duelData.placeSelect, mean);
                     break;
                 case GameEvent.specialsummon:
                     DuelCard monstercard = eData.data["monstercard"] as DuelCard;
                     yield return SelectMonsterPlace();
-                    int mean = SelectMonsterMeans();
+                    mean = SelectMonsterMean(eData.gameEvent);
                     if (monstercard.position == CardPosition.handcard)
                     {
-                        SpecialSummonFromHand(monstercard, MonsterOwn.placeSelect, mean);
+                        SpecialSummonFromHand(monstercard, duelData.placeSelect, mean);
                     }
                     break;
                 default:
@@ -410,22 +411,33 @@ public class Duel : MonoBehaviour
         if (IsPlayerOwn(duelData.opWho))
         {
             //yield return monserOwn.MonsterPlace(place);
-            MonsterOwn.placeSelect = place[select];
+            duelData.placeSelect = place[select];
         }
         else
         {
-            MonsterOps.placeSelect = place[select];
+            duelData.placeSelect = place[select];
         }
         yield return null;
     }
 
-    private int SelectMonsterMeans()
-    {//特殊召唤时的怪兽表示选择
+    private int SelectMonsterMean(int gameEvent)
+    {//召唤怪兽时的表示选择
         //由玩家选择或者AI选择
-        if (IsPlayerOwn(duelData.opWho))
-            return CardMean.faceupatk;
-        else
-            return CardMean.faceupatk;
+        if (gameEvent == GameEvent.normalsummon)
+        {
+            if (IsPlayerOwn(duelData.opWho))
+                return CardMean.faceupatk;
+            else
+                return CardMean.faceupatk;
+        }
+        if (gameEvent == GameEvent.specialsummon)
+        {
+            if (IsPlayerOwn(duelData.opWho))
+                return CardMean.faceupatk;
+            else
+                return CardMean.faceupatk;
+        }
+        return 0;
     }
 
     private void NormalSummonFromHand(DuelCard duelcard, int place, int mean)
@@ -568,7 +580,7 @@ public class Duel : MonoBehaviour
             {
                 if (duelData.cardDic[duelcard.card].level <= 4)
                 {
-                    monster.Add(i);
+                    if(NormalSummonCheck()) monster.Add(i);
                 }
             }
         }

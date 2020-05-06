@@ -5,7 +5,6 @@ using UnityEngine;
 public class MonsterOwn : MonoBehaviour
 {
     public Transform monsterArea;
-    public static int placeSelect = -1;
 
     // Start is called before the first frame update
     void Start()
@@ -57,8 +56,8 @@ public class MonsterOwn : MonoBehaviour
             monsterArea.GetChild(index).gameObject.SetActive(true);
         }
         */
-        placeSelect = -1;
-        while (placeSelect == -1)
+        Duel.duelData.placeSelect = -1;
+        while (Duel.duelData.placeSelect == -1)
         {
             yield return null;
         }

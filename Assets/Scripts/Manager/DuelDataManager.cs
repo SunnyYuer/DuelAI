@@ -32,6 +32,7 @@ public class DuelDataManager
     public List<CardEffect> activatableEffect;
     public List<EventData> eventDate;
     public List<string>[] cardsJustDrawn;
+    public int placeSelect;//选择卡牌放置的位置
 
     public DuelDataManager(int peopleNum)
     {
