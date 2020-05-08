@@ -22,10 +22,6 @@ public class MonsterOps : MonoBehaviour
     {
         Transform montrans = monsterArea.GetChild(duelcard.index);
         Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.card, false);
-        if (sprite == null)
-            montrans.GetComponent<Renderer>().material.mainTexture = null;
-        else
-            montrans.GetComponent<Renderer>().material.mainTexture = sprite.texture;
         if (duelcard.mean == CardMean.faceupatk)
         {//表侧攻击表示
             montrans.rotation = Quaternion.Euler(90, 180, 0);
@@ -37,7 +33,12 @@ public class MonsterOps : MonoBehaviour
         if (duelcard.mean == CardMean.facedowndef)
         {//里侧守备表示
             montrans.rotation = Quaternion.Euler(90, 180, 90);
+            sprite = Duel.spriteManager.GetTextureSprite("cover");
         }
+        if (sprite == null)
+            montrans.GetComponent<Renderer>().material.mainTexture = null;
+        else
+            montrans.GetComponent<Renderer>().material.mainTexture = sprite.texture;
         montrans.gameObject.SetActive(true);
     }
 

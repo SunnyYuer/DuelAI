@@ -426,7 +426,7 @@ public class Duel : MonoBehaviour
         if (gameEvent == GameEvent.normalsummon)
         {
             if (IsPlayerOwn(duelData.opWho))
-                return CardMean.faceupatk;
+                return CardMean.facedowndef;
             else
                 return CardMean.faceupatk;
         }

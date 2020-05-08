@@ -7,17 +7,21 @@ public class CardSpriteManager
 {
     public static Dictionary<string, Sprite> spriteDic;
     public static Dictionary<string, Sprite> bigspriteDic;
+    public static Dictionary<string, Sprite> textureDic;
     private string picspath;
+    private string texturespath;
 
     public static void Initialize()
     {
         spriteDic = new Dictionary<string, Sprite>();
         bigspriteDic = new Dictionary<string, Sprite>();
+        textureDic = new Dictionary<string, Sprite>();
     }
 
     public CardSpriteManager()
     {
         picspath = Main.rulePath + "/pics/";
+        texturespath = Main.rulePath + "/textures/";
     }
 
     public Sprite GetCardSprite(string id, bool small)
@@ -39,6 +43,8 @@ public class CardSpriteManager
             texture = new Texture2D(236, 344, TextureFormat.DXT1, false);
 #elif UNITY_ANDROID
             texture = new Texture2D(236, 344, TextureFormat.ETC_RGB4, false);
+#elif UNITY_IOS
+            texture = new Texture2D(236, 344, TextureFormat.PVRTC_RGB4, false);
 #endif
             texture.LoadImage(imgByte);
             if (small) texture = ScaleTexture(texture, 59, 86);
@@ -82,5 +88,26 @@ public class CardSpriteManager
         destTex.Apply();
         Object.Destroy(sourceTex);
         return destTex;
+    }
+
+    public Sprite GetTextureSprite(string name)
+    {
+        if (textureDic.ContainsKey(name))
+            return textureDic[name];
+        string texturepath = texturespath + name + ".jpg";
+        Sprite sprite = null;
+        if (File.Exists(texturepath))
+        {
+            FileStream files = new FileStream(texturepath, FileMode.Open);
+            byte[] imgByte = new byte[files.Length];
+            files.Read(imgByte, 0, imgByte.Length);
+            files.Close();
+            // Texture2D大小可任意填，LoadImage后大小会被替换
+            Texture2D texture = new Texture2D(2, 2);
+            texture.LoadImage(imgByte);
+            sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+            textureDic.Add(name, sprite);
+        }
+        return sprite;
     }
 }
