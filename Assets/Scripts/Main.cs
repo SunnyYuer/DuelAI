@@ -48,7 +48,7 @@ public class Main : MonoBehaviour
     void Start()
     {
         //管理类的初始化
-        CardSpriteManager.Initialize();
+        SpriteManager.Initialize();
         //加载主界面
         Instantiate(mainLayout, GameObject.Find("Canvas").transform);
         Instantiate(Resources.Load("Prefabs/FPSText"), GameObject.Find("Canvas").transform);

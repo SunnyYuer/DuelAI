@@ -17,14 +17,14 @@ public class MakeCard : MonoBehaviour
     private string nameorid;
     private SQLManager sql;
     private bool showcardpics;
-    private CardSpriteManager spriteManager;
+    private SpriteManager spriteManager;
 
     // Use this for initialization
     void Start ()
     {
         sql = new SQLManager();
         sql.ConnectSQL();
-        spriteManager = new CardSpriteManager();
+        spriteManager = new SpriteManager();
         hasRefreshtext = false;
     }
 

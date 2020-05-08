@@ -20,7 +20,7 @@ public class Duel : MonoBehaviour
     public GameObject endTurnButton;
     public Text phaseText;
     public GameObject battleButton;
-    public static CardSpriteManager spriteManager;
+    public static SpriteManager spriteManager;
     public static Sprite UIMask;
     private DuelEvent duelEvent;
     public static DuelDataManager duelData;
@@ -32,7 +32,7 @@ public class Duel : MonoBehaviour
     {
         duelData = new DuelDataManager(2);
         luaCode = new LuaCode();
-        spriteManager = new CardSpriteManager();
+        spriteManager = new SpriteManager();
         duelEvent = gameObject.GetComponent<DuelEvent>();
         duelAI = new DuelAI(this, duelEvent);
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask

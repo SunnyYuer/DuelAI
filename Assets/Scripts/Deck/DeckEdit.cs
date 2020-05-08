@@ -17,7 +17,7 @@ public class DeckEdit : MonoBehaviour {
     private float scrollvalue;
     private List<string> cardidList;
     private List<string> cardnameList;
-    private CardSpriteManager spriteManager;
+    private SpriteManager spriteManager;
 
     // Use this for initialization
     void Start ()
@@ -26,7 +26,7 @@ public class DeckEdit : MonoBehaviour {
         sql.ConnectSQL();
         cardidList = new List<string>();
         cardnameList = new List<string>();
-        spriteManager = new CardSpriteManager();
+        spriteManager = new SpriteManager();
     }
 	
 	// Update is called once per frame
