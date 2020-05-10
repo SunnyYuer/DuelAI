@@ -197,4 +197,24 @@ public class DuelEvent : MonoBehaviour
             duelData.eventDate.Add(eData);
         }
     }
+
+    /// <summary>
+    /// 怪兽变更表示形式
+    /// </summary>
+    /// <param name="index"></param>
+    public void ChangeMean(int index, int mean = 0)
+    {
+        if (precheck) return;
+        EventData eData = new EventData
+        {
+            oplayer = duelData.opWho,
+            gameEvent = GameEvent.changemean,
+            data = new Dictionary<string, object>
+                {
+                    { "monsterindex", index },
+                    { "monstermean", mean }
+                }
+        };
+        duelData.eventDate.Add(eData);
+    }
 }

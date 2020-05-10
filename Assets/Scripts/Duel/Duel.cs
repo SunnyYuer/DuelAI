@@ -146,6 +146,7 @@ public class Duel : MonoBehaviour
                 break;
             case 5:
                 phaseText.text = "主二阶段";
+                duelAI.DuelPhase5();
                 break;
             case 6:
                 phaseText.text = "结束阶段";
@@ -196,6 +197,9 @@ public class Duel : MonoBehaviour
 
     private IEnumerator Game()
     {
+        int intdata1;
+        int intdata2;
+        DuelCard duelCarddata;
         while (true)
         {
             yield return null;
@@ -206,38 +210,43 @@ public class Duel : MonoBehaviour
             switch (eData.gameEvent)
             {
                 case GameEvent.drawcard:
-                    int drawplayer = (int)eData.data["drawplayer"];
-                    int drawnum = (int)eData.data["drawnum"];
-                    if (drawplayer == 0)
+                    intdata1 = (int)eData.data["drawplayer"];
+                    intdata2 = (int)eData.data["drawnum"];
+                    if (intdata1 == 0)
                     {//自己抽卡
-                        yield return DrawCard(player, drawnum);
+                        yield return DrawCard(player, intdata2);
                     }
-                    if (drawplayer == 1)
+                    if (intdata1 == 1)
                     {//对方抽卡
-                        yield return DrawCard(GetOppPlayer(player), drawnum);
+                        yield return DrawCard(GetOppPlayer(player), intdata2);
                     }
-                    if (drawplayer == 2)
+                    if (intdata1 == 2)
                     {//双方同时抽卡
                      //同时行动时，先处理回合玩家
                         player = duelData.player;
-                        yield return DrawCard(player, drawnum);
-                        yield return DrawCard(GetOppPlayer(player), drawnum);
+                        yield return DrawCard(player, intdata2);
+                        yield return DrawCard(GetOppPlayer(player), intdata2);
                     }
                     break;
                 case GameEvent.normalsummon:
-                    int index = (int)eData.data["handcardindex"];
+                    intdata1 = (int)eData.data["handcardindex"];
                     yield return SelectMonsterPlace();
                     int mean = SelectMonsterMean(eData.gameEvent);
-                    NormalSummonFromHand(duelData.handcard[player][index], duelData.placeSelect, mean);
+                    NormalSummonFromHand(duelData.handcard[player][intdata1], duelData.placeSelect, mean);
                     break;
                 case GameEvent.specialsummon:
-                    DuelCard monstercard = eData.data["monstercard"] as DuelCard;
+                    duelCarddata = eData.data["monstercard"] as DuelCard;
                     yield return SelectMonsterPlace();
                     mean = SelectMonsterMean(eData.gameEvent);
-                    if (monstercard.position == CardPosition.handcard)
+                    if (duelCarddata.position == CardPosition.handcard)
                     {
-                        SpecialSummonFromHand(monstercard, duelData.placeSelect, mean);
+                        SpecialSummonFromHand(duelCarddata, duelData.placeSelect, mean);
                     }
+                    break;
+                case GameEvent.changemean:
+                    intdata1 = (int)eData.data["monsterindex"];
+                    intdata2 = (int)eData.data["monstermean"];
+                    ChangeMean(intdata1, intdata2);
                     break;
                 default:
                     break;
@@ -307,12 +316,12 @@ public class Duel : MonoBehaviour
     private void ScanEffect()
     {
         int player = duelData.opWho;
-        Debug.Log("扫描效果 player="+player);
+        Debug.Log("扫描效果 player=" + player);
         int i;
-        for(i = 0; i < duelData.handcard[player].Count; i++)
+        for (i = 0; i < duelData.handcard[player].Count; i++)
         {
             duelEvent.SetThisCard(duelData.handcard[player][i]);
-            luaCode.Run("c"+ duelData.handcard[player][i].card);
+            luaCode.Run("c" + duelData.handcard[player][i].card);
         }
     }
 
@@ -466,6 +475,21 @@ public class Duel : MonoBehaviour
         else monserOps.ShowMonsterCard(duelcard);
     }
 
+    private void ChangeMean(int index, int mean)
+    {
+        DuelCard duelcard = duelData.monster[duelData.opWho][index];
+        if (mean != 0) duelcard.mean = mean;
+        else
+        {
+            if (duelcard.mean == CardMean.faceupatk)
+                duelcard.mean = CardMean.faceupdef;
+            else
+                duelcard.mean = CardMean.faceupatk;
+        }
+        if (IsPlayerOwn(duelcard.controller)) monserOwn.ShowMonsterCard(duelcard);
+        else monserOps.ShowMonsterCard(duelcard);
+    }
+
     private IEnumerator Battle()
     {
         int atkplayer = duelData.player;//攻击方
@@ -555,20 +579,6 @@ public class Duel : MonoBehaviour
         return oppPlayer;
     }
 
-    public List<int> GetMonsterPlace()
-    {//获取可放置的位置
-        int player = duelData.opWho;
-        List<int> place = new List<int>();
-        for (int i = 0; i < duelData.areaNum; i++)
-        {
-            if (duelData.monster[player][i] == null)
-            {
-                place.Add(i);
-            }
-        }
-        return place;
-    }
-
     public List<int> GetCanNormalSummon()
     {//获取手卡中可以通常召唤的怪兽
         int player = duelData.opWho;
@@ -580,11 +590,25 @@ public class Duel : MonoBehaviour
             {
                 if (duelData.cardDic[duelcard.card].level <= 4)
                 {
-                    if(NormalSummonCheck()) monster.Add(i);
+                    if (NormalSummonCheck()) monster.Add(i);
                 }
             }
         }
         return monster;
+    }
+
+    public List<int> GetMonsterPlace()
+    {//获取可放置的位置
+        List<int> place = new List<int>();
+        int player = duelData.opWho;
+        for (int i = 0; i < duelData.areaNum; i++)
+        {
+            if (duelData.monster[player][i] == null)
+            {
+                place.Add(i);
+            }
+        }
+        return place;
     }
 
     public bool MonsterPlaceCheck()
