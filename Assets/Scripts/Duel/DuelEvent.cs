@@ -202,7 +202,7 @@ public class DuelEvent : MonoBehaviour
     /// 怪兽变更表示形式
     /// </summary>
     /// <param name="index"></param>
-    public void ChangeMean(int index, int mean = 0)
+    public void ChangeMean(DuelCard duelcard, int mean = 0)
     {
         if (precheck) return;
         EventData eData = new EventData
@@ -211,7 +211,7 @@ public class DuelEvent : MonoBehaviour
             gameEvent = GameEvent.changemean,
             data = new Dictionary<string, object>
                 {
-                    { "monsterindex", index },
+                    { "monstercard", duelcard },
                     { "monstermean", mean }
                 }
         };

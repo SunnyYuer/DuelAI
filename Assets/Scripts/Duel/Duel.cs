@@ -150,6 +150,7 @@ public class Duel : MonoBehaviour
                 break;
             case 6:
                 phaseText.text = "结束阶段";
+                TurnEndReset();
                 StartCoroutine(EndPhase());
                 break;
             default:
@@ -244,9 +245,9 @@ public class Duel : MonoBehaviour
                     }
                     break;
                 case GameEvent.changemean:
-                    intdata1 = (int)eData.data["monsterindex"];
-                    intdata2 = (int)eData.data["monstermean"];
-                    ChangeMean(intdata1, intdata2);
+                    duelCarddata = eData.data["monstercard"] as DuelCard;
+                    intdata1 = (int)eData.data["monstermean"];
+                    ChangeMean(duelCarddata, intdata1);
                     break;
                 default:
                     break;
@@ -437,14 +438,14 @@ public class Duel : MonoBehaviour
             if (IsPlayerOwn(duelData.opWho))
                 return CardMean.facedowndef;
             else
-                return CardMean.faceupatk;
+                return CardMean.facedowndef;
         }
         if (gameEvent == GameEvent.specialsummon)
         {
             if (IsPlayerOwn(duelData.opWho))
                 return CardMean.faceupatk;
             else
-                return CardMean.faceupatk;
+                return CardMean.faceupdef;
         }
         return 0;
     }
@@ -454,9 +455,13 @@ public class Duel : MonoBehaviour
         if (IsPlayerOwn(duelcard.controller)) handOwn.RemoveHandCard(duelcard.index);
         else handOps.RemoveHandCard(duelcard.index);
         duelData.handcard[duelcard.controller].RemoveAt(duelcard.index);
+        duelData.SortCard(duelData.handcard[duelcard.controller]);
         duelcard.position = CardPosition.monster;
         duelcard.index = place;
         duelcard.mean = mean;
+        duelcard.meanchange = 0;
+        duelcard.appearturn = duelData.turnNum;
+        duelcard.battledeclare = 0;
         duelData.monster[duelcard.controller][place] = duelcard;
         if (IsPlayerOwn(duelcard.controller)) monserOwn.ShowMonsterCard(duelcard);
         else monserOps.ShowMonsterCard(duelcard);
@@ -467,17 +472,20 @@ public class Duel : MonoBehaviour
         if (IsPlayerOwn(duelcard.controller)) handOwn.RemoveHandCard(duelcard.index);
         else handOps.RemoveHandCard(duelcard.index);
         duelData.handcard[duelcard.controller].RemoveAt(duelcard.index);
+        duelData.SortCard(duelData.handcard[duelcard.controller]);
         duelcard.position = CardPosition.monster;
         duelcard.index = place;
         duelcard.mean = mean;
+        duelcard.meanchange = 0;
+        duelcard.appearturn = duelData.turnNum;
+        duelcard.battledeclare = 0;
         duelData.monster[duelcard.controller][place] = duelcard;
         if (IsPlayerOwn(duelcard.controller)) monserOwn.ShowMonsterCard(duelcard);
         else monserOps.ShowMonsterCard(duelcard);
     }
 
-    private void ChangeMean(int index, int mean)
+    private void ChangeMean(DuelCard duelcard, int mean)
     {
-        DuelCard duelcard = duelData.monster[duelData.opWho][index];
         if (mean != 0) duelcard.mean = mean;
         else
         {
@@ -486,6 +494,7 @@ public class Duel : MonoBehaviour
             else
                 duelcard.mean = CardMean.faceupatk;
         }
+        duelcard.meanchange++;
         if (IsPlayerOwn(duelcard.controller)) monserOwn.ShowMonsterCard(duelcard);
         else monserOps.ShowMonsterCard(duelcard);
     }
@@ -548,6 +557,7 @@ public class Duel : MonoBehaviour
                     }
                 }
             }
+            atkmonster.battledeclare++;
         }
         yield return null;
     }
@@ -560,6 +570,20 @@ public class Duel : MonoBehaviour
         duelData.grave[duelcard.owner].Insert(0, duelcard.card);
         if (IsPlayerOwn(duelcard.owner)) graveOwn.GraveUpdate(duelcard.owner);
         else graveOps.GraveUpdate(duelcard.owner);
+    }
+
+    private void TurnEndReset()
+    {
+        int player = duelData.player;
+        for (int i = 0; i < duelData.areaNum; i++)
+        {
+            DuelCard duelcard = duelData.monster[player][i];
+            if (duelcard != null)
+            {
+                duelcard.meanchange = 0;
+                duelcard.battledeclare = 0;
+            }
+        }
     }
 
     /* 对决斗的判断 */
@@ -627,6 +651,14 @@ public class Duel : MonoBehaviour
     public bool SpecialSummonCheck()
     {//检查能否特殊召唤
         if (!MonsterPlaceCheck()) return false;
+        return true;
+    }
+
+    public bool ChangeMeanCheck(DuelCard duelcard)
+    { // 检查怪兽能否变主动更表示形式
+        if (duelcard.appearturn == duelData.turnNum) return false;
+        if (duelcard.meanchange > 0) return false;
+        if (duelcard.battledeclare > 0) return false;
         return true;
     }
     /* 对决斗的判断 */

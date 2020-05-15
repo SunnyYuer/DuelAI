@@ -83,6 +83,14 @@ public class DuelDataManager
         cardDic = cardData.cardDic;
     }
 
+    public void SortCard(List<DuelCard> cardlist)
+    { 
+        for (int i = 0; i < cardlist.Count; i++)
+        {
+            cardlist[i].index = i;
+        }
+    }
+
     public void ChangeNextPlayer()
     {
         player++;
@@ -97,12 +105,16 @@ public class DuelDataManager
 public class DuelCard
 {
     public string card;
-    public int owner;//原本持有者
-    public int controller;//控制者
+    public int owner; // 原本持有者
+    public int controller; // 控制者
     public int position;
     public int index;
-    public int mean;//在场上的表示形式
+    public int mean; // 在场上的表示形式
+    public int appearturn; // 出现在场上的回合
     public List<DuelBuff> buffList;
+    // 回合值
+    public int meanchange; // 表示形式变更次数
+    public int battledeclare; // 战斗宣言
 }
 
 /// <summary>
