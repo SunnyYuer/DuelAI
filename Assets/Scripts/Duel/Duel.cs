@@ -24,6 +24,7 @@ public class Duel : MonoBehaviour
     public static Sprite UIMask;
     private DuelEvent duelEvent;
     public static DuelDataManager duelData;
+    public static Dictionary<string, Card> cardDic;
     public LuaCode luaCode;
     public DuelAI duelAI;
 
@@ -200,7 +201,7 @@ public class Duel : MonoBehaviour
     {
         int intdata1;
         int intdata2;
-        DuelCard duelCarddata;
+        DuelCard duelcarddata;
         while (true)
         {
             yield return null;
@@ -230,24 +231,24 @@ public class Duel : MonoBehaviour
                     }
                     break;
                 case GameEvent.normalsummon:
-                    intdata1 = (int)eData.data["handcardindex"];
+                    duelcarddata = eData.data["handcard"] as DuelCard;
                     yield return SelectMonsterPlace();
                     int mean = SelectMonsterMean(eData.gameEvent);
-                    NormalSummonFromHand(duelData.handcard[player][intdata1], duelData.placeSelect, mean);
+                    NormalSummonFromHand(duelcarddata, duelData.placeSelect, mean);
                     break;
                 case GameEvent.specialsummon:
-                    duelCarddata = eData.data["monstercard"] as DuelCard;
+                    duelcarddata = eData.data["monstercard"] as DuelCard;
                     yield return SelectMonsterPlace();
                     mean = SelectMonsterMean(eData.gameEvent);
-                    if (duelCarddata.position == CardPosition.handcard)
+                    if (duelcarddata.position == CardPosition.handcard)
                     {
-                        SpecialSummonFromHand(duelCarddata, duelData.placeSelect, mean);
+                        SpecialSummonFromHand(duelcarddata, duelData.placeSelect, mean);
                     }
                     break;
                 case GameEvent.changemean:
-                    duelCarddata = eData.data["monstercard"] as DuelCard;
+                    duelcarddata = eData.data["monstercard"] as DuelCard;
                     intdata1 = (int)eData.data["monstermean"];
-                    ChangeMean(duelCarddata, intdata1);
+                    ChangeMean(duelcarddata, intdata1);
                     break;
                 default:
                     break;
@@ -452,35 +453,39 @@ public class Duel : MonoBehaviour
 
     private void NormalSummonFromHand(DuelCard duelcard, int place, int mean)
     {
-        if (IsPlayerOwn(duelcard.controller)) handOwn.RemoveHandCard(duelcard.index);
+        int player = duelcard.controller;
+        if (IsPlayerOwn(player)) handOwn.RemoveHandCard(duelcard.index);
         else handOps.RemoveHandCard(duelcard.index);
-        duelData.handcard[duelcard.controller].RemoveAt(duelcard.index);
-        duelData.SortCard(duelData.handcard[duelcard.controller]);
+        duelData.handcard[player].RemoveAt(duelcard.index);
+        duelData.SortCard(duelData.handcard[player]);
         duelcard.position = CardPosition.monster;
         duelcard.index = place;
         duelcard.mean = mean;
         duelcard.meanchange = 0;
         duelcard.appearturn = duelData.turnNum;
         duelcard.battledeclare = 0;
-        duelData.monster[duelcard.controller][place] = duelcard;
-        if (IsPlayerOwn(duelcard.controller)) monserOwn.ShowMonsterCard(duelcard);
+        duelData.monster[player][place] = duelcard;
+        if (IsPlayerOwn(player)) monserOwn.ShowMonsterCard(duelcard);
         else monserOps.ShowMonsterCard(duelcard);
+        // 通常召唤次数+1
+        duelData.normalsummon[player]++;
     }
 
     private void SpecialSummonFromHand(DuelCard duelcard, int place, int mean)
     {
-        if (IsPlayerOwn(duelcard.controller)) handOwn.RemoveHandCard(duelcard.index);
+        int player = duelcard.controller;
+        if (IsPlayerOwn(player)) handOwn.RemoveHandCard(duelcard.index);
         else handOps.RemoveHandCard(duelcard.index);
-        duelData.handcard[duelcard.controller].RemoveAt(duelcard.index);
-        duelData.SortCard(duelData.handcard[duelcard.controller]);
+        duelData.handcard[player].RemoveAt(duelcard.index);
+        duelData.SortCard(duelData.handcard[player]);
         duelcard.position = CardPosition.monster;
         duelcard.index = place;
         duelcard.mean = mean;
         duelcard.meanchange = 0;
         duelcard.appearturn = duelData.turnNum;
         duelcard.battledeclare = 0;
-        duelData.monster[duelcard.controller][place] = duelcard;
-        if (IsPlayerOwn(duelcard.controller)) monserOwn.ShowMonsterCard(duelcard);
+        duelData.monster[player][place] = duelcard;
+        if (IsPlayerOwn(player)) monserOwn.ShowMonsterCard(duelcard);
         else monserOps.ShowMonsterCard(duelcard);
     }
 
@@ -513,7 +518,7 @@ public class Duel : MonoBehaviour
             int target = duelAI.GetAttackTarget();
             if (target == -1)
             {//直接攻击对方
-                int atk = duelData.cardDic[atkmonster.card].atk;
+                int atk = cardDic[atkmonster.card].atk;
                 if (IsPlayerOwn(atkplayer)) LPOpsUpdate(duelData.LP[1] - atk);
                 else LPOwnUpdate(duelData.LP[0] - atk);
             }
@@ -522,8 +527,8 @@ public class Duel : MonoBehaviour
                 DuelCard antimonster = duelData.monster[antiplayer][target];
                 if (antimonster.mean == CardMean.faceupatk)
                 {//对方的怪兽处于攻击表示
-                    int atk1 = duelData.cardDic[atkmonster.card].atk;
-                    int atk2 = duelData.cardDic[antimonster.card].atk;
+                    int atk1 = cardDic[atkmonster.card].atk;
+                    int atk2 = cardDic[antimonster.card].atk;
                     if (atk1 > atk2)
                     {
                         if (IsPlayerOwn(atkplayer)) LPOpsUpdate(duelData.LP[1] - (atk1 - atk2));
@@ -544,8 +549,8 @@ public class Duel : MonoBehaviour
                 }
                 else
                 {//对方的怪兽处于防御表示
-                    int atk1 = duelData.cardDic[atkmonster.card].atk;
-                    int def2 = duelData.cardDic[antimonster.card].def;
+                    int atk1 = cardDic[atkmonster.card].atk;
+                    int def2 = cardDic[antimonster.card].def;
                     if (atk1 > def2)
                     {
                         DestroyCard(antimonster, 0);
@@ -584,6 +589,7 @@ public class Duel : MonoBehaviour
                 duelcard.battledeclare = 0;
             }
         }
+        duelData.normalsummon[player] = 0;
     }
 
     /* 对决斗的判断 */
@@ -610,13 +616,8 @@ public class Duel : MonoBehaviour
         for (int i = 0; i < duelData.handcard[player].Count; i++)
         {
             DuelCard duelcard = duelData.handcard[player][i];
-            if (duelData.cardDic[duelcard.card].type.Contains(CardType.monster))
-            {
-                if (duelData.cardDic[duelcard.card].level <= 4)
-                {
-                    if (NormalSummonCheck()) monster.Add(i);
-                }
-            }
+            if (NormalSummonCheck(duelcard))
+                monster.Add(i);
         }
         return monster;
     }
@@ -642,9 +643,12 @@ public class Duel : MonoBehaviour
         return true;
     }
 
-    public bool NormalSummonCheck()
+    public bool NormalSummonCheck(DuelCard duelcard)
     {//检查能否通常召唤
+        if (duelData.normalsummon[duelcard.controller] > 0) return false;
         if (!MonsterPlaceCheck()) return false;
+        if (!cardDic[duelcard.card].type.Contains(CardType.monster)) return false;
+        if (cardDic[duelcard.card].level > 4) return false;
         return true;
     }
 

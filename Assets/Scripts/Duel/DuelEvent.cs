@@ -157,7 +157,7 @@ public class DuelEvent : MonoBehaviour
     /// 手卡的一只怪兽通常召唤
     /// </summary>
     /// <param name="index"></param>
-    public void NormalSummon(int index)
+    public void NormalSummon(DuelCard duelcard)
     {
         if (precheck) return;
         EventData eData = new EventData
@@ -166,7 +166,7 @@ public class DuelEvent : MonoBehaviour
             gameEvent = GameEvent.normalsummon,
             data = new Dictionary<string, object>
                 {
-                    { "handcardindex", index }
+                    { "handcard", duelcard }
                 }
         };
         duelData.eventDate.Add(eData);

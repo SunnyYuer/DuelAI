@@ -4,12 +4,18 @@ using UnityEngine;
 
 public class DuelDataManager
 {
+    // 场上数据
     public int playerNum;
-    public int areaNum;//场上怪兽区域或魔法陷阱区域的数量
+    public int areaNum; // 场上怪兽区域或魔法陷阱区域的数量
     public int turnNum;
     public int duelPhase;
-    public int player;//当前回合的玩家，0或2为友方，1或3为敌方
-    public int opWho;//在效果处理的玩家
+    public int player; // 当前回合的玩家，0或2为友方，1或3为敌方
+    public int opWho; // 在效果处理的玩家
+    public CardDataManager cardData;
+    public Dictionary<string, Card> cardDic;
+    public List<EventData> eventDate;
+
+    // 玩家数据
     public int[] LP;
     public List<string>[] deck;
     public List<string>[] extra;
@@ -20,19 +26,17 @@ public class DuelDataManager
     public DuelCard[][] magictrap;
     public DuelCard[] fieldcard;
     public DuelCard[][] special;
-    public CardDataManager cardData;
-    public Dictionary<string, Card> cardDic;
-
-    //效果连锁
-    public List<CardEffect> chainEffect;
-    public List<CardEffect> waitEffect;//不入连锁，等待连锁完后要发动的效果
-    public bool effectChain;//是否正在连锁
-
-    //临时保存
-    public List<CardEffect> activatableEffect;
-    public List<EventData> eventDate;
+    public int[] normalsummon; // 这回合已通常召唤的次数
     public List<string>[] cardsJustDrawn;
-    public int placeSelect;//选择卡牌放置的位置
+
+    // 效果连锁
+    public List<CardEffect> chainEffect;
+    public List<CardEffect> waitEffect; // 不入连锁，等待连锁完后要发动的效果
+    public bool effectChain; // 是否正在连锁
+
+    // 临时保存
+    public List<CardEffect> activatableEffect;
+    public int placeSelect; // 选择卡牌放置的位置
 
     public DuelDataManager(int peopleNum)
     {
@@ -58,6 +62,7 @@ public class DuelDataManager
         monster = new DuelCard[playerNum][];
         magictrap = new DuelCard[playerNum][];
         cardsJustDrawn = new List<string>[playerNum];
+        normalsummon = new int[playerNum];
         for (int i = 0; i < playerNum; i++)
         {
             deck[i] = new List<string>();
@@ -81,6 +86,7 @@ public class DuelDataManager
             cardData.LoadCardData(extra[i]);
         }
         cardDic = cardData.cardDic;
+        Duel.cardDic = cardDic;
     }
 
     public void SortCard(List<DuelCard> cardlist)

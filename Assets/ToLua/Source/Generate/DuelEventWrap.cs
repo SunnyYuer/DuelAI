@@ -18,6 +18,7 @@ public class DuelEventWrap
 		L.RegFunction("ShowCard", ShowCard);
 		L.RegFunction("NormalSummon", NormalSummon);
 		L.RegFunction("SpecialSummon", SpecialSummon);
+		L.RegFunction("ChangeMean", ChangeMean);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("duelData", get_duelData, set_duelData);
@@ -236,7 +237,7 @@ public class DuelEventWrap
 		{
 			ToLua.CheckArgsCount(L, 2);
 			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
 			obj.NormalSummon(arg0);
 			return 0;
 		}
@@ -256,6 +257,39 @@ public class DuelEventWrap
 			string arg0 = ToLua.CheckString(L, 2);
 			obj.SpecialSummon(arg0);
 			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ChangeMean(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+				DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
+				obj.ChangeMean(arg0);
+				return 0;
+			}
+			else if (count == 3)
+			{
+				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+				DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
+				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+				obj.ChangeMean(arg0, arg1);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.ChangeMean");
+			}
 		}
 		catch (Exception e)
 		{
