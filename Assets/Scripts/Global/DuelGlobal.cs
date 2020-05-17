@@ -65,6 +65,7 @@ public class GameEvent
     public const int normalsummon = 2;
     public const int specialsummon = 3;
     public const int changemean = 4;
+    public const int battle = 5;
 }
 
 public class BuffType

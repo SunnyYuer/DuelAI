@@ -51,8 +51,8 @@ public class Duel : MonoBehaviour
         duelData.player = 0;
         duelData.opWho = 0;
         duelData.duelPhase = 0;
-        LPOwnUpdate(8000);
-        LPOpsUpdate(8000);
+        LPUpdate(0, 8000);
+        LPUpdate(1, 8000);
         //各自起手5张卡
         yield return DrawCard(0, 5);
         yield return DrawCard(1, 5);
@@ -101,16 +101,18 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public void LPOwnUpdate(int lp)
+    public void LPUpdate(int player, int change)
     {
-        duelData.LP[0] = lp;
-        LPOwn.text = "LP  " + lp;
-    }
-
-    public void LPOpsUpdate(int lp)
-    {
-        duelData.LP[1] = lp;
-        LPOps.text = "LP  " + lp;
+        if (IsPlayerOwn(player))
+        {
+            duelData.LP[0] += change;
+            LPOwn.text = "LP  " + duelData.LP[0];
+        }
+        else
+        {
+            duelData.LP[1] += change;
+            LPOps.text = "LP  " + duelData.LP[1];
+        }
     }
 
     private IEnumerator DuelPhase(int phase)
@@ -138,16 +140,16 @@ public class Duel : MonoBehaviour
             case 3:
                 phaseText.text = "主一阶段";
                 ChangeBattleButtonText();
-                duelAI.DuelPhase3();
+                yield return DuelAI();
                 break;
             case 4:
                 phaseText.text = "战斗阶段";
                 ChangeBattleButtonText();
-                yield return Battle();
+                yield return DuelAI();
                 break;
             case 5:
                 phaseText.text = "主二阶段";
-                duelAI.DuelPhase5();
+                yield return DuelAI();
                 break;
             case 6:
                 phaseText.text = "结束阶段";
@@ -233,22 +235,26 @@ public class Duel : MonoBehaviour
                 case GameEvent.normalsummon:
                     duelcarddata = eData.data["handcard"] as DuelCard;
                     yield return SelectMonsterPlace();
-                    int mean = SelectMonsterMean(eData.gameEvent);
-                    NormalSummonFromHand(duelcarddata, duelData.placeSelect, mean);
+                    intdata1 = SelectMonsterMean(eData.gameEvent);
+                    NormalSummonFromHand(duelcarddata, duelData.placeSelect, intdata1);
                     break;
                 case GameEvent.specialsummon:
                     duelcarddata = eData.data["monstercard"] as DuelCard;
                     yield return SelectMonsterPlace();
-                    mean = SelectMonsterMean(eData.gameEvent);
+                    intdata1 = SelectMonsterMean(eData.gameEvent);
                     if (duelcarddata.position == CardPosition.handcard)
                     {
-                        SpecialSummonFromHand(duelcarddata, duelData.placeSelect, mean);
+                        SpecialSummonFromHand(duelcarddata, duelData.placeSelect, intdata1);
                     }
                     break;
                 case GameEvent.changemean:
                     duelcarddata = eData.data["monstercard"] as DuelCard;
                     intdata1 = (int)eData.data["monstermean"];
                     ChangeMean(duelcarddata, intdata1);
+                    break;
+                case GameEvent.battle:
+                    duelcarddata = eData.data["atkmonster"] as DuelCard;
+                    yield return Battle(duelcarddata);
                     break;
                 default:
                     break;
@@ -388,6 +394,16 @@ public class Duel : MonoBehaviour
         yield return null;
     }
 
+    private IEnumerator DuelAI()
+    {
+        while (!duelAI.done)
+        {
+            duelAI.Run();
+            yield return WaitGameEvent();
+        }
+        duelAI.done = false;
+    }
+
     private IEnumerator DrawCard(int player, int num)
     {
         duelData.cardsJustDrawn[player].Clear();
@@ -504,65 +520,56 @@ public class Duel : MonoBehaviour
         else monserOps.ShowMonsterCard(duelcard);
     }
 
-    private IEnumerator Battle()
+    private IEnumerator Battle(DuelCard atkmonster)
     {
-        int atkplayer = duelData.player;//攻击方
-        int antiplayer = GetOppPlayer(atkplayer);//被攻击方
-        for (int i = 0; i < duelData.areaNum; i++)
-        {
-            DuelCard atkmonster = duelData.monster[atkplayer][i];
-            if (atkmonster == null) continue;
-            //没有表侧攻击表示就不能攻击，特殊情况再添加
-            if (atkmonster.mean != CardMean.faceupatk) continue;
-            //选择攻击目标
-            int target = duelAI.GetAttackTarget();
-            if (target == -1)
-            {//直接攻击对方
-                int atk = cardDic[atkmonster.card].atk;
-                if (IsPlayerOwn(atkplayer)) LPOpsUpdate(duelData.LP[1] - atk);
-                else LPOwnUpdate(duelData.LP[0] - atk);
+        int atkplayer = atkmonster.controller; // 攻击方
+        int antiplayer = GetOppPlayer(atkplayer); // 被攻击方
+        atkmonster.battledeclare++;
+        int target = duelAI.GetAttackTarget();
+        if (target == -1)
+        { // 直接攻击对方
+            int atk = cardDic[atkmonster.card].atk;
+            LPUpdate(antiplayer, -atk);
+        }
+        else
+        { // 攻击选定的目标
+            DuelCard antimonster = duelData.monster[antiplayer][target];
+            if (antimonster.mean == CardMean.faceupatk)
+            { // 对方的怪兽处于攻击表示
+                int atk1 = cardDic[atkmonster.card].atk;
+                int atk2 = cardDic[antimonster.card].atk;
+                if (atk1 > atk2)
+                {
+                    LPUpdate(antiplayer, -(atk1 - atk2));
+                    DestroyCard(antimonster, 0);
+                }
+                if (atk1 == atk2)
+                {
+                    if (atk1 != 0)
+                    { // 攻击力为0的怪兽不造成伤害
+                        DestroyCard(atkmonster, 0);
+                        DestroyCard(antimonster, 0);
+                    }
+                }
+                if (atk1 < atk2)
+                {
+                    LPUpdate(atkplayer, -(atk2 - atk1));
+                    DestroyCard(atkmonster, 0);
+                }
             }
             else
-            {//攻击选定的目标
-                DuelCard antimonster = duelData.monster[antiplayer][target];
-                if (antimonster.mean == CardMean.faceupatk)
-                {//对方的怪兽处于攻击表示
-                    int atk1 = cardDic[atkmonster.card].atk;
-                    int atk2 = cardDic[antimonster.card].atk;
-                    if (atk1 > atk2)
-                    {
-                        if (IsPlayerOwn(atkplayer)) LPOpsUpdate(duelData.LP[1] - (atk1 - atk2));
-                        else LPOwnUpdate(duelData.LP[0] - (atk1 - atk2));
-                        DestroyCard(antimonster, 0);
-                    }
-                    if (atk1 == atk2)
-                    {
-                        DestroyCard(atkmonster, 0);
-                        DestroyCard(antimonster, 0);
-                    }
-                    if (atk1 < atk2)
-                    {
-                        if (IsPlayerOwn(atkplayer)) LPOwnUpdate(duelData.LP[0] - (atk2 - atk1));
-                        else LPOpsUpdate(duelData.LP[1] - (atk2 - atk1));
-                        DestroyCard(atkmonster, 0);
-                    }
+            { // 对方的怪兽处于防御表示
+                int atk1 = cardDic[atkmonster.card].atk;
+                int def2 = cardDic[antimonster.card].def;
+                if (atk1 > def2)
+                {
+                    DestroyCard(antimonster, 0);
                 }
-                else
-                {//对方的怪兽处于防御表示
-                    int atk1 = cardDic[atkmonster.card].atk;
-                    int def2 = cardDic[antimonster.card].def;
-                    if (atk1 > def2)
-                    {
-                        DestroyCard(antimonster, 0);
-                    }
-                    if (atk1 <= def2)
-                    {
-                        if (IsPlayerOwn(atkplayer)) LPOwnUpdate(duelData.LP[0] - (def2 - atk1));
-                        else LPOpsUpdate(duelData.LP[1] - (def2 - atk1));
-                    }
+                if (atk1 <= def2)
+                {
+                    LPUpdate(atkplayer, -(def2 - atk1));
                 }
             }
-            atkmonster.battledeclare++;
         }
         yield return null;
     }
@@ -663,6 +670,14 @@ public class Duel : MonoBehaviour
         if (duelcard.appearturn == duelData.turnNum) return false;
         if (duelcard.meanchange > 0) return false;
         if (duelcard.battledeclare > 0) return false;
+        return true;
+    }
+
+    public bool BattleCheck(DuelCard duelcard)
+    {
+        if (duelcard.mean != CardMean.faceupatk) return false;
+        if (duelcard.battledeclare > 0) return false;
+        if (duelData.turnNum == 1) return false;
         return true;
     }
     /* 对决斗的判断 */

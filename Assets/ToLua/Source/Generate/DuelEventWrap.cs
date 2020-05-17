@@ -19,6 +19,7 @@ public class DuelEventWrap
 		L.RegFunction("NormalSummon", NormalSummon);
 		L.RegFunction("SpecialSummon", SpecialSummon);
 		L.RegFunction("ChangeMean", ChangeMean);
+		L.RegFunction("Battle", Battle);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("duelData", get_duelData, set_duelData);
@@ -290,6 +291,23 @@ public class DuelEventWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.ChangeMean");
 			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int Battle(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
+			obj.Battle(arg0);
+			return 0;
 		}
 		catch (Exception e)
 		{

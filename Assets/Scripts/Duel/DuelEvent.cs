@@ -217,4 +217,24 @@ public class DuelEvent : MonoBehaviour
         };
         duelData.eventDate.Add(eData);
     }
+
+    /// <summary>
+    /// 战斗
+    /// </summary>
+    /// <param name="atkmonster"></param>
+    /// <param name="antimonster"></param>
+    public void Battle(DuelCard atkmonster)
+    {
+        if (precheck) return;
+        EventData eData = new EventData
+        {
+            oplayer = duelData.opWho,
+            gameEvent = GameEvent.battle,
+            data = new Dictionary<string, object>
+                {
+                    { "atkmonster", atkmonster }
+                }
+        };
+        duelData.eventDate.Add(eData);
+    }
 }
