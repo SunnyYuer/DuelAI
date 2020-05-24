@@ -21,7 +21,7 @@ public class MonsterOps : MonoBehaviour
     public void ShowMonsterCard(DuelCard duelcard)
     {
         Transform montrans = monsterArea.GetChild(duelcard.index);
-        Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.card, false);
+        Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.id, false);
         if (duelcard.mean == CardMean.faceupatk)
         {//表侧攻击表示
             montrans.rotation = Quaternion.Euler(90, 180, 0);

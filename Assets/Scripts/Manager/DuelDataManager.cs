@@ -13,6 +13,7 @@ public class DuelDataManager
     public int opWho; // 在效果处理的玩家
     public CardDataManager cardData;
     public Dictionary<string, Card> cardDic;
+    public List<DuelBuff> duelbuff;
     public List<EventData> eventDate;
 
     // 玩家数据
@@ -44,9 +45,10 @@ public class DuelDataManager
         areaNum = 5;
         InitialArray();
         cardData = new CardDataManager();
+        duelbuff = new List<DuelBuff>();
+        eventDate = new List<EventData>();
         chainEffect = new List<CardEffect>();
         waitEffect = new List<CardEffect>();
-        eventDate = new List<EventData>();
         activatableEffect = new List<CardEffect>();
         turnNum = 0;
         effectChain = false;
@@ -108,19 +110,31 @@ public class DuelDataManager
 /// <summary>
 /// 决斗时的卡牌
 /// </summary>
-public class DuelCard
+public class DuelCard : Card
 {
-    public string card;
     public int owner; // 原本持有者
     public int controller; // 控制者
     public int position;
     public int index;
     public int mean; // 在场上的表示形式
     public int appearturn; // 出现在场上的回合
-    public List<DuelBuff> buffList;
     // 回合值
     public int meanchange; // 表示形式变更次数
     public int battledeclare; // 战斗宣言
+
+    public void SetCard(Card card)
+    {
+        id = card.id;
+        name = card.name;
+        type = card.type;
+        series = card.series;
+        attribute = card.attribute;
+        level = card.level;
+        race = card.race;
+        atk = card.atk;
+        def = card.def;
+        describe = card.describe;
+    }
 }
 
 /// <summary>
@@ -128,9 +142,12 @@ public class DuelCard
 /// </summary>
 public class DuelBuff
 {
-    public DuelCard fromcard;//buff来源
-    public Dictionary<int, object> buff;
-    public int turns;//buff持续回合类型
+    public DuelCard fromcard; // buff来源
+    public TargetCard targetcard;
+    public int contype; // buff持续类型
+    public int conturn; // buff持续回合数
+    public int bufftype;
+    public object buff;
 }
 
 /// <summary>
@@ -152,6 +169,13 @@ public class CardEffect
     public int effect;
     public int speed;
     public bool cost;
+}
+
+public class TargetCard
+{
+    public int side;
+    public List<int> position;
+    public Dictionary<int, object> target;
 }
 
 /// <summary>

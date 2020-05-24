@@ -148,7 +148,7 @@ public class DuelEvent : MonoBehaviour
         if (precheck) return;
         if (card.Equals(""))
         {
-            card = thiscard.card;
+            card = thiscard.id;
         }
         Debug.Log("给对方观看卡牌  " + duelData.cardDic[card].name);
     }

@@ -2,8 +2,42 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardType
+public class PlayerSide
 {
+    public const int both = 0;
+    public const int own = 1;
+    public const int ops = 2;
+}
+
+public class CardPosition
+{
+    public const int deck = 10;
+    public const int extra = 11;
+    public const int grave = 12;
+    public const int except = 13;
+    public const int handcard = 14;
+    public const int area = 15; // 场上
+    public const int monster = 16;
+    public const int magictrap = 17;
+    public const int field = 18;
+    public const int special = 19;
+}
+
+public class CardAtt
+{
+    public const int name = 30;
+    public const int type = 31;
+    public const int series = 32;
+    public const int attribute = 33;
+    public const int level = 34;
+    public const int race = 35;
+    public const int atk = 36;
+    public const int def = 37;
+    public const int mean = 38;
+}
+
+public class CardType
+{ // 临时，应该配置在规则文件里
     public const string monster = "怪兽";
     public const string magic = "魔法";
     public const string trap = "陷阱";
@@ -30,19 +64,6 @@ public class TrapType
     public const string normal = "通常";
     public const string continuous = "永续";
     public const string counter = "反击";
-}
-
-public class CardPosition
-{
-    public const int deck = 1;
-    public const int extra = 2;
-    public const int grave = 3;
-    public const int except = 4;
-    public const int handcard = 5;
-    public const int monster = 6;
-    public const int magictrap = 7;
-    public const int field = 8;
-    public const int special = 9;
 }
 
 public class CardMean

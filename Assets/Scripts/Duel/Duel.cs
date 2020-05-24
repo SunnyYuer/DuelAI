@@ -329,7 +329,7 @@ public class Duel : MonoBehaviour
         for (i = 0; i < duelData.handcard[player].Count; i++)
         {
             duelEvent.SetThisCard(duelData.handcard[player][i]);
-            luaCode.Run("c" + duelData.handcard[player][i].card);
+            luaCode.Run("c" + duelData.handcard[player][i].id);
         }
     }
 
@@ -414,13 +414,12 @@ public class Duel : MonoBehaviour
             else handOps.AddHandCardFromDeck(player);
             DuelCard duelcard = new DuelCard
             {
-                card = duelData.deck[player][0],
                 owner = player,
                 controller = player,
                 position = CardPosition.handcard,
-                index = duelData.handcard[player].Count,
-                buffList = new List<DuelBuff>()
+                index = duelData.handcard[player].Count
             };
+            duelcard.SetCard(cardDic[duelData.deck[player][0]]);
             duelData.handcard[player].Add(duelcard);
             duelData.cardsJustDrawn[player].Add(duelData.deck[player][0]);
             duelData.deck[player].RemoveAt(0);
@@ -528,7 +527,7 @@ public class Duel : MonoBehaviour
         int target = duelAI.GetAttackTarget();
         if (target == -1)
         { // 直接攻击对方
-            int atk = cardDic[atkmonster.card].atk;
+            int atk = atkmonster.atk;
             LPUpdate(antiplayer, -atk);
         }
         else
@@ -536,8 +535,8 @@ public class Duel : MonoBehaviour
             DuelCard antimonster = duelData.monster[antiplayer][target];
             if (antimonster.mean == CardMean.faceupatk)
             { // 对方的怪兽处于攻击表示
-                int atk1 = cardDic[atkmonster.card].atk;
-                int atk2 = cardDic[antimonster.card].atk;
+                int atk1 = atkmonster.atk;
+                int atk2 = antimonster.atk;
                 if (atk1 > atk2)
                 {
                     LPUpdate(antiplayer, -(atk1 - atk2));
@@ -559,8 +558,8 @@ public class Duel : MonoBehaviour
             }
             else
             { // 对方的怪兽处于防御表示
-                int atk1 = cardDic[atkmonster.card].atk;
-                int def2 = cardDic[antimonster.card].def;
+                int atk1 = atkmonster.atk;
+                int def2 = antimonster.def;
                 if (atk1 > def2)
                 {
                     DestroyCard(antimonster, 0);
@@ -579,7 +578,7 @@ public class Duel : MonoBehaviour
         if (IsPlayerOwn(duelcard.controller)) monserOwn.HideMonsterCard(duelcard);
         else monserOps.HideMonsterCard(duelcard);
         duelData.monster[duelcard.controller][duelcard.index] = null;
-        duelData.grave[duelcard.owner].Insert(0, duelcard.card);
+        duelData.grave[duelcard.owner].Insert(0, duelcard.id);
         if (IsPlayerOwn(duelcard.owner)) graveOwn.GraveUpdate(duelcard.owner);
         else graveOps.GraveUpdate(duelcard.owner);
     }
@@ -654,8 +653,8 @@ public class Duel : MonoBehaviour
     {//检查能否通常召唤
         if (duelData.normalsummon[duelcard.controller] > 0) return false;
         if (!MonsterPlaceCheck()) return false;
-        if (!cardDic[duelcard.card].type.Contains(CardType.monster)) return false;
-        if (cardDic[duelcard.card].level > 4) return false;
+        if (!duelcard.type.Contains(CardType.monster)) return false;
+        if (duelcard.level > 4) return false;
         return true;
     }
 
