@@ -27,7 +27,9 @@ function c71703785effect1()
 end
 
 function c71703785condition2()
-    duelData = Duel.duelData
+    if(duelData.duelPhase > GamePhase.damageStepStart) then
+        print(111111)
+    end
     --print(duelData)
     --print(Duel.duelData)
     --print(type(Duel:GetAntiMonster()))

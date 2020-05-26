@@ -17,7 +17,6 @@ public class DuelEvent : MonoBehaviour
     void Start()
     {
         duel = gameObject.GetComponent<Duel>();
-        duelData = Duel.duelData;
     }
 
     // Update is called once per frame

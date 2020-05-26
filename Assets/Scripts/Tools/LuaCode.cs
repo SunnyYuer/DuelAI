@@ -63,14 +63,14 @@ public class LuaCode
 
     public void Test()
     {
-        //每行必须加\n
-        string code =
-            "function Card71703785()\n" +
-            "print(\"运行成功\")\n" +
-            "end\n";
+        string code = 
+            @"
+            function Card71703785()
+                print('运行成功')
+            end
+            ";
         SetCode(code);
         Run("Card71703785");
-        Close();
     }
 
     public static void TestLog(object msg)

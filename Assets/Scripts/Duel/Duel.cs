@@ -43,6 +43,7 @@ public class Duel : MonoBehaviour
         ReadDeckFile();
         //加载卡组数据
         duelData.LoadDeckData();
+        duelEvent.duelData = duelData;
         luaCode.SetCode(duelData.cardData.allcode);
         //放置卡组
         deckOwn.DeckUpdate(0);
