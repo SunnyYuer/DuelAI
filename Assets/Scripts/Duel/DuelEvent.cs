@@ -38,19 +38,6 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// 是否在可以发动主动效果的阶段中
-    /// </summary>
-    /// <returns></returns>
-    public bool InActivePhase()
-    {
-        if (duelData.duelPhase == 3 || duelData.duelPhase == 5)
-        {
-            if (!duelData.effectChain) return true;
-        }
-        return false;
-    }
-
-    /// <summary>
     /// 检查效果能否发动
     /// </summary>
     public void Precheck()
@@ -92,6 +79,15 @@ public class DuelEvent : MonoBehaviour
         precheck = false;
         if (activatable) duel.SetActivatableEffect(thiscard, effect, 3, cost);
         activatable = true;
+    }
+
+    public void SetContinuousEffect()
+    {
+        DuelBuff buff = new DuelBuff()
+        {
+            fromcard = thiscard,
+
+        };
     }
 
     /// <summary>
@@ -236,5 +232,25 @@ public class DuelEvent : MonoBehaviour
                 }
         };
         duelData.eventDate.Add(eData);
+    }
+
+    /// <summary>
+    /// 这张卡是否在进行战斗
+    /// </summary>
+    /// <returns></returns>
+    public bool ThisCardIsBattle()
+    {
+        return true;
+    }
+
+    /// <summary>
+    /// 获取正在与之进行战斗的怪兽
+    /// </summary>
+    /// <returns></returns>
+    public DuelCard GetAntiMonster()
+    {
+        int count = duelData.record.Count;
+        List<CardLocation> card = duelData.record[count - 1].card;
+        return card[1].FindDuelCard(duelData); ;
     }
 }

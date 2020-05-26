@@ -15,6 +15,7 @@ public class DuelDataManager
     public Dictionary<string, Card> cardDic;
     public List<DuelBuff> duelbuff;
     public List<EventData> eventDate;
+    public List<DuelRecord> record;
 
     // 玩家数据
     public int[] LP;
@@ -47,6 +48,7 @@ public class DuelDataManager
         cardData = new CardDataManager();
         duelbuff = new List<DuelBuff>();
         eventDate = new List<EventData>();
+        record = new List<DuelRecord>();
         chainEffect = new List<CardEffect>();
         waitEffect = new List<CardEffect>();
         activatableEffect = new List<CardEffect>();
@@ -137,6 +139,41 @@ public class DuelCard : Card
     }
 }
 
+public class CardLocation
+{
+    public int controller;
+    public int position;
+    public int index;
+
+    public void SetLocation(DuelCard duelcard)
+    {
+        controller = duelcard.controller;
+        position = duelcard.position;
+        index = duelcard.index;
+    }
+
+    public DuelCard FindDuelCard(DuelDataManager duelData)
+    {
+        if (position == CardPosition.handcard)
+        {
+            return duelData.handcard[controller][index];
+        }
+        if (position == CardPosition.monster)
+        {
+            return duelData.monster[controller][index];
+        }
+        if (position == CardPosition.magictrap)
+        {
+            return duelData.magictrap[controller][index];
+        }
+        if (position == CardPosition.field)
+        {
+            return duelData.fieldcard[controller % 2];
+        }
+        return null;
+    }
+}
+
 /// <summary>
 /// 决斗时产生的增减益状态
 /// </summary>
@@ -148,6 +185,13 @@ public class DuelBuff
     public int conturn; // buff持续回合数
     public int bufftype;
     public object buff;
+}
+
+public class TargetCard
+{
+    public int side;
+    public List<int> position;
+    public Dictionary<int, object> target;
 }
 
 /// <summary>
@@ -171,22 +215,25 @@ public class CardEffect
     public bool cost;
 }
 
-public class TargetCard
-{
-    public int side;
-    public List<int> position;
-    public Dictionary<int, object> target;
-}
-
 /// <summary>
-/// 卡牌发动效果以及受效果影响的卡牌记录
+/// 决斗行动记录
 /// </summary>
-public class EffectRecord
+public class DuelRecord
 {
-    public int turnNum;
-    public int duelPhase;
-    public int player;
-    public string card;
-    public int effect;
-    public List<string> effectCard;
+    public int action;
+    public List<CardLocation> card;
+
+    public DuelRecord(int action)
+    {
+        card = new List<CardLocation>();
+        this.action = action;
+    }
+
+    public void AddCard(DuelCard duelcard)
+    {
+        if (duelcard == null) return;
+        CardLocation cardlocal = new CardLocation();
+        cardlocal.SetLocation(duelcard);
+        card.Add(cardlocal);
+    }
 }

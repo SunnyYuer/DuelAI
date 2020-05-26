@@ -80,6 +80,23 @@ public class CardMean
     public const int facedown = 3;
 }
 
+public class GamePhase
+{
+    public const int turnstart = 0;
+    public const int draw = 10;
+    public const int standby = 20;
+    public const int main1 = 30;
+    public const int battle = 40;
+    public const int battlestep = 41;
+    public const int damageStepStart = 42;
+    public const int damageCalBefore = 43;
+    public const int damageCalculate = 44;
+    public const int damageCalAfter = 45;
+    public const int damageStepEnd = 46;
+    public const int main2 = 50;
+    public const int end = 60;
+}
+
 public class GameEvent
 {
     public const int drawcard = 1;
@@ -87,6 +104,13 @@ public class GameEvent
     public const int specialsummon = 3;
     public const int changemean = 4;
     public const int battle = 5;
+}
+
+public class PlayerAction : GameEvent
+{
+    public const int enterbattle = 50;
+    public const int endbattle = 51;
+    public const int endturn = 52;
 }
 
 public class BuffType

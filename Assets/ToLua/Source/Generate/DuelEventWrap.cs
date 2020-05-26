@@ -8,11 +8,11 @@ public class DuelEventWrap
 	{
 		L.BeginClass(typeof(DuelEvent), typeof(UnityEngine.MonoBehaviour));
 		L.RegFunction("SetThisCard", SetThisCard);
-		L.RegFunction("InActivePhase", InActivePhase);
 		L.RegFunction("Precheck", Precheck);
 		L.RegFunction("SetActivatableEffect", SetActivatableEffect);
 		L.RegFunction("SetChainableEffect", SetChainableEffect);
 		L.RegFunction("SetCounterableEffect", SetCounterableEffect);
+		L.RegFunction("SetContinuousEffect", SetContinuousEffect);
 		L.RegFunction("DrawnCard", DrawnCard);
 		L.RegFunction("DrawCard", DrawCard);
 		L.RegFunction("ShowCard", ShowCard);
@@ -20,6 +20,8 @@ public class DuelEventWrap
 		L.RegFunction("SpecialSummon", SpecialSummon);
 		L.RegFunction("ChangeMean", ChangeMean);
 		L.RegFunction("Battle", Battle);
+		L.RegFunction("ThisCardIsBattle", ThisCardIsBattle);
+		L.RegFunction("GetAntiMonster", GetAntiMonster);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("duelData", get_duelData, set_duelData);
@@ -39,23 +41,6 @@ public class DuelEventWrap
 			DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
 			obj.SetThisCard(arg0);
 			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int InActivePhase(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-			bool o = obj.InActivePhase();
-			LuaDLL.lua_pushboolean(L, o);
-			return 1;
 		}
 		catch (Exception e)
 		{
@@ -171,6 +156,22 @@ public class DuelEventWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.SetCounterableEffect");
 			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetContinuousEffect(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			obj.SetContinuousEffect();
+			return 0;
 		}
 		catch (Exception e)
 		{
@@ -308,6 +309,40 @@ public class DuelEventWrap
 			DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
 			obj.Battle(arg0);
 			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ThisCardIsBattle(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			bool o = obj.ThisCardIsBattle();
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetAntiMonster(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			DuelCard o = obj.GetAntiMonster();
+			ToLua.PushObject(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{

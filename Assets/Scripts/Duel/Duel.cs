@@ -103,16 +103,9 @@ public class Duel : MonoBehaviour
 
     public void LPUpdate(int player, int change)
     {
-        if (IsPlayerOwn(player))
-        {
-            duelData.LP[0] += change;
-            LPOwn.text = "LP  " + duelData.LP[0];
-        }
-        else
-        {
-            duelData.LP[1] += change;
-            LPOps.text = "LP  " + duelData.LP[1];
-        }
+        player %= 2;
+        duelData.LP[player] += change;
+        LPOwn.text = "LP  " + duelData.LP[player];
     }
 
     private IEnumerator DuelPhase(int phase)
@@ -120,38 +113,38 @@ public class Duel : MonoBehaviour
         duelData.duelPhase = phase;
         switch (duelData.duelPhase)
         {
-            case 0:
+            case GamePhase.turnstart:
                 duelData.turnNum++;
                 if (IsPlayerOwn(duelData.player)) phaseText.text = "我的回合";
                 else phaseText.text = "对方回合";
                 StartCoroutine(EndPhase());
                 break;
-            case 1:
+            case GamePhase.draw:
                 phaseText.text = "抽卡阶段";
                 duelEvent.DrawCard(0, 1);
                 yield return WaitGameEvent();
                 yield return EffectChain();
                 StartCoroutine(EndPhase());
                 break;
-            case 2:
+            case GamePhase.standby:
                 phaseText.text = "准备阶段";
                 StartCoroutine(EndPhase());
                 break;
-            case 3:
+            case GamePhase.main1:
                 phaseText.text = "主一阶段";
                 ChangeBattleButtonText();
                 yield return DuelAI();
                 break;
-            case 4:
+            case GamePhase.battle:
                 phaseText.text = "战斗阶段";
                 ChangeBattleButtonText();
                 yield return DuelAI();
                 break;
-            case 5:
+            case GamePhase.main2:
                 phaseText.text = "主二阶段";
                 yield return DuelAI();
                 break;
-            case 6:
+            case GamePhase.end:
                 phaseText.text = "结束阶段";
                 TurnEndReset();
                 StartCoroutine(EndPhase());
@@ -164,10 +157,10 @@ public class Duel : MonoBehaviour
     private IEnumerator EndPhase()
     {
         yield return new WaitForSeconds(1);
-        duelData.duelPhase++;
-        if (duelData.duelPhase >= 7)
+        duelData.duelPhase += 10;
+        if (duelData.duelPhase > GamePhase.end)
         {
-            duelData.duelPhase = 0;
+            duelData.duelPhase = GamePhase.turnstart;
             duelData.ChangeNextPlayer();
         }
         StartCoroutine(DuelPhase(duelData.duelPhase));
@@ -175,28 +168,35 @@ public class Duel : MonoBehaviour
 
     private void PhaseButtonShow()
     {
-        if (duelData.duelPhase >= 3 && duelData.duelPhase <= 4) battleButton.SetActive(true);
-        else battleButton.SetActive(false);
-        if (duelData.duelPhase >= 3 && duelData.duelPhase <= 5) endTurnButton.SetActive(true);
-        else endTurnButton.SetActive(false);
+        if (duelData.duelPhase == GamePhase.main1 || duelData.duelPhase == GamePhase.battle)
+            battleButton.SetActive(true);
+        else
+            battleButton.SetActive(false);
+        if (duelData.duelPhase == GamePhase.main1 || duelData.duelPhase == GamePhase.battle ||
+            duelData.duelPhase == GamePhase.main2)
+            endTurnButton.SetActive(true);
+        else
+            endTurnButton.SetActive(false);
     }
 
     private void OnEndTurnButtonClick()
     {
-        StartCoroutine(DuelPhase(6));
+        StartCoroutine(DuelPhase(GamePhase.end));
     }
 
     private void ChangeBattleButtonText()
     {
         Text buttonText = battleButton.GetComponentInChildren<Text>();
-        if (duelData.duelPhase == 3) buttonText.text = "开始战斗";
-        if (duelData.duelPhase == 4) buttonText.text = "结束战斗";
+        if (duelData.duelPhase == GamePhase.main1) buttonText.text = "开始战斗";
+        if (duelData.duelPhase == GamePhase.battle) buttonText.text = "结束战斗";
     }
 
     private void OnBattleButtonClick()
     {
-        if (duelData.duelPhase == 4) StartCoroutine(DuelPhase(5));
-        if (duelData.duelPhase == 3) StartCoroutine(DuelPhase(4));
+        if (duelData.duelPhase == GamePhase.battle)
+            StartCoroutine(DuelPhase(GamePhase.main2));
+        if (duelData.duelPhase == GamePhase.main1)
+            StartCoroutine(DuelPhase(GamePhase.battle));
     }
 
     private IEnumerator Game()
@@ -523,8 +523,23 @@ public class Duel : MonoBehaviour
     {
         int atkplayer = atkmonster.controller; // 攻击方
         int antiplayer = GetOppPlayer(atkplayer); // 被攻击方
-        atkmonster.battledeclare++;
+        // 战斗步骤
+        duelData.duelPhase++;
         int target = duelAI.GetAttackTarget();
+        atkmonster.battledeclare++;
+        DuelCard antimonster = null;
+        if (target != -1) antimonster = duelData.monster[antiplayer][target];
+        DuelRecord record = new DuelRecord(PlayerAction.battle);
+        record.AddCard(atkmonster);
+        record.AddCard(antimonster);
+        duelData.record.Add(record);
+        // 伤害步骤开始时
+        duelData.duelPhase++;
+        // 伤害计算前
+        duelData.duelPhase++;
+        // 伤害计算时
+        duelData.duelPhase++;
+        int destroycard = 0;
         if (target == -1)
         { // 直接攻击对方
             int atk = atkmonster.atk;
@@ -532,7 +547,6 @@ public class Duel : MonoBehaviour
         }
         else
         { // 攻击选定的目标
-            DuelCard antimonster = duelData.monster[antiplayer][target];
             if (antimonster.mean == CardMean.faceupatk)
             { // 对方的怪兽处于攻击表示
                 int atk1 = atkmonster.atk;
@@ -540,20 +554,19 @@ public class Duel : MonoBehaviour
                 if (atk1 > atk2)
                 {
                     LPUpdate(antiplayer, -(atk1 - atk2));
-                    DestroyCard(antimonster, 0);
+                    destroycard = 2;
                 }
                 if (atk1 == atk2)
                 {
                     if (atk1 != 0)
                     { // 攻击力为0的怪兽不造成伤害
-                        DestroyCard(atkmonster, 0);
-                        DestroyCard(antimonster, 0);
+                        destroycard = 3;
                     }
                 }
                 if (atk1 < atk2)
                 {
                     LPUpdate(atkplayer, -(atk2 - atk1));
-                    DestroyCard(atkmonster, 0);
+                    destroycard = 1;
                 }
             }
             else
@@ -562,7 +575,7 @@ public class Duel : MonoBehaviour
                 int def2 = antimonster.def;
                 if (atk1 > def2)
                 {
-                    DestroyCard(antimonster, 0);
+                    destroycard = 2;
                 }
                 if (atk1 <= def2)
                 {
@@ -570,6 +583,24 @@ public class Duel : MonoBehaviour
                 }
             }
         }
+        // 伤害计算后
+        duelData.duelPhase++;
+        // 伤害步骤终了时
+        duelData.duelPhase++;
+        if (destroycard == 1)
+        {
+            DestroyCard(atkmonster, 0);
+        }
+        if (destroycard == 2)
+        {
+            DestroyCard(antimonster, 0);
+        }
+        if (destroycard == 3)
+        {
+            DestroyCard(atkmonster, 0);
+            DestroyCard(antimonster, 0);
+        }
+        duelData.duelPhase = GamePhase.battle;
         yield return null;
     }
 
