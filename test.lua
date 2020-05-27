@@ -35,3 +35,18 @@ function c71703785condition2()
     --print(type(Duel:GetAntiMonster()))
     return true
 end
+
+function c54250060()
+end
+
+function c92510265()
+end
+
+function c19508728()
+end
+
+function c84877802()
+end
+
+function c94004268()
+end

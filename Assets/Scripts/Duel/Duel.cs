@@ -118,10 +118,12 @@ public class Duel : MonoBehaviour
                 duelData.turnNum++;
                 if (IsPlayerOwn(duelData.player)) phaseText.text = "我的回合";
                 else phaseText.text = "对方回合";
+                Debug.Log("玩家" + duelData.player);
                 StartCoroutine(EndPhase());
                 break;
             case GamePhase.draw:
                 phaseText.text = "抽卡阶段";
+                Debug.Log("抽卡阶段");
                 duelEvent.DrawCard(0, 1);
                 yield return WaitGameEvent();
                 yield return EffectChain();
@@ -129,6 +131,8 @@ public class Duel : MonoBehaviour
                 break;
             case GamePhase.standby:
                 phaseText.text = "准备阶段";
+                Debug.Log("准备阶段");
+                yield return EffectChain();
                 StartCoroutine(EndPhase());
                 break;
             case GamePhase.main1:
@@ -147,6 +151,8 @@ public class Duel : MonoBehaviour
                 break;
             case GamePhase.end:
                 phaseText.text = "结束阶段";
+                Debug.Log("结束阶段");
+                yield return EffectChain();
                 TurnEndReset();
                 StartCoroutine(EndPhase());
                 break;
@@ -274,6 +280,7 @@ public class Duel : MonoBehaviour
 
     private IEnumerator PayCost(CardEffect cardEffect)
     {
+        Debug.Log("卡牌 " + cardEffect.duelcard.name + " id" + cardEffect.duelcard.id + " 的效果" + cardEffect.effect + " 支付代价");
         duelEvent.SetThisCard(cardEffect.duelcard);
         luaCode.Run(luaCode.CostFunStr(cardEffect));
         yield return WaitGameEvent();
@@ -281,6 +288,7 @@ public class Duel : MonoBehaviour
 
     private IEnumerator ActivateEffect(CardEffect cardEffect)
     {
+        Debug.Log("卡牌 " + cardEffect.duelcard.name + " id" + cardEffect.duelcard.id + " 的效果" + cardEffect.effect + " 发动");
         duelEvent.SetThisCard(cardEffect.duelcard);
         luaCode.Run(luaCode.EffectFunStr(cardEffect));
         yield return WaitGameEvent();
@@ -289,6 +297,7 @@ public class Duel : MonoBehaviour
     private IEnumerator EffectChain()
     {
         bool chain = true;
+        int scannum = 0;
         while (chain)
         {
             chain = false;
@@ -299,7 +308,7 @@ public class Duel : MonoBehaviour
                 CardEffect activateEffect = null;
                 yield return WantActivate();
                 if (Tip.select == 1)
-                {//由玩家选择或者AI选择
+                { // 由玩家选择或者AI选择
                     int select = 0;
                     activateEffect = duelData.activatableEffect[select];
                     chain = true;
@@ -313,6 +322,12 @@ public class Duel : MonoBehaviour
                     duelData.opWho = GetOppPlayer(opWho);
                 }
             }
+            if (!chain && scannum == 0)
+            { // 回合玩家不发动，再看敌对玩家发不发动
+                duelData.opWho = GetOppPlayer(duelData.opWho);
+                chain = true;
+            }
+            scannum++;
         }
         while (duelData.chainEffect.Count > 0)
         {
@@ -320,6 +335,7 @@ public class Duel : MonoBehaviour
             yield return ActivateEffect(duelData.chainEffect[0]);
             duelData.chainEffect.RemoveAt(0);
         }
+        duelData.opWho = duelData.player;
     }
 
     private void ScanEffect()
@@ -331,6 +347,14 @@ public class Duel : MonoBehaviour
         {
             duelEvent.SetThisCard(duelData.handcard[player][i]);
             luaCode.Run("c" + duelData.handcard[player][i].id);
+        }
+        for (i = 0; i < duelData.areaNum; i++)
+        {
+            if (duelData.monster[player][i] != null)
+            {
+                duelEvent.SetThisCard(duelData.monster[player][i]);
+                luaCode.Run("c" + duelData.monster[player][i].id);
+            }
         }
     }
 
@@ -534,12 +558,20 @@ public class Duel : MonoBehaviour
         record.AddCard(atkmonster);
         record.AddCard(antimonster);
         duelData.record.Add(record);
+        Debug.Log("战斗步骤");
+        yield return EffectChain();
         // 伤害步骤开始时
         duelData.duelPhase++;
+        Debug.Log("伤害步骤开始时");
+        yield return EffectChain();
         // 伤害计算前
         duelData.duelPhase++;
+        Debug.Log("伤害计算前");
+        yield return EffectChain();
         // 伤害计算时
         duelData.duelPhase++;
+        Debug.Log("伤害计算时");
+        yield return EffectChain();
         int destroycard = 0;
         if (target == -1)
         { // 直接攻击对方
@@ -586,6 +618,8 @@ public class Duel : MonoBehaviour
         }
         // 伤害计算后
         duelData.duelPhase++;
+        Debug.Log("伤害计算后");
+        yield return EffectChain();
         // 伤害步骤终了时
         duelData.duelPhase++;
         if (destroycard == 1)
