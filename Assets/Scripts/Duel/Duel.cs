@@ -746,4 +746,23 @@ public class Duel : MonoBehaviour
         return true;
     }
     /* 对决斗的判断 */
+
+    /* 决斗行动记录的运用 */
+    public List<DuelCard> GetLastBattleCard()
+    {
+        List<DuelCard> duelcard = new List<DuelCard>();
+        int count = duelData.record.Count;
+        for (int i = count - 1; i >= 0; i--)
+        {
+            if (duelData.record[i].action == PlayerAction.battle)
+            {
+                List<CardLocation> card = duelData.record[i].card;
+                duelcard.Add(card[0].FindDuelCard(duelData));
+                duelcard.Add(card[1].FindDuelCard(duelData));
+                break;
+            }
+        }
+        return duelcard;
+    }
+    /* 决斗行动记录的运用 */
 }

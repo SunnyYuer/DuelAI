@@ -10,7 +10,7 @@ function c71703785()
         Duel:SetActivatableEffect(1, true)
     end
     if(c71703785condition2()) then
-        
+        print(1234567)
     end
 end
 
@@ -27,13 +27,14 @@ function c71703785effect1()
 end
 
 function c71703785condition2()
-    if(duelData.duelPhase > GamePhase.damageStepStart) then
-        print(111111)
+    if(duelData.duelPhase == GamePhase.damageStepStart) then
+    if(Duel:ThisCardIsBattle()) then
+    if(Duel:GetAntiMonster().attribute == "暗") then
+        return true
     end
-    --print(duelData)
-    --print(Duel.duelData)
-    --print(type(Duel:GetAntiMonster()))
-    return true
+    end
+    end
+    return false
 end
 
 function c54250060()

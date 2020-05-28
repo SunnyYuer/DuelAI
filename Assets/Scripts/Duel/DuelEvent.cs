@@ -239,7 +239,9 @@ public class DuelEvent : MonoBehaviour
     /// <returns></returns>
     public bool ThisCardIsBattle()
     {
-        return true;
+        List<DuelCard> duelcard = duel.GetLastBattleCard();
+        if (duelcard[1] == null) return false;
+        return duelcard[0].Equals(thiscard);
     }
 
     /// <summary>
@@ -248,8 +250,7 @@ public class DuelEvent : MonoBehaviour
     /// <returns></returns>
     public DuelCard GetAntiMonster()
     {
-        int count = duelData.record.Count;
-        List<CardLocation> card = duelData.record[count - 1].card;
-        return card[1].FindDuelCard(duelData); ;
+        List<DuelCard> duelcard = duel.GetLastBattleCard();
+        return duelcard[1];
     }
 }

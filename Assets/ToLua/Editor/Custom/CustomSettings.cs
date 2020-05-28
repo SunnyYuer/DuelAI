@@ -60,6 +60,8 @@ public static class CustomSettings
         //_GT(typeof(LuaCode)),//测试使用
         _GT(typeof(DuelEvent)),
         _GT(typeof(DuelDataManager)),
+        _GT(typeof(DuelCard)),
+        _GT(typeof(Card)),
         _GT(typeof(GamePhase)),
 
         _GT(typeof(LuaInjectionStation)),
