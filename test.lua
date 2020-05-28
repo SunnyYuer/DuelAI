@@ -4,10 +4,9 @@ duelData = Duel.duelData
 
 function c71703785()
     if(c71703785condition1()) then
-        Duel:Precheck()
         c71703785cost1()
         c71703785effect1()
-        Duel:SetActivatableEffect(1, true)
+        Duel:SetTriggerEffect(1, true)
     end
     if(c71703785condition2()) then
         print(1234567)

@@ -32,52 +32,18 @@ public class DuelEvent : MonoBehaviour
     public void SetThisCard(DuelCard duelcard)
     {
         thiscard = duelcard;
-        precheck = false;
         activatable = true;
     }
 
     /// <summary>
-    /// 检查效果能否发动
-    /// </summary>
-    public void Precheck()
-    {
-        precheck = true;
-    }
-
-    /// <summary>
-    /// 设置1速的效果，之后可以进行发动
+    /// 设置诱发效果，之后可以进行发动
     /// </summary>
     /// <param name="effect"></param>
     /// <param name="cost"></param>
-    public void SetActivatableEffect(int effect, bool cost = false)
+    public void SetTriggerEffect(int effect, bool cost = false)
     {
-        precheck = false;
         if (activatable) duel.SetActivatableEffect(thiscard, effect, 1, cost);
-        activatable = true;
-    }
-
-    /// <summary>
-    /// 设置2速的效果，之后可选择以进行发动
-    /// </summary>
-    /// <param name="effect"></param>
-    /// <param name="cost"></param>
-    public void SetChainableEffect(int effect, bool cost = false)
-    {
-        precheck = false;
-        if (activatable) duel.SetActivatableEffect(thiscard, effect, 2, cost);
-        activatable = true;
-    }
-
-    /// <summary>
-    /// 设置3速的效果，之后可选择以进行发动
-    /// </summary>
-    /// <param name="effect"></param>
-    /// <param name="cost"></param>
-    public void SetCounterableEffect(int effect, bool cost = false)
-    {
-        precheck = false;
-        if (activatable) duel.SetActivatableEffect(thiscard, effect, 3, cost);
-        activatable = true;
+        activatable = true; // 一张卡可能有多个效果能发动
     }
 
     public void SetContinuousEffect()
@@ -138,6 +104,7 @@ public class DuelEvent : MonoBehaviour
     /// <summary>
     /// 把这张卡给对方观看
     /// </summary>
+    /// <param name="card"></param>
     public void ShowCard(string card)
     {
         if (precheck) return;
@@ -151,7 +118,7 @@ public class DuelEvent : MonoBehaviour
     /// <summary>
     /// 手卡的一只怪兽通常召唤
     /// </summary>
-    /// <param name="index"></param>
+    /// <param name="duelcard"></param>
     public void NormalSummon(DuelCard duelcard)
     {
         if (precheck) return;
@@ -196,7 +163,8 @@ public class DuelEvent : MonoBehaviour
     /// <summary>
     /// 怪兽变更表示形式
     /// </summary>
-    /// <param name="index"></param>
+    /// <param name="duelcard"></param>
+    /// <param name="mean"></param>
     public void ChangeMean(DuelCard duelcard, int mean = 0)
     {
         if (precheck) return;
@@ -217,7 +185,6 @@ public class DuelEvent : MonoBehaviour
     /// 战斗
     /// </summary>
     /// <param name="atkmonster"></param>
-    /// <param name="antimonster"></param>
     public void Battle(DuelCard atkmonster)
     {
         if (precheck) return;
@@ -234,7 +201,7 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// 这张卡是否在进行战斗
+    /// 这张卡是否在与怪兽进行战斗
     /// </summary>
     /// <returns></returns>
     public bool ThisCardIsBattle()

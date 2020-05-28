@@ -342,6 +342,7 @@ public class Duel : MonoBehaviour
     {
         int player = duelData.opWho;
         Debug.Log("扫描效果 player=" + player);
+        duelEvent.precheck = true;
         int i;
         for (i = 0; i < duelData.handcard[player].Count; i++)
         {
@@ -356,6 +357,7 @@ public class Duel : MonoBehaviour
                 luaCode.Run("c" + duelData.monster[player][i].id);
             }
         }
+        duelEvent.precheck = false;
     }
 
     public void SetActivatableEffect(DuelCard duelcard, int effect, int speed, bool cost)

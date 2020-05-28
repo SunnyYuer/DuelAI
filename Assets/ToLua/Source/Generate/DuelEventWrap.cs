@@ -8,10 +8,7 @@ public class DuelEventWrap
 	{
 		L.BeginClass(typeof(DuelEvent), typeof(UnityEngine.MonoBehaviour));
 		L.RegFunction("SetThisCard", SetThisCard);
-		L.RegFunction("Precheck", Precheck);
-		L.RegFunction("SetActivatableEffect", SetActivatableEffect);
-		L.RegFunction("SetChainableEffect", SetChainableEffect);
-		L.RegFunction("SetCounterableEffect", SetCounterableEffect);
+		L.RegFunction("SetTriggerEffect", SetTriggerEffect);
 		L.RegFunction("SetContinuousEffect", SetContinuousEffect);
 		L.RegFunction("DrawnCard", DrawnCard);
 		L.RegFunction("DrawCard", DrawCard);
@@ -49,23 +46,7 @@ public class DuelEventWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Precheck(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-			obj.Precheck();
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SetActivatableEffect(IntPtr L)
+	static int SetTriggerEffect(IntPtr L)
 	{
 		try
 		{
@@ -75,7 +56,7 @@ public class DuelEventWrap
 			{
 				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
 				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-				obj.SetActivatableEffect(arg0);
+				obj.SetTriggerEffect(arg0);
 				return 0;
 			}
 			else if (count == 3)
@@ -83,78 +64,12 @@ public class DuelEventWrap
 				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
 				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
 				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
-				obj.SetActivatableEffect(arg0, arg1);
+				obj.SetTriggerEffect(arg0, arg1);
 				return 0;
 			}
 			else
 			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.SetActivatableEffect");
-			}
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SetChainableEffect(IntPtr L)
-	{
-		try
-		{
-			int count = LuaDLL.lua_gettop(L);
-
-			if (count == 2)
-			{
-				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-				obj.SetChainableEffect(arg0);
-				return 0;
-			}
-			else if (count == 3)
-			{
-				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
-				obj.SetChainableEffect(arg0, arg1);
-				return 0;
-			}
-			else
-			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.SetChainableEffect");
-			}
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SetCounterableEffect(IntPtr L)
-	{
-		try
-		{
-			int count = LuaDLL.lua_gettop(L);
-
-			if (count == 2)
-			{
-				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-				obj.SetCounterableEffect(arg0);
-				return 0;
-			}
-			else if (count == 3)
-			{
-				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
-				obj.SetCounterableEffect(arg0, arg1);
-				return 0;
-			}
-			else
-			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.SetCounterableEffect");
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.SetTriggerEffect");
 			}
 		}
 		catch (Exception e)
