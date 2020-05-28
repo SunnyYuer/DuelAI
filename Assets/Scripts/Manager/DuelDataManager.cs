@@ -179,12 +179,29 @@ public class CardLocation
 /// </summary>
 public class DuelBuff
 {
-    public DuelCard fromcard; // buff来源
-    public TargetCard targetcard;
-    public int contype; // buff持续类型
-    public int conturn; // buff持续回合数
+    public DuelCard fromcard;
+    public object targetcard;
+    public int conturn; // buff持续回合数，0当前回合，n持续n回合，-1永续
+    public int conphase; // buff持续到哪个阶段
     public int bufftype;
     public object buff;
+
+    public void SetTargetCard(object targetcard)
+    {
+        this.targetcard = targetcard;
+    }
+
+    public void SetConTime(int conturn, int conphase)
+    {
+        this.conturn = conturn;
+        this.conphase = conphase;
+    }
+
+    public void SetBuff(int bufftype, object buff)
+    {
+        this.bufftype = bufftype;
+        this.buff = buff;
+    }
 }
 
 public class TargetCard

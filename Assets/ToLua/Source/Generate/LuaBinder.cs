@@ -13,7 +13,9 @@ public static class LuaBinder
 		DuelDataManagerWrap.Register(L);
 		DuelCardWrap.Register(L);
 		CardWrap.Register(L);
+		DuelBuffWrap.Register(L);
 		GamePhaseWrap.Register(L);
+		BuffTypeWrap.Register(L);
 		LuaInterface_DebuggerWrap.Register(L);
 		LuaProfilerWrap.Register(L);
 		L.BeginModule("LuaInterface");

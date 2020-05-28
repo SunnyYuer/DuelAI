@@ -62,7 +62,9 @@ public static class CustomSettings
         _GT(typeof(DuelDataManager)),
         _GT(typeof(DuelCard)),
         _GT(typeof(Card)),
+        _GT(typeof(DuelBuff)),
         _GT(typeof(GamePhase)),
+        _GT(typeof(BuffType)),
 
         _GT(typeof(LuaInjectionStation)),
         _GT(typeof(InjectType)),

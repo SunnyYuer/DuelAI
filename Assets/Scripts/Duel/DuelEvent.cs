@@ -48,11 +48,20 @@ public class DuelEvent : MonoBehaviour
 
     public void SetContinuousEffect()
     {
-        DuelBuff buff = new DuelBuff()
-        {
-            fromcard = thiscard,
+        
+    }
 
+    /// <summary>
+    /// 创建buff
+    /// </summary>
+    /// <returns></returns>
+    public DuelBuff CreateDuelBuff()
+    {
+        DuelBuff buff = new DuelBuff
+        {
+            fromcard = thiscard
         };
+        return buff;
     }
 
     /// <summary>

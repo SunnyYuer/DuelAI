@@ -106,7 +106,10 @@ public class Duel : MonoBehaviour
     {
         player %= 2;
         duelData.LP[player] += change;
-        LPOwn.text = "LP  " + duelData.LP[player];
+        if (player == 0)
+            LPOwn.text = "LP  " + duelData.LP[player];
+        else
+            LPOps.text = "LP  " + duelData.LP[player];
     }
 
     private IEnumerator DuelPhase(int phase)
@@ -405,7 +408,7 @@ public class Duel : MonoBehaviour
     {
         //由玩家选择或者AI选择
         /*
-        if (duelData.IsPlayerOwn())
+        if (IsPlayerOwn(duelData.opWho))
         {
             Tip.content = "是否发动？";
             GameObject tipObject = Instantiate(Resources.Load("Prefabs/TipBackground"), transform) as GameObject;
@@ -417,7 +420,14 @@ public class Duel : MonoBehaviour
             Tip.select = 1;
         }
         */
-        Tip.select = 1;
+        if (IsPlayerOwn(duelData.opWho))
+        {
+            Tip.select = 1;
+        }
+        else
+        {
+            Tip.select = 0;
+        }
         yield return null;
     }
 
@@ -474,14 +484,14 @@ public class Duel : MonoBehaviour
     }
 
     private int SelectMonsterMean(int gameEvent)
-    {//召唤怪兽时的表示选择
-        //由玩家选择或者AI选择
+    { // 召唤怪兽时的表示选择
+        // 由玩家选择或者AI选择
         if (gameEvent == GameEvent.normalsummon)
         {
             if (IsPlayerOwn(duelData.opWho))
                 return CardMean.facedowndef;
             else
-                return CardMean.facedowndef;
+                return CardMean.faceupatk;
         }
         if (gameEvent == GameEvent.specialsummon)
         {

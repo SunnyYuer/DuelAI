@@ -9,7 +9,8 @@ function c71703785()
         Duel:SetTriggerEffect(1, true)
     end
     if(c71703785condition2()) then
-        print(1234567)
+        local buff = c71703785effect2()
+        print(buff)
     end
 end
 
@@ -36,6 +37,14 @@ function c71703785condition2()
     return false
 end
 
+function c71703785effect2()
+    local buff = Duel:CreateDuelBuff()
+    buff:SetTargetCard(Duel.thiscard)
+    buff:SetConTime(0, GamePhase.damageStepEnd)
+    buff:SetBuff(BuffType.atknew, Duel.thiscard.atk * 2)
+    return buff
+end
+
 function c54250060()
 end
 
@@ -49,4 +58,7 @@ function c84877802()
 end
 
 function c94004268()
+end
+
+function c54749427()
 end
