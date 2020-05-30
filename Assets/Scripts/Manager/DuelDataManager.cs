@@ -181,16 +181,9 @@ public class DuelBuff
 {
     public DuelCard fromcard;
     public int effect;
-    public object targetcard;
     public int conturn; // buff持续到n回合，-1永续
     public int conphase; // buff持续到哪个阶段
     public int bufftype;
-    public object buff;
-
-    public void SetTargetCard(object targetcard)
-    {
-        this.targetcard = targetcard;
-    }
 
     public void SetConTime(int conturn, int conphase)
     {
@@ -198,10 +191,9 @@ public class DuelBuff
         this.conphase = conphase;
     }
 
-    public void SetBuff(int bufftype, object buff)
+    public void SetBuff(int bufftype)
     {
         this.bufftype = bufftype;
-        this.buff = buff;
     }
 }
 

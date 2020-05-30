@@ -115,9 +115,9 @@ public class PlayerAction : GameEvent
 
 public class BuffType
 {
-    public const int attnew = 1;  // string 新的怪兽属性
-    public const int levelnew = 2;  // int 新的怪兽星级
-    public const int racenew = 4;  // string 新的怪兽种族
-    public const int atknew = 5;  // int 攻击力
-    public const int defnew = 7;  // int 防御力
+    public const int atknew = 1;  // 攻击力
+    public const int defnew = 2;  // 防御力
+    public const int attnew = 3;  // 怪兽属性
+    public const int levelnew = 4;  // 怪兽星级
+    public const int racenew = 5;  // 怪兽种族
 }

@@ -9,11 +9,11 @@ public class BuffTypeWrap
 		L.BeginClass(typeof(BuffType), typeof(System.Object));
 		L.RegFunction("New", _CreateBuffType);
 		L.RegFunction("__tostring", ToLua.op_ToString);
-		L.RegConstant("attnew", 1);
-		L.RegConstant("levelnew", 2);
-		L.RegConstant("racenew", 4);
-		L.RegConstant("atknew", 5);
-		L.RegConstant("defnew", 7);
+		L.RegConstant("atknew", 1);
+		L.RegConstant("defnew", 2);
+		L.RegConstant("attnew", 3);
+		L.RegConstant("levelnew", 4);
+		L.RegConstant("racenew", 5);
 		L.EndClass();
 	}
 

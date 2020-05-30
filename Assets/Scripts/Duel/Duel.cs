@@ -130,32 +130,38 @@ public class Duel : MonoBehaviour
                 duelEvent.DrawCard(0, 1);
                 yield return WaitGameEvent();
                 yield return EffectChain();
+                BuffRefresh();
                 StartCoroutine(EndPhase());
                 break;
             case GamePhase.standby:
                 phaseText.text = "准备阶段";
                 Debug.Log("准备阶段");
                 yield return EffectChain();
+                BuffRefresh();
                 StartCoroutine(EndPhase());
                 break;
             case GamePhase.main1:
                 phaseText.text = "主一阶段";
                 ChangeBattleButtonText();
+                Debug.Log("主一阶段");
                 yield return DuelAI();
                 break;
             case GamePhase.battle:
                 phaseText.text = "战斗阶段";
                 ChangeBattleButtonText();
+                Debug.Log("战斗阶段");
                 yield return DuelAI();
                 break;
             case GamePhase.main2:
                 phaseText.text = "主二阶段";
+                Debug.Log("主二阶段");
                 yield return DuelAI();
                 break;
             case GamePhase.end:
                 phaseText.text = "结束阶段";
                 Debug.Log("结束阶段");
                 yield return EffectChain();
+                BuffRefresh();
                 TurnEndReset();
                 StartCoroutine(EndPhase());
                 break;
@@ -285,7 +291,7 @@ public class Duel : MonoBehaviour
     {
         Debug.Log("卡牌 " + cardEffect.duelcard.name + " id" + cardEffect.duelcard.id + " 的效果" + cardEffect.effect + " 支付代价");
         duelEvent.SetThisCard(cardEffect.duelcard);
-        luaCode.Run(luaCode.CostFunStr(cardEffect));
+        luaCode.Run(luaCode.CostFunStr(cardEffect.duelcard, cardEffect.effect));
         yield return WaitGameEvent();
     }
 
@@ -293,8 +299,15 @@ public class Duel : MonoBehaviour
     {
         Debug.Log("卡牌 " + cardEffect.duelcard.name + " id" + cardEffect.duelcard.id + " 的效果" + cardEffect.effect + " 发动");
         duelEvent.SetThisCard(cardEffect.duelcard);
-        luaCode.Run(luaCode.EffectFunStr(cardEffect));
+        luaCode.Run(luaCode.EffectFunStr(cardEffect.duelcard, cardEffect.effect));
         yield return WaitGameEvent();
+    }
+
+    public void BuffEffect(DuelBuff buff)
+    { // 让buff生效
+        Debug.Log("卡牌 " + buff.fromcard.name + " id" + buff.fromcard.id + " 的效果" + buff.effect + " 生效");
+        duelEvent.SetThisCard(buff.fromcard);
+        luaCode.Run(luaCode.EffectFunStr(buff.fromcard, buff.effect));
     }
 
     private IEnumerator EffectChain()
@@ -344,7 +357,7 @@ public class Duel : MonoBehaviour
     private void ScanEffect()
     {
         int player = duelData.opWho;
-        Debug.Log("扫描效果 player=" + player);
+        //Debug.Log("扫描效果 player=" + player);
         duelEvent.precheck = true;
         int i;
         for (i = 0; i < duelData.handcard[player].Count; i++)
@@ -561,7 +574,7 @@ public class Duel : MonoBehaviour
         int atkplayer = atkmonster.controller; // 攻击方
         int antiplayer = GetOppPlayer(atkplayer); // 被攻击方
         // 战斗步骤
-        duelData.duelPhase++;
+        duelData.duelPhase = GamePhase.battlestep;
         int target = duelAI.GetAttackTarget();
         atkmonster.battledeclare++;
         DuelCard antimonster = null;
@@ -572,16 +585,19 @@ public class Duel : MonoBehaviour
         duelData.record.Add(record);
         Debug.Log("战斗步骤");
         yield return EffectChain();
+        BuffRefresh();
         // 伤害步骤开始时
-        duelData.duelPhase++;
+        duelData.duelPhase = GamePhase.damageStepStart;
         Debug.Log("伤害步骤开始时");
         yield return EffectChain();
+        BuffRefresh();
         // 伤害计算前
-        duelData.duelPhase++;
+        duelData.duelPhase = GamePhase.damageCalBefore;
         Debug.Log("伤害计算前");
         yield return EffectChain();
+        BuffRefresh();
         // 伤害计算时
-        duelData.duelPhase++;
+        duelData.duelPhase = GamePhase.damageCalculate;
         Debug.Log("伤害计算时");
         yield return EffectChain();
         int destroycard = 0;
@@ -628,12 +644,15 @@ public class Duel : MonoBehaviour
                 }
             }
         }
+        BuffRefresh();
         // 伤害计算后
-        duelData.duelPhase++;
+        duelData.duelPhase = GamePhase.damageCalAfter;
         Debug.Log("伤害计算后");
         yield return EffectChain();
+        BuffRefresh();
         // 伤害步骤终了时
-        duelData.duelPhase++;
+        duelData.duelPhase = GamePhase.damageStepEnd;
+        Debug.Log("伤害步骤终了时");
         if (destroycard == 1)
         {
             DestroyCard(atkmonster, 0);
@@ -647,6 +666,8 @@ public class Duel : MonoBehaviour
             DestroyCard(atkmonster, 0);
             DestroyCard(antimonster, 0);
         }
+        yield return EffectChain();
+        BuffRefresh();
         duelData.duelPhase = GamePhase.battle;
         yield return null;
     }
@@ -659,6 +680,50 @@ public class Duel : MonoBehaviour
         duelData.grave[duelcard.owner].Insert(0, duelcard.id);
         if (IsPlayerOwn(duelcard.owner)) graveOwn.GraveUpdate(duelcard.owner);
         else graveOps.GraveUpdate(duelcard.owner);
+    }
+
+    private void BuffRefresh()
+    {
+        List<DuelBuff> remove = new List<DuelBuff>();
+        foreach (DuelBuff buff in duelData.duelbuff)
+        {
+            if ((duelData.turnNum == buff.conturn && duelData.duelPhase >= buff.conphase) || 
+                duelData.turnNum > buff.conturn)
+            {
+                remove.Add(buff);
+            }
+        }
+        foreach (DuelBuff buff in remove)
+        {
+            duelData.duelbuff.Remove(buff);
+        }
+        foreach (DuelBuff rmbuff in remove)
+        {
+            // buff失效后，同类型的buff让其重新生效
+            List<DuelBuff> affected = new List<DuelBuff>();
+            foreach (DuelBuff buff in duelData.duelbuff)
+            {
+                if (buff.bufftype == rmbuff.bufftype)
+                    affected.Add(buff);
+            }
+            if (rmbuff.bufftype == BuffType.atknew)
+            { // 重置所有怪兽的攻击
+                for (int p = 0; p < duelData.playerNum; p++)
+                {
+                    for (int i = 0; i < duelData.areaNum; i++)
+                    {
+                        if (duelData.monster[p][i] != null)
+                        {
+                            duelData.monster[p][i].atk = cardDic[duelData.monster[p][i].id].atk;
+                        }
+                    }
+                }
+            }
+            foreach (DuelBuff buff in affected)
+            {   
+                BuffEffect(buff);
+            }
+        }
     }
 
     private void TurnEndReset()

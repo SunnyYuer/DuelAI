@@ -9,7 +9,8 @@ function c71703785()
         Duel:SetTriggerEffect(1, true)
     end
     if(c71703785condition2()) then
-        c71703785effect2()
+        local buff = c71703785buff2()
+        Duel:SetContinuousEffect(buff)
     end
 end
 
@@ -37,11 +38,14 @@ function c71703785condition2()
 end
 
 function c71703785effect2()
+    Duel.thiscard.atk = Duel.thiscard.atk * 2
+end
+
+function c71703785buff2()
     local buff = Duel:CreateDuelBuff(2)
-    buff:SetTargetCard(Duel.thiscard)
     buff:SetConTime(duelData.turnNum, GamePhase.damageStepEnd)
-    buff:SetBuff(BuffType.atknew, Duel.thiscard.atk * 2)
-    Duel:SetContinuousEffect(buff)
+    buff:SetBuff(BuffType.atknew)
+    return buff
 end
 
 function c54250060()

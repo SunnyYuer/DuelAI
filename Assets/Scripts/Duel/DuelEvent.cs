@@ -55,6 +55,7 @@ public class DuelEvent : MonoBehaviour
         if (!duelData.duelbuff.Contains(buff))
         {
             duelData.duelbuff.Add(buff);
+            duel.BuffEffect(buff);
         }
     }
 

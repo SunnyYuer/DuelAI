@@ -46,14 +46,14 @@ public class LuaCode
         }
     }
 
-    public string CostFunStr(CardEffect cardEffect)
+    public string CostFunStr(DuelCard duelcard, int effect)
     {
-        return "c" + cardEffect.duelcard.id + "cost" + cardEffect.effect;
+        return "c" + duelcard.id + "cost" + effect;
     }
 
-    public string EffectFunStr(CardEffect cardEffect)
+    public string EffectFunStr(DuelCard duelcard, int effect)
     {
-        return "c" + cardEffect.duelcard.id + "effect" + cardEffect.effect;
+        return "c" + duelcard.id + "effect" + effect;
     }
 
     public void Close()
