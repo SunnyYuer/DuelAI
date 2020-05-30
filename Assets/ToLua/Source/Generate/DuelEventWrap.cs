@@ -84,9 +84,10 @@ public class DuelEventWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 1);
+			ToLua.CheckArgsCount(L, 2);
 			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-			obj.SetContinuousEffect();
+			DuelBuff arg0 = (DuelBuff)ToLua.CheckObject<DuelBuff>(L, 2);
+			obj.SetContinuousEffect(arg0);
 			return 0;
 		}
 		catch (Exception e)
@@ -100,9 +101,10 @@ public class DuelEventWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 1);
+			ToLua.CheckArgsCount(L, 2);
 			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-			DuelBuff o = obj.CreateDuelBuff();
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			DuelBuff o = obj.CreateDuelBuff(arg0);
 			ToLua.PushObject(L, o);
 			return 1;
 		}

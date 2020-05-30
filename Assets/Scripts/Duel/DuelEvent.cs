@@ -46,20 +46,30 @@ public class DuelEvent : MonoBehaviour
         activatable = true; // 一张卡可能有多个效果能发动
     }
 
-    public void SetContinuousEffect()
+    /// <summary>
+    /// 设置永续效果
+    /// </summary>
+    /// <param name="buff"></param>
+    public void SetContinuousEffect(DuelBuff buff)
     {
-        
+        if (!duelData.duelbuff.Contains(buff))
+        {
+            duelData.duelbuff.Add(buff);
+        }
     }
 
     /// <summary>
     /// 创建buff
     /// </summary>
     /// <returns></returns>
-    public DuelBuff CreateDuelBuff()
+    public DuelBuff CreateDuelBuff(int effect)
     {
-        DuelBuff buff = new DuelBuff
+        DuelBuff buff = duel.GetDuelBuff(thiscard, effect);
+        if (buff != null) return buff;
+        buff = new DuelBuff
         {
-            fromcard = thiscard
+            fromcard = thiscard,
+            effect = effect
         };
         return buff;
     }
@@ -216,7 +226,7 @@ public class DuelEvent : MonoBehaviour
     public bool ThisCardIsBattle()
     {
         List<DuelCard> duelcard = duel.GetLastBattleCard();
-        if (duelcard[1] == null) return false;
+        if (duelcard.Count == 1) return false;
         return duelcard[0].Equals(thiscard);
     }
 

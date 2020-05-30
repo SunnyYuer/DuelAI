@@ -180,8 +180,9 @@ public class CardLocation
 public class DuelBuff
 {
     public DuelCard fromcard;
+    public int effect;
     public object targetcard;
-    public int conturn; // buff持续回合数，0当前回合，n持续n回合，-1永续
+    public int conturn; // buff持续到n回合，-1永续
     public int conphase; // buff持续到哪个阶段
     public int bufftype;
     public object buff;

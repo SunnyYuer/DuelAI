@@ -13,6 +13,7 @@ public class DuelBuffWrap
 		L.RegFunction("New", _CreateDuelBuff);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("fromcard", get_fromcard, set_fromcard);
+		L.RegVar("effect", get_effect, set_effect);
 		L.RegVar("targetcard", get_targetcard, set_targetcard);
 		L.RegVar("conturn", get_conturn, set_conturn);
 		L.RegVar("conphase", get_conphase, set_conphase);
@@ -114,6 +115,25 @@ public class DuelBuffWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index fromcard on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_effect(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelBuff obj = (DuelBuff)o;
+			int ret = obj.effect;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index effect on a nil value");
 		}
 	}
 
@@ -228,6 +248,25 @@ public class DuelBuffWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index fromcard on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_effect(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelBuff obj = (DuelBuff)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.effect = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index effect on a nil value");
 		}
 	}
 

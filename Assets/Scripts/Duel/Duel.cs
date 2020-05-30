@@ -757,6 +757,16 @@ public class Duel : MonoBehaviour
         if (duelData.turnNum == 1) return false;
         return true;
     }
+
+    public DuelBuff GetDuelBuff(DuelCard duelcard, int effect)
+    { 
+        foreach (DuelBuff buff in duelData.duelbuff)
+        {
+            if (buff.fromcard.Equals(duelcard) && buff.effect == effect)
+                return buff;
+        }
+        return null;
+    }
     /* 对决斗的判断 */
 
     /* 决斗行动记录的运用 */
@@ -770,7 +780,8 @@ public class Duel : MonoBehaviour
             {
                 List<CardLocation> card = duelData.record[i].card;
                 duelcard.Add(card[0].FindDuelCard(duelData));
-                duelcard.Add(card[1].FindDuelCard(duelData));
+                if (card.Count == 2)
+                    duelcard.Add(card[1].FindDuelCard(duelData));
                 break;
             }
         }
