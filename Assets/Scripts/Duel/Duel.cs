@@ -68,7 +68,7 @@ public class Duel : MonoBehaviour
         PhaseButtonShow();
     }
 
-    private void OnQuitClick()
+    public void OnQuitClick()
     {
         StopAllCoroutines();
         luaCode.Close();
@@ -129,15 +129,11 @@ public class Duel : MonoBehaviour
                 Debug.Log("抽卡阶段");
                 duelEvent.DrawCard(0, 1);
                 yield return WaitGameEvent();
-                yield return EffectChain();
-                BuffRefresh();
                 StartCoroutine(EndPhase());
                 break;
             case GamePhase.standby:
                 phaseText.text = "准备阶段";
                 Debug.Log("准备阶段");
-                yield return EffectChain();
-                BuffRefresh();
                 StartCoroutine(EndPhase());
                 break;
             case GamePhase.main1:
@@ -150,6 +146,7 @@ public class Duel : MonoBehaviour
                 phaseText.text = "战斗阶段";
                 ChangeBattleButtonText();
                 Debug.Log("战斗阶段");
+                yield return EffectChain();
                 yield return DuelAI();
                 break;
             case GamePhase.main2:
@@ -160,9 +157,6 @@ public class Duel : MonoBehaviour
             case GamePhase.end:
                 phaseText.text = "结束阶段";
                 Debug.Log("结束阶段");
-                yield return EffectChain();
-                BuffRefresh();
-                TurnEndReset();
                 StartCoroutine(EndPhase());
                 break;
             default:
@@ -170,10 +164,22 @@ public class Duel : MonoBehaviour
         }
     }
 
-    private IEnumerator EndPhase()
+    private IEnumerator EndPhase(int phase = 0)
     {
-        yield return new WaitForSeconds(1);
-        duelData.duelPhase += 10;
+        if (duelData.duelPhase >= GamePhase.draw)
+        {
+            yield return EffectChain();
+            BuffRefresh();
+            if (duelData.duelPhase == GamePhase.end)
+                TurnEndReset();
+        }
+        if (phase == 0)
+        {
+            yield return new WaitForSeconds(1);
+            duelData.duelPhase += 10;
+        }
+        else
+            duelData.duelPhase = phase;
         if (duelData.duelPhase > GamePhase.end)
         {
             duelData.duelPhase = GamePhase.turnstart;
@@ -195,9 +201,9 @@ public class Duel : MonoBehaviour
             endTurnButton.SetActive(false);
     }
 
-    private void OnEndTurnButtonClick()
+    public void OnEndTurnButtonClick()
     {
-        StartCoroutine(DuelPhase(GamePhase.end));
+        StartCoroutine(EndPhase(GamePhase.end));
     }
 
     private void ChangeBattleButtonText()
@@ -207,12 +213,12 @@ public class Duel : MonoBehaviour
         if (duelData.duelPhase == GamePhase.battle) buttonText.text = "结束战斗";
     }
 
-    private void OnBattleButtonClick()
+    public void OnBattleButtonClick()
     {
         if (duelData.duelPhase == GamePhase.battle)
-            StartCoroutine(DuelPhase(GamePhase.main2));
+            StartCoroutine(EndPhase(GamePhase.main2));
         if (duelData.duelPhase == GamePhase.main1)
-            StartCoroutine(DuelPhase(GamePhase.battle));
+            StartCoroutine(EndPhase(GamePhase.battle));
     }
 
     private IEnumerator Game()
