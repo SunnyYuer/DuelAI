@@ -22,18 +22,18 @@ public class SQLManager {
         //Debug.Log("数据库连接成功");
     }
 
-    public SqliteDataReader ReadCardsAll(string tableName, string NameorId)
+    public SqliteDataReader ReadCardsAll(string tableName, string nameorid)
     {
-        if (NameorId.Equals("")) command.CommandText = "select * from " + tableName;
-        else command.CommandText = "select * from " + tableName + " where name like '%" + NameorId + "%' or id='" + NameorId + "'";
+        if (nameorid.Equals("")) command.CommandText = "select * from " + tableName;
+        else command.CommandText = "select * from " + tableName + " where name like '%" + nameorid + "%' or id='" + nameorid + "'";
         //Debug.Log(command.CommandText);
         return command.ExecuteReader();
     }
 
-    public SqliteDataReader ReadCardsAllLimit(string tableName, string NameorId, int limit, int offset)
+    public SqliteDataReader ReadCardsAllLimit(string tableName, string nameorid, int limit, int offset)
     {
-        if (NameorId.Equals("")) command.CommandText = "select * from " + tableName + " limit " + limit + " offset " + offset;
-        else command.CommandText = "select * from " + tableName + " where name like '%" + NameorId + "%' or id='" + NameorId + "'"
+        if (nameorid.Equals("")) command.CommandText = "select * from " + tableName + " limit " + limit + " offset " + offset;
+        else command.CommandText = "select * from " + tableName + " where name like '%" + nameorid + "%' or id='" + nameorid + "'"
                 + " limit " + limit + " offset " + offset;
         //Debug.Log(command.CommandText);
         return command.ExecuteReader();
@@ -47,10 +47,10 @@ public class SQLManager {
         return command.ExecuteReader();
     }
 
-    public SqliteDataReader GetCardsCount(string tableName, string NameorId)
+    public SqliteDataReader GetCardsCount(string tableName, string nameorid)
     {
-        if (NameorId.Equals("")) command.CommandText = "select count(*) from " + tableName;
-        else command.CommandText = "select count(*) from " + tableName + " where name like '%" + NameorId + "%' or id='" + NameorId + "'";
+        if (nameorid.Equals("")) command.CommandText = "select count(*) from " + tableName;
+        else command.CommandText = "select count(*) from " + tableName + " where name like '%" + nameorid + "%' or id='" + nameorid + "'";
         //Debug.Log(command.CommandText);
         return command.ExecuteReader();
     }

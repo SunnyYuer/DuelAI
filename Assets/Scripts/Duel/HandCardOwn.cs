@@ -25,15 +25,11 @@ public class HandCardOwn : MonoBehaviour
 
     }
 
-    public void AddHandCardFromDeck(int playerOwn)
+    public void AddHandCardFromDeck(DuelCard duelcard)
     {
-        List<string> deck = Duel.duelData.deck[playerOwn];
-        if (deck.Count > 0)
-        {
-            GameObject handcard = Instantiate(card, handcardlist);
-            handcard.GetComponent<Image>().sprite = Duel.spriteManager.GetCardSprite(deck[0], false);
-            StartCoroutine(ChangeHandCardPosition(false));
-        }
+        GameObject handcard = Instantiate(card, handcardlist);
+        handcard.GetComponent<Image>().sprite = Duel.spriteManager.GetCardSprite(duelcard.id, false);
+        StartCoroutine(ChangeHandCardPosition(false));
     }
 
     public void RemoveHandCard(int index)

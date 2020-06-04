@@ -39,10 +39,10 @@ public class CardDataManager
         foreach (string cardid in cardsid)
         {
             if (cardDic.ContainsKey(cardid)) continue;
-            Card card = new Card();
             SqliteDataReader reader = sql.ReadCardsAll(Main.tableName, cardid);
             while (reader.Read())
             {
+                Card card = new Card();
                 card.id = reader["id"].ToString();
                 card.name = reader["name"].ToString();
                 card.type = reader["type"].ToString();
@@ -52,9 +52,9 @@ public class CardDataManager
                 card.describe = reader["describe"].ToString();
                 card.code = reader["code"].ToString();
                 allcode += card.code;
+                cardDic.Add(cardid, card);
             }
             reader.Close();
-            cardDic.Add(cardid, card);
         }
         sql.CloseSQLConnection();
     }

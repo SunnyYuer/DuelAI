@@ -25,15 +25,11 @@ public class HandCardOps : MonoBehaviour
 
     }
 
-    public void AddHandCardFromDeck(int playerOps)
+    public void AddHandCardFromDeck(DuelCard duelcard)
     {
-        List<string> deck = Duel.duelData.deck[playerOps];
-        if (deck.Count > 0)
-        {
-            GameObject handcard = Instantiate(card, handcardlist);
-            handcard.GetComponent<Image>().sprite = Duel.spriteManager.GetCardSprite(deck[0], false);
-            StartCoroutine(ChangeHandCardPosition(false));
-        }
+        GameObject handcard = Instantiate(card, handcardlist);
+        handcard.GetComponent<Image>().sprite = Duel.spriteManager.GetCardSprite(duelcard.id, false);
+        StartCoroutine(ChangeHandCardPosition(false));
     }
 
     public void RemoveHandCard(int index)

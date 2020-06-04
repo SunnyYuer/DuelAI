@@ -128,11 +128,12 @@ public class DuelEvent : MonoBehaviour
     public void ShowCard(string card)
     {
         if (precheck) return;
+        DuelCard duelcard = null;
         if (card.Equals(""))
         {
-            card = thiscard.id;
+            duelcard = thiscard;
         }
-        Debug.Log("给对方观看卡牌  " + duelData.cardDic[card].name);
+        Debug.Log("给对方观看卡牌  " + duelcard.name);
     }
 
     /// <summary>

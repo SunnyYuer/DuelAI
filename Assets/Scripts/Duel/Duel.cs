@@ -39,10 +39,8 @@ public class Duel : MonoBehaviour
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         monserOwn = GameObject.Find("MonsterAreaOwn").GetComponent<MonsterOwn>();
         monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
-        //读取卡组
-        ReadDeckFile();
         //加载卡组数据
-        duelData.LoadDeckData();
+        ReadDeckFile();
         duelEvent.duelData = duelData;
         luaCode.SetCode(duelData.cardData.allcode);
         //放置卡组
@@ -78,27 +76,63 @@ public class Duel : MonoBehaviour
 
     public void ReadDeckFile()
     {
-        string deckpath = Main.rulePath + "/deck/mycard.ydk";
-        string[] strs = File.ReadAllLines(deckpath);
-        int i = 0;
-        while (!strs[i].Equals("#main")) i++;
-        i++;
-        while (!strs[i].Equals("#extra"))
+        cardDic = duelData.cardData.cardDic;
+        string[] deckpath = new string[duelData.playerNum];
+        deckpath[0] = Main.rulePath + "/deck/mycard.ydk";
+        deckpath[1] = Main.rulePath + "/deck/mycard.ydk";
+        for (int player = 0; player < duelData.playerNum; player++)
         {
-            int rmindex = strs[i].IndexOf('#');
-            if (rmindex >= 0) strs[i] = strs[i].Remove(rmindex);
-            duelData.deck[0].Add(strs[i]);
-            duelData.deck[1].Add(strs[i]);
+            string[] strs = File.ReadAllLines(deckpath[player]);
+            List<string> deck = new List<string>();
+            List<string> extra = new List<string>();
+            int i = 0;
+            while (!strs[i].Equals("#main")) i++;
             i++;
-        }
-        i++;
-        while (!strs[i].Equals("!side"))
-        {
-            int rmindex = strs[i].IndexOf('#');
-            if (rmindex >= 0) strs[i] = strs[i].Remove(rmindex);
-            duelData.extra[0].Add(strs[i]);
-            duelData.extra[1].Add(strs[i]);
+            while (!strs[i].Equals("#extra"))
+            {
+                int rmindex = strs[i].IndexOf('#');
+                if (rmindex >= 0) strs[i] = strs[i].Remove(rmindex);
+                deck.Add(strs[i]);
+                i++;
+            }
             i++;
+            while (!strs[i].Equals("!side"))
+            {
+                int rmindex = strs[i].IndexOf('#');
+                if (rmindex >= 0) strs[i] = strs[i].Remove(rmindex);
+                extra.Add(strs[i]);
+                i++;
+            }
+            duelData.cardData.LoadCardData(deck);
+            duelData.cardData.LoadCardData(extra);
+            foreach (string card in deck)
+            {
+                if (!cardDic.ContainsKey(card)) continue;
+                DuelCard duelcard = new DuelCard
+                {
+                    owner = player,
+                    controller = player,
+                    position = CardPosition.deck,
+                    index = duelData.deck[player].Count,
+                    mean = CardMean.faceup,
+                };
+                duelcard.SetCard(cardDic[card]);
+                duelData.deck[player].Add(duelcard);
+            }
+            foreach (string card in extra)
+            {
+                if (!cardDic.ContainsKey(card)) continue;
+                DuelCard duelcard = new DuelCard
+                {
+                    owner = player,
+                    controller = player,
+                    position = CardPosition.extra,
+                    index = duelData.extra[player].Count,
+                    mean = CardMean.faceup,
+                };
+                duelcard.SetCard(cardDic[card]);
+                duelData.extra[player].Add(duelcard);
+            }
         }
     }
 
@@ -463,22 +497,19 @@ public class Duel : MonoBehaviour
     private IEnumerator DrawCard(int player, int num)
     {
         duelData.cardsJustDrawn[player].Clear();
+        if (duelData.deck[player].Count == 0) yield break;
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
-            if (IsPlayerOwn(player)) handOwn.AddHandCardFromDeck(player);
-            else handOps.AddHandCardFromDeck(player);
-            DuelCard duelcard = new DuelCard
-            {
-                owner = player,
-                controller = player,
-                position = CardPosition.handcard,
-                index = duelData.handcard[player].Count
-            };
-            duelcard.SetCard(cardDic[duelData.deck[player][0]]);
+            DuelCard duelcard = duelData.deck[player][0];
+            if (IsPlayerOwn(player)) handOwn.AddHandCardFromDeck(duelcard);
+            else handOps.AddHandCardFromDeck(duelcard);
+            duelcard.position = CardPosition.handcard;
+            duelcard.index = duelData.handcard[player].Count;
             duelData.handcard[player].Add(duelcard);
-            duelData.cardsJustDrawn[player].Add(duelData.deck[player][0]);
+            duelData.cardsJustDrawn[player].Add(duelcard.id);
             duelData.deck[player].RemoveAt(0);
+            duelData.SortCard(duelData.deck[player]);
             if (IsPlayerOwn(player)) deckOwn.DeckUpdate(player);
             else deckOps.DeckUpdate(player);
             num--;
@@ -661,16 +692,16 @@ public class Duel : MonoBehaviour
         Debug.Log("伤害步骤终了时");
         if (destroycard == 1)
         {
-            DestroyCard(atkmonster, 0);
+            CardLeave(atkmonster, 0);
         }
         if (destroycard == 2)
         {
-            DestroyCard(antimonster, 0);
+            CardLeave(antimonster, 0);
         }
         if (destroycard == 3)
         {
-            DestroyCard(atkmonster, 0);
-            DestroyCard(antimonster, 0);
+            CardLeave(atkmonster, 0);
+            CardLeave(antimonster, 0);
         }
         yield return EffectChain();
         BuffRefresh();
@@ -678,12 +709,15 @@ public class Duel : MonoBehaviour
         yield return null;
     }
 
-    private void DestroyCard(DuelCard duelcard, int way)
+    private void CardLeave(DuelCard duelcard, int way)
     {
         if (IsPlayerOwn(duelcard.controller)) monserOwn.HideMonsterCard(duelcard);
         else monserOps.HideMonsterCard(duelcard);
         duelData.monster[duelcard.controller][duelcard.index] = null;
-        duelData.grave[duelcard.owner].Insert(0, duelcard.id);
+        duelcard.position = CardPosition.grave;
+        duelcard.index = 0;
+        duelData.grave[duelcard.owner].Insert(0, duelcard);
+        duelData.SortCard(duelData.grave[duelcard.owner]);
         if (IsPlayerOwn(duelcard.owner)) graveOwn.GraveUpdate(duelcard.owner);
         else graveOps.GraveUpdate(duelcard.owner);
     }

@@ -12,17 +12,16 @@ public class DuelDataManager
     public int player; // 当前回合的玩家，0或2为友方，1或3为敌方
     public int opWho; // 在效果处理的玩家
     public CardDataManager cardData;
-    public Dictionary<string, Card> cardDic;
     public List<DuelBuff> duelbuff;
     public List<EventData> eventDate;
     public List<DuelRecord> record;
 
     // 玩家数据
     public int[] LP;
-    public List<string>[] deck;
-    public List<string>[] extra;
-    public List<string>[] grave;
-    public List<string>[] except;
+    public List<DuelCard>[] deck;
+    public List<DuelCard>[] extra;
+    public List<DuelCard>[] grave;
+    public List<DuelCard>[] except;
     public List<DuelCard>[] handcard;
     public DuelCard[][] monster;
     public DuelCard[][] magictrap;
@@ -58,10 +57,10 @@ public class DuelDataManager
 
     public void InitialArray()
     {
-        deck = new List<string>[playerNum];
-        extra = new List<string>[playerNum];
-        grave = new List<string>[playerNum];
-        except = new List<string>[playerNum];
+        deck = new List<DuelCard>[playerNum];
+        extra = new List<DuelCard>[playerNum];
+        grave = new List<DuelCard>[playerNum];
+        except = new List<DuelCard>[playerNum];
         handcard = new List<DuelCard>[playerNum];
         monster = new DuelCard[playerNum][];
         magictrap = new DuelCard[playerNum][];
@@ -69,10 +68,10 @@ public class DuelDataManager
         normalsummon = new int[playerNum];
         for (int i = 0; i < playerNum; i++)
         {
-            deck[i] = new List<string>();
-            extra[i] = new List<string>();
-            grave[i] = new List<string>();
-            except[i] = new List<string>();
+            deck[i] = new List<DuelCard>();
+            extra[i] = new List<DuelCard>();
+            grave[i] = new List<DuelCard>();
+            except[i] = new List<DuelCard>();
             handcard[i] = new List<DuelCard>();
             monster[i] = new DuelCard[areaNum];
             magictrap[i] = new DuelCard[areaNum];
@@ -80,17 +79,6 @@ public class DuelDataManager
         }
         LP = new int[2];
         fieldcard = new DuelCard[2];
-    }
-
-    public void LoadDeckData()
-    {
-        for (int i = 0; i < playerNum; i++)
-        {
-            cardData.LoadCardData(deck[i]);
-            cardData.LoadCardData(extra[i]);
-        }
-        cardDic = cardData.cardDic;
-        Duel.cardDic = cardDic;
     }
 
     public void SortCard(List<DuelCard> cardlist)

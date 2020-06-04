@@ -23,9 +23,9 @@ public class DeckOps : MonoBehaviour, IPointerClickHandler
 
     public void DeckUpdate(int playerOps)
     {
-        List<string> deck = Duel.duelData.deck[playerOps];
+        List<DuelCard> deck = Duel.duelData.deck[playerOps];
         if (deck.Count > 0)
-            image.sprite = Duel.spriteManager.GetCardSprite(deck[0], false);
+            image.sprite = Duel.spriteManager.GetCardSprite(deck[0].id, false);
         else
             image.sprite = Duel.UIMask;
         decknum.text = deck.Count.ToString();

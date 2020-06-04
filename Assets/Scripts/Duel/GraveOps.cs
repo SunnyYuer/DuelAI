@@ -22,9 +22,9 @@ public class GraveOps : MonoBehaviour
 
     public void GraveUpdate(int playerOps)
     {
-        List<string> grave = Duel.duelData.grave[playerOps];
+        List<DuelCard> grave = Duel.duelData.grave[playerOps];
         if (grave.Count > 0)
-            image.sprite = Duel.spriteManager.GetCardSprite(grave[0], false);
+            image.sprite = Duel.spriteManager.GetCardSprite(grave[0].id, false);
         else
             image.sprite = Duel.UIMask;
         gravenum.text = grave.Count.ToString();
