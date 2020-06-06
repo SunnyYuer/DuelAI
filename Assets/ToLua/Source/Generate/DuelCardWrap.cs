@@ -8,6 +8,7 @@ public class DuelCardWrap
 	{
 		L.BeginClass(typeof(DuelCard), typeof(Card));
 		L.RegFunction("SetCard", SetCard);
+		L.RegFunction("Clone", Clone);
 		L.RegFunction("New", _CreateDuelCard);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("owner", get_owner, set_owner);
@@ -55,6 +56,23 @@ public class DuelCardWrap
 			Card arg0 = (Card)ToLua.CheckObject<Card>(L, 2);
 			obj.SetCard(arg0);
 			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int Clone(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			DuelCard obj = (DuelCard)ToLua.CheckObject<DuelCard>(L, 1);
+			DuelCard o = obj.Clone();
+			ToLua.PushObject(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{

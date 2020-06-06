@@ -11,13 +11,14 @@ public class DuelEventWrap
 		L.RegFunction("SetTriggerEffect", SetTriggerEffect);
 		L.RegFunction("SetContinuousEffect", SetContinuousEffect);
 		L.RegFunction("CreateDuelBuff", CreateDuelBuff);
-		L.RegFunction("DrawnCard", DrawnCard);
 		L.RegFunction("DrawCard", DrawCard);
 		L.RegFunction("ShowCard", ShowCard);
 		L.RegFunction("NormalSummon", NormalSummon);
 		L.RegFunction("SpecialSummon", SpecialSummon);
 		L.RegFunction("ChangeMean", ChangeMean);
 		L.RegFunction("Battle", Battle);
+		L.RegFunction("InCase", InCase);
+		L.RegFunction("DrawnCard", DrawnCard);
 		L.RegFunction("ThisCardIsBattle", ThisCardIsBattle);
 		L.RegFunction("GetAntiMonster", GetAntiMonster);
 		L.RegFunction("__eq", op_Equality);
@@ -106,24 +107,6 @@ public class DuelEventWrap
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
 			DuelBuff o = obj.CreateDuelBuff(arg0);
 			ToLua.PushObject(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int DrawnCard(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 2);
-			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-			string arg0 = ToLua.CheckString(L, 2);
-			bool o = obj.DrawnCard(arg0);
-			LuaDLL.lua_pushboolean(L, o);
 			return 1;
 		}
 		catch (Exception e)
@@ -244,6 +227,44 @@ public class DuelEventWrap
 			DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
 			obj.Battle(arg0);
 			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int InCase(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 4);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			object arg0 = ToLua.ToVarObject(L, 2);
+			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+			int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
+			bool o = obj.InCase(arg0, arg1, arg2);
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DrawnCard(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			string arg0 = ToLua.CheckString(L, 2);
+			bool o = obj.DrawnCard(arg0);
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{

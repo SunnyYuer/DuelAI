@@ -76,31 +76,6 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// 判断是否把这张卡抽到
-    /// </summary>
-    /// <param name="card"></param>
-    /// <returns></returns>
-    public bool DrawnCard(string card)
-    {
-        //判断刚刚是否有抽卡
-        int drawNum = duelData.cardsJustDrawn[duelData.opWho].Count;
-        if (drawNum == 0) return false;
-        if (card.Equals(""))
-        {
-            //判断是否在手卡
-            if (thiscard.position != CardPosition.handcard) return false;
-            //判断是否在抽到的卡中
-            int drawIndex = duelData.handcard[duelData.opWho].Count - drawNum;
-            if (thiscard.index < drawIndex) return false;
-            else return true;
-        }
-        else
-        {
-            return duelData.cardsJustDrawn[duelData.opWho].Contains(card);
-        }
-    }
-
-    /// <summary>
     /// 抽卡
     /// </summary>
     /// <param name="who"></param>
@@ -219,6 +194,66 @@ public class DuelEvent : MonoBehaviour
                 }
         };
         duelData.eventDate.Add(eData);
+    }
+
+    /// <summary>
+    /// 场合与时点的判断
+    /// </summary>
+    /// <param name="targetcard"></param>
+    /// <param name="gameEvent"></param>
+    /// <param name="casetime">1为场合 0为时点</param>
+    /// <returns></returns>
+    public bool InCase(object targetcard, int gameEvent, int casetime)
+    {
+        foreach (DuelCase duelcase in duelData.duelcase)
+        {
+            if (duelcase.gameEvent == gameEvent)
+            {
+                DuelCard tcard = null;
+                if (targetcard is DuelCard)
+                {
+                    tcard = targetcard as DuelCard;
+                }
+                else
+                { 
+                }
+                switch (gameEvent)
+                {
+                    case GameEvent.battledestroy:
+                        if (duelcase.card.Contains(tcard))
+                            return true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 判断是否把这张卡抽到
+    /// </summary>
+    /// <param name="card"></param>
+    /// <returns></returns>
+    public bool DrawnCard(string card)
+    {
+        //判断刚刚是否有抽卡
+        int drawNum = duelData.cardsJustDrawn[duelData.opWho].Count;
+        if (drawNum == 0) return false;
+        if (card.Equals(""))
+        {
+            //判断是否在手卡
+            if (thiscard.position != CardPosition.handcard) return false;
+            //判断是否在抽到的卡中
+            int drawIndex = duelData.handcard[duelData.opWho].Count - drawNum;
+            if (thiscard.index < drawIndex) return false;
+            else return true;
+        }
+        else
+        {
+            return duelData.cardsJustDrawn[duelData.opWho].Contains(card);
+        }
     }
 
     /// <summary>

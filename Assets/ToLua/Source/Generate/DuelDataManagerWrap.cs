@@ -19,6 +19,7 @@ public class DuelDataManagerWrap
 		L.RegVar("player", get_player, set_player);
 		L.RegVar("opWho", get_opWho, set_opWho);
 		L.RegVar("cardData", get_cardData, set_cardData);
+		L.RegVar("duelcase", get_duelcase, set_duelcase);
 		L.RegVar("duelbuff", get_duelbuff, set_duelbuff);
 		L.RegVar("eventDate", get_eventDate, set_eventDate);
 		L.RegVar("record", get_record, set_record);
@@ -246,6 +247,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cardData on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_duelcase(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			System.Collections.Generic.List<DuelCase> ret = obj.duelcase;
+			ToLua.PushSealed(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index duelcase on a nil value");
 		}
 	}
 
@@ -759,6 +779,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cardData on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_duelcase(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			System.Collections.Generic.List<DuelCase> arg0 = (System.Collections.Generic.List<DuelCase>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<DuelCase>));
+			obj.duelcase = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index duelcase on a nil value");
 		}
 	}
 

@@ -12,6 +12,9 @@ function c71703785()
         local buff = c71703785buff2()
         Duel:SetContinuousEffect(buff)
     end
+    if(c71703785condition3()) then
+        print("选择卡特殊召唤")
+    end
 end
 
 function c71703785condition1()
@@ -46,6 +49,16 @@ function c71703785buff2()
     buff:SetConTime(duelData.turnNum, GamePhase.damageStepEnd)
     buff:SetBuff(BuffType.atknew)
     return buff
+end
+
+function c71703785condition3()
+    if(Duel:InCase(Duel.thiscard, GameEvent.battledestroy, 1)) then
+        return true
+    end
+    if(Duel:InCase(Duel.thiscard, GameEvent.effectdestroy, 1)) then
+        return true
+    end
+    return false
 end
 
 function c54250060()

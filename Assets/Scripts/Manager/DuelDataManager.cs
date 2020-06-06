@@ -12,6 +12,7 @@ public class DuelDataManager
     public int player; // 当前回合的玩家，0或2为友方，1或3为敌方
     public int opWho; // 在效果处理的玩家
     public CardDataManager cardData;
+    public List<DuelCase> duelcase;
     public List<DuelBuff> duelbuff;
     public List<EventData> eventDate;
     public List<DuelRecord> record;
@@ -45,6 +46,7 @@ public class DuelDataManager
         areaNum = 5;
         InitialArray();
         cardData = new CardDataManager();
+        duelcase = new List<DuelCase>();
         duelbuff = new List<DuelBuff>();
         eventDate = new List<EventData>();
         record = new List<DuelRecord>();
@@ -125,40 +127,28 @@ public class DuelCard : Card
         def = card.def;
         describe = card.describe;
     }
+
+    public DuelCard Clone()
+    {
+        return MemberwiseClone() as DuelCard;
+    }
 }
 
-public class CardLocation
+/// <summary>
+/// 场合与时点
+/// </summary>
+public class DuelCase
 {
-    public int controller;
-    public int position;
-    public int index;
+    public int gameEvent;
+    public int player;
+    public List<DuelCard> card;
+    public List<DuelCard> old;
 
-    public void SetLocation(DuelCard duelcard)
+    public DuelCase(int gameEvent)
     {
-        controller = duelcard.controller;
-        position = duelcard.position;
-        index = duelcard.index;
-    }
-
-    public DuelCard FindDuelCard(DuelDataManager duelData)
-    {
-        if (position == CardPosition.handcard)
-        {
-            return duelData.handcard[controller][index];
-        }
-        if (position == CardPosition.monster)
-        {
-            return duelData.monster[controller][index];
-        }
-        if (position == CardPosition.magictrap)
-        {
-            return duelData.magictrap[controller][index];
-        }
-        if (position == CardPosition.field)
-        {
-            return duelData.fieldcard[controller % 2];
-        }
-        return null;
+        card = new List<DuelCard>();
+        old = new List<DuelCard>();
+        this.gameEvent = gameEvent;
     }
 }
 
@@ -233,5 +223,40 @@ public class DuelRecord
         CardLocation cardlocal = new CardLocation();
         cardlocal.SetLocation(duelcard);
         card.Add(cardlocal);
+    }
+}
+
+public class CardLocation
+{
+    public int controller;
+    public int position;
+    public int index;
+
+    public void SetLocation(DuelCard duelcard)
+    {
+        controller = duelcard.controller;
+        position = duelcard.position;
+        index = duelcard.index;
+    }
+
+    public DuelCard FindDuelCard(DuelDataManager duelData)
+    {
+        if (position == CardPosition.handcard)
+        {
+            return duelData.handcard[controller][index];
+        }
+        if (position == CardPosition.monster)
+        {
+            return duelData.monster[controller][index];
+        }
+        if (position == CardPosition.magictrap)
+        {
+            return duelData.magictrap[controller][index];
+        }
+        if (position == CardPosition.field)
+        {
+            return duelData.fieldcard[controller % 2];
+        }
+        return null;
     }
 }

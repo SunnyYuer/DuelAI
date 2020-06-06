@@ -397,21 +397,25 @@ public class Duel : MonoBehaviour
     private void ScanEffect()
     {
         int player = duelData.opWho;
-        //Debug.Log("扫描效果 player=" + player);
+        Debug.Log("扫描效果 player=" + player);
         duelEvent.precheck = true;
-        int i;
-        for (i = 0; i < duelData.handcard[player].Count; i++)
+        foreach (DuelCard duelcard in duelData.handcard[player])
         {
-            duelEvent.SetThisCard(duelData.handcard[player][i]);
-            luaCode.Run("c" + duelData.handcard[player][i].id);
+            duelEvent.SetThisCard(duelcard);
+            luaCode.Run("c" + duelcard.id);
         }
-        for (i = 0; i < duelData.areaNum; i++)
+        foreach (DuelCard duelcard in duelData.monster[player])
         {
-            if (duelData.monster[player][i] != null)
+            if (duelcard != null)
             {
-                duelEvent.SetThisCard(duelData.monster[player][i]);
-                luaCode.Run("c" + duelData.monster[player][i].id);
+                duelEvent.SetThisCard(duelcard);
+                luaCode.Run("c" + duelcard.id);
             }
+        }
+        foreach (DuelCard duelcard in duelData.grave[player])
+        {
+            duelEvent.SetThisCard(duelcard);
+            luaCode.Run("c" + duelcard.id);
         }
         duelEvent.precheck = false;
     }
@@ -479,7 +483,7 @@ public class Duel : MonoBehaviour
         }
         else
         {
-            Tip.select = 0;
+            Tip.select = 1;
         }
         yield return null;
     }
@@ -541,14 +545,14 @@ public class Duel : MonoBehaviour
             if (IsPlayerOwn(duelData.opWho))
                 return CardMean.facedowndef;
             else
-                return CardMean.faceupatk;
+                return CardMean.facedowndef;
         }
         if (gameEvent == GameEvent.specialsummon)
         {
             if (IsPlayerOwn(duelData.opWho))
                 return CardMean.faceupatk;
             else
-                return CardMean.faceupdef;
+                return CardMean.faceupatk;
         }
         return 0;
     }
@@ -692,16 +696,16 @@ public class Duel : MonoBehaviour
         Debug.Log("伤害步骤终了时");
         if (destroycard == 1)
         {
-            CardLeave(atkmonster, 0);
+            CardLeave(atkmonster, GameEvent.battledestroy);
         }
         if (destroycard == 2)
         {
-            CardLeave(antimonster, 0);
+            CardLeave(antimonster, GameEvent.battledestroy);
         }
         if (destroycard == 3)
         {
-            CardLeave(atkmonster, 0);
-            CardLeave(antimonster, 0);
+            CardLeave(atkmonster, GameEvent.battledestroy);
+            CardLeave(antimonster, GameEvent.battledestroy);
         }
         yield return EffectChain();
         BuffRefresh();
@@ -710,16 +714,23 @@ public class Duel : MonoBehaviour
     }
 
     private void CardLeave(DuelCard duelcard, int way)
-    {
-        if (IsPlayerOwn(duelcard.controller)) monserOwn.HideMonsterCard(duelcard);
-        else monserOps.HideMonsterCard(duelcard);
-        duelData.monster[duelcard.controller][duelcard.index] = null;
+    { // 卡牌被送入墓地或者被除外
+        DuelCase duelcase = new DuelCase(way);
+        duelcase.old.Add(duelcard.Clone());
+        if (duelcard.position == CardPosition.monster)
+        {
+            if (IsPlayerOwn(duelcard.controller)) monserOwn.HideMonsterCard(duelcard);
+            else monserOps.HideMonsterCard(duelcard);
+            duelData.monster[duelcard.controller][duelcard.index] = null;
+        }
         duelcard.position = CardPosition.grave;
         duelcard.index = 0;
         duelData.grave[duelcard.owner].Insert(0, duelcard);
         duelData.SortCard(duelData.grave[duelcard.owner]);
         if (IsPlayerOwn(duelcard.owner)) graveOwn.GraveUpdate(duelcard.owner);
         else graveOps.GraveUpdate(duelcard.owner);
+        duelcase.card.Add(duelcard);
+        duelData.duelcase.Add(duelcase);
     }
 
     private void BuffRefresh()
@@ -750,11 +761,11 @@ public class Duel : MonoBehaviour
             { // 重置所有怪兽的攻击
                 for (int p = 0; p < duelData.playerNum; p++)
                 {
-                    for (int i = 0; i < duelData.areaNum; i++)
+                    foreach (DuelCard duelcard in duelData.monster[p])
                     {
-                        if (duelData.monster[p][i] != null)
+                        if (duelcard != null)
                         {
-                            duelData.monster[p][i].atk = cardDic[duelData.monster[p][i].id].atk;
+                            duelcard.atk = cardDic[duelcard.id].atk;
                         }
                     }
                 }
@@ -769,9 +780,8 @@ public class Duel : MonoBehaviour
     private void TurnEndReset()
     {
         int player = duelData.player;
-        for (int i = 0; i < duelData.areaNum; i++)
+        foreach (DuelCard duelcard in duelData.monster[player])
         {
-            DuelCard duelcard = duelData.monster[player][i];
             if (duelcard != null)
             {
                 duelcard.meanchange = 0;
