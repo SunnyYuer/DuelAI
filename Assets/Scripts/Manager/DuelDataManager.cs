@@ -97,6 +97,26 @@ public class DuelDataManager
         if (player == playerNum) player = 0;
         opWho = player;
     }
+
+    public List<DuelCard> GetAllCards(int player)
+    {
+        List<DuelCard> allcards = new List<DuelCard>();
+        allcards.AddRange(deck[player]);
+        allcards.AddRange(extra[player]);
+        allcards.AddRange(grave[player]);
+        allcards.AddRange(except[player]);
+        allcards.AddRange(handcard[player]);
+        foreach (DuelCard duelcard in monster[player])
+        {
+            if (duelcard != null) allcards.Add(duelcard);
+        }
+        foreach (DuelCard duelcard in magictrap[player])
+        {
+            if (duelcard != null) allcards.Add(duelcard);
+        }
+        if (fieldcard[player] != null) allcards.Add(fieldcard[player]);
+        return allcards;
+    }
 }
 
 /// <summary>
@@ -180,6 +200,27 @@ public class TargetCard
     public int side;
     public List<int> position;
     public Dictionary<int, object> target;
+
+    public TargetCard()
+    {
+        position = new List<int>();
+        target = new Dictionary<int, object>();
+    }
+
+    public void SetSide(int side)
+    {
+        this.side = side;
+    }
+
+    public void SetPosition(int position)
+    {
+        this.position.Add(position);
+    }
+
+    public void SetTarget(int key, object value)
+    {
+        target.Add(key, value);
+    }
 }
 
 /// <summary>

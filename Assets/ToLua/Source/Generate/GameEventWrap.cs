@@ -10,12 +10,13 @@ public class GameEventWrap
 		L.RegFunction("New", _CreateGameEvent);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegConstant("drawcard", 1);
-		L.RegConstant("normalsummon", 2);
-		L.RegConstant("specialsummon", 3);
-		L.RegConstant("changemean", 4);
-		L.RegConstant("battle", 5);
-		L.RegConstant("battledestroy", 6);
-		L.RegConstant("effectdestroy", 7);
+		L.RegConstant("selectcard", 2);
+		L.RegConstant("normalsummon", 3);
+		L.RegConstant("specialsummon", 4);
+		L.RegConstant("changemean", 5);
+		L.RegConstant("battle", 6);
+		L.RegConstant("battledestroy", 7);
+		L.RegConstant("effectdestroy", 8);
 		L.EndClass();
 	}
 

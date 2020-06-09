@@ -14,6 +14,10 @@ public static class LuaBinder
 		DuelCardWrap.Register(L);
 		CardWrap.Register(L);
 		DuelBuffWrap.Register(L);
+		TargetCardWrap.Register(L);
+		PlayerSideWrap.Register(L);
+		CardPositionWrap.Register(L);
+		GameCardWrap.Register(L);
 		GamePhaseWrap.Register(L);
 		GameEventWrap.Register(L);
 		BuffTypeWrap.Register(L);

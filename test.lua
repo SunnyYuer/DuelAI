@@ -13,7 +13,8 @@ function c71703785()
         Duel:SetContinuousEffect(buff)
     end
     if(c71703785condition3()) then
-        print("选择卡特殊召唤")
+        c71703785effect3()
+        Duel:SetTriggerEffect(3)
     end
 end
 
@@ -59,6 +60,15 @@ function c71703785condition3()
         return true
     end
     return false
+end
+
+function c71703785effect3()
+    local targetcard = TargetCard.New()
+    targetcard:SetPosition(CardPosition.handcard)
+    targetcard:SetPosition(CardPosition.deck)
+    targetcard:SetPosition(CardPosition.grave)
+    targetcard:SetTarget(GameCard.name, "黑魔术师")
+    Duel:SelectCard(targetcard, 1, GameEvent.specialsummon)
 end
 
 function c54250060()

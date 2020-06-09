@@ -162,7 +162,7 @@ public class Duel : MonoBehaviour
                 phaseText.text = "抽卡阶段";
                 Debug.Log("抽卡阶段");
                 duelEvent.DrawCard(0, 1);
-                yield return WaitGameEvent();
+                yield return WaitEventChain();
                 StartCoroutine(EndPhase());
                 break;
             case GamePhase.standby:
@@ -255,11 +255,115 @@ public class Duel : MonoBehaviour
             StartCoroutine(EndPhase(GamePhase.battle));
     }
 
+    public IEnumerator Battle(DuelCard atkmonster)
+    {
+        int atkplayer = atkmonster.controller; // 攻击方
+        int antiplayer = GetOppPlayer(atkplayer); // 被攻击方
+        // 战斗步骤
+        duelData.duelPhase = GamePhase.battlestep;
+        int target = duelAI.GetAttackTarget();
+        atkmonster.battledeclare++;
+        DuelCard antimonster = null;
+        if (target != -1) antimonster = duelData.monster[antiplayer][target];
+        DuelRecord record = new DuelRecord(PlayerAction.battle);
+        record.AddCard(atkmonster);
+        record.AddCard(antimonster);
+        duelData.record.Add(record);
+        Debug.Log("战斗步骤");
+        yield return EffectChain();
+        BuffRefresh();
+        // 伤害步骤开始时
+        duelData.duelPhase = GamePhase.damageStepStart;
+        Debug.Log("伤害步骤开始时");
+        yield return EffectChain();
+        BuffRefresh();
+        // 伤害计算前
+        duelData.duelPhase = GamePhase.damageCalBefore;
+        Debug.Log("伤害计算前");
+        yield return EffectChain();
+        BuffRefresh();
+        // 伤害计算时
+        duelData.duelPhase = GamePhase.damageCalculate;
+        Debug.Log("伤害计算时");
+        yield return EffectChain();
+        int destroycard = 0;
+        if (target == -1)
+        { // 直接攻击对方
+            int atk = atkmonster.atk;
+            LPUpdate(antiplayer, -atk);
+        }
+        else
+        { // 攻击选定的目标
+            if (antimonster.mean == CardMean.faceupatk)
+            { // 对方的怪兽处于攻击表示
+                int atk1 = atkmonster.atk;
+                int atk2 = antimonster.atk;
+                if (atk1 > atk2)
+                {
+                    LPUpdate(antiplayer, -(atk1 - atk2));
+                    destroycard = 2;
+                }
+                if (atk1 == atk2)
+                {
+                    if (atk1 != 0)
+                    { // 攻击力为0的怪兽不造成伤害
+                        destroycard = 3;
+                    }
+                }
+                if (atk1 < atk2)
+                {
+                    LPUpdate(atkplayer, -(atk2 - atk1));
+                    destroycard = 1;
+                }
+            }
+            else
+            { // 对方的怪兽处于防御表示
+                int atk1 = atkmonster.atk;
+                int def2 = antimonster.def;
+                if (atk1 > def2)
+                {
+                    destroycard = 2;
+                }
+                if (atk1 <= def2)
+                {
+                    LPUpdate(atkplayer, -(def2 - atk1));
+                }
+            }
+        }
+        BuffRefresh();
+        // 伤害计算后
+        duelData.duelPhase = GamePhase.damageCalAfter;
+        Debug.Log("伤害计算后");
+        yield return EffectChain();
+        BuffRefresh();
+        // 伤害步骤终了时
+        duelData.duelPhase = GamePhase.damageStepEnd;
+        Debug.Log("伤害步骤终了时");
+        if (destroycard == 1)
+        {
+            CardLeave(atkmonster, GameEvent.battledestroy);
+        }
+        if (destroycard == 2)
+        {
+            CardLeave(antimonster, GameEvent.battledestroy);
+        }
+        if (destroycard == 3)
+        {
+            CardLeave(atkmonster, GameEvent.battledestroy);
+            CardLeave(antimonster, GameEvent.battledestroy);
+        }
+        yield return EffectChain();
+        BuffRefresh();
+        duelData.duelPhase = GamePhase.battle;
+    }
+
     private IEnumerator Game()
     {
         int intdata1;
         int intdata2;
         DuelCard duelcarddata;
+        List<DuelCard> cardlistdata;
+        EventData eventdata;
         while (true)
         {
             yield return null;
@@ -273,19 +377,39 @@ public class Duel : MonoBehaviour
                     intdata1 = (int)eData.data["drawplayer"];
                     intdata2 = (int)eData.data["drawnum"];
                     if (intdata1 == 0)
-                    {//自己抽卡
+                    { // 自己抽卡
                         yield return DrawCard(player, intdata2);
                     }
                     if (intdata1 == 1)
-                    {//对方抽卡
+                    { // 对方抽卡
                         yield return DrawCard(GetOppPlayer(player), intdata2);
                     }
                     if (intdata1 == 2)
-                    {//双方同时抽卡
-                     //同时行动时，先处理回合玩家
+                    { // 双方同时抽卡
+                    // 同时行动时，先处理回合玩家
                         player = duelData.player;
                         yield return DrawCard(player, intdata2);
                         yield return DrawCard(GetOppPlayer(player), intdata2);
+                    }
+                    break;
+                case GameEvent.selectcard:
+                    cardlistdata = eData.data["targetlist"] as List<DuelCard>;
+                    intdata1 = (int)eData.data["num"];
+                    intdata2 = (int)eData.data["gameEvent"];
+                    yield return SelectCard(cardlistdata, intdata1);
+                    if (intdata1 == 1)
+                    {
+                        duelcarddata = cardlistdata[0];
+                        eventdata = new EventData
+                        {
+                            oplayer = duelData.opWho,
+                            gameEvent = intdata2,
+                            data = new Dictionary<string, object>
+                            {
+                                { "monstercard", duelcarddata },
+                            }
+                        };
+                        duelData.eventDate.Add(eventdata);
                     }
                     break;
                 case GameEvent.normalsummon:
@@ -308,10 +432,6 @@ public class Duel : MonoBehaviour
                     intdata1 = (int)eData.data["monstermean"];
                     ChangeMean(duelcarddata, intdata1);
                     break;
-                case GameEvent.battle:
-                    duelcarddata = eData.data["atkmonster"] as DuelCard;
-                    yield return Battle(duelcarddata);
-                    break;
                 default:
                     break;
             }
@@ -327,9 +447,17 @@ public class Duel : MonoBehaviour
         }
     }
 
+    private IEnumerator WaitEventChain()
+    {
+        while (duelData.eventDate.Count > 0 || duelData.effectChain)
+        {
+            yield return null;
+        }
+    }
+
     private IEnumerator PayCost(CardEffect cardEffect)
     {
-        Debug.Log("卡牌 " + cardEffect.duelcard.name + " id" + cardEffect.duelcard.id + " 的效果" + cardEffect.effect + " 支付代价");
+        Debug.Log("玩家" + cardEffect.duelcard.controller + " 卡牌 " + cardEffect.duelcard.name + " 的效果" + cardEffect.effect + " 支付代价");
         duelEvent.SetThisCard(cardEffect.duelcard);
         luaCode.Run(luaCode.CostFunStr(cardEffect.duelcard, cardEffect.effect));
         yield return WaitGameEvent();
@@ -337,7 +465,7 @@ public class Duel : MonoBehaviour
 
     private IEnumerator ActivateEffect(CardEffect cardEffect)
     {
-        Debug.Log("卡牌 " + cardEffect.duelcard.name + " id" + cardEffect.duelcard.id + " 的效果" + cardEffect.effect + " 发动");
+        Debug.Log("玩家" + cardEffect.duelcard.controller + " 卡牌 " + cardEffect.duelcard.name + " 的效果" + cardEffect.effect + " 生效");
         duelEvent.SetThisCard(cardEffect.duelcard);
         luaCode.Run(luaCode.EffectFunStr(cardEffect.duelcard, cardEffect.effect));
         yield return WaitGameEvent();
@@ -345,13 +473,14 @@ public class Duel : MonoBehaviour
 
     public void BuffEffect(DuelBuff buff)
     { // 让buff生效
-        Debug.Log("卡牌 " + buff.fromcard.name + " id" + buff.fromcard.id + " 的效果" + buff.effect + " 生效");
+        Debug.Log("玩家" + buff.fromcard.controller + " 卡牌 " + buff.fromcard.name + " 的效果" + buff.effect + " 生效");
         duelEvent.SetThisCard(buff.fromcard);
         luaCode.Run(luaCode.EffectFunStr(buff.fromcard, buff.effect));
     }
 
     private IEnumerator EffectChain()
     {
+        duelData.effectChain = true;
         bool chain = true;
         int scannum = 0;
         while (chain)
@@ -373,7 +502,8 @@ public class Duel : MonoBehaviour
                 if (chain)
                 {
                     int opWho = duelData.opWho;
-                    yield return PayCost(activateEffect);
+                    if (activateEffect.cost) yield return PayCost(activateEffect);
+                    Debug.Log("玩家" + activateEffect.duelcard.controller + " 卡牌 " + activateEffect.duelcard.name + " 的效果" + activateEffect.effect + " 发动");
                     duelData.chainEffect.Add(activateEffect);
                     duelData.opWho = GetOppPlayer(opWho);
                 }
@@ -392,6 +522,7 @@ public class Duel : MonoBehaviour
             duelData.chainEffect.RemoveAt(0);
         }
         duelData.opWho = duelData.player;
+        duelData.effectChain = false;
     }
 
     private void ScanEffect()
@@ -493,41 +624,38 @@ public class Duel : MonoBehaviour
         while (!duelAI.done)
         {
             duelAI.Run();
-            yield return WaitGameEvent();
+            if (duelData.duelPhase > GamePhase.battle && duelData.duelPhase < GamePhase.main2)
+            {
+                while (duelData.duelPhase != GamePhase.battle)
+                {
+                    yield return null;
+                }
+            }
+            yield return WaitEventChain();
         }
         duelAI.done = false;
     }
 
-    private IEnumerator DrawCard(int player, int num)
+    public IEnumerator SelectCard(List<DuelCard> cardlist, int num)
     {
-        duelData.cardsJustDrawn[player].Clear();
-        if (duelData.deck[player].Count == 0) yield break;
-        while (num > 0)
-        {
-            yield return new WaitForSeconds(0.1f);
-            DuelCard duelcard = duelData.deck[player][0];
-            if (IsPlayerOwn(player)) handOwn.AddHandCardFromDeck(duelcard);
-            else handOps.AddHandCardFromDeck(duelcard);
-            duelcard.position = CardPosition.handcard;
-            duelcard.index = duelData.handcard[player].Count;
-            duelData.handcard[player].Add(duelcard);
-            duelData.cardsJustDrawn[player].Add(duelcard.id);
-            duelData.deck[player].RemoveAt(0);
-            duelData.SortCard(duelData.deck[player]);
-            if (IsPlayerOwn(player)) deckOwn.DeckUpdate(player);
-            else deckOps.DeckUpdate(player);
-            num--;
+        List<DuelCard> targetlist = new List<DuelCard>();
+        for (int i = 0; i < num; i++)
+        { // 由玩家选择或者AI选择
+            targetlist.Add(cardlist[i]);
         }
+        cardlist.Clear();
+        cardlist.AddRange(targetlist);
+        yield return null;
     }
 
     private IEnumerator SelectMonsterPlace()
-    {//选择怪兽放置
+    { // 选择怪兽放置
         List<int> place = GetMonsterPlace();
-        //由玩家选择或者AI选择
+        // 由玩家选择或者AI选择
         int select = 0;
         if (IsPlayerOwn(duelData.opWho))
         {
-            //yield return monserOwn.MonsterPlace(place);
+            // yield return monserOwn.MonsterPlace(place);
             duelData.placeSelect = place[select];
         }
         else
@@ -555,6 +683,28 @@ public class Duel : MonoBehaviour
                 return CardMean.faceupatk;
         }
         return 0;
+    }
+
+    private IEnumerator DrawCard(int player, int num)
+    {
+        duelData.cardsJustDrawn[player].Clear();
+        if (duelData.deck[player].Count == 0) yield break;
+        while (num > 0)
+        {
+            yield return new WaitForSeconds(0.1f);
+            DuelCard duelcard = duelData.deck[player][0];
+            if (IsPlayerOwn(player)) handOwn.AddHandCardFromDeck(duelcard);
+            else handOps.AddHandCardFromDeck(duelcard);
+            duelcard.position = CardPosition.handcard;
+            duelcard.index = duelData.handcard[player].Count;
+            duelData.handcard[player].Add(duelcard);
+            duelData.cardsJustDrawn[player].Add(duelcard.id);
+            duelData.deck[player].RemoveAt(0);
+            duelData.SortCard(duelData.deck[player]);
+            if (IsPlayerOwn(player)) deckOwn.DeckUpdate(player);
+            else deckOps.DeckUpdate(player);
+            num--;
+        }
     }
 
     private void NormalSummonFromHand(DuelCard duelcard, int place, int mean)
@@ -608,109 +758,6 @@ public class Duel : MonoBehaviour
         duelcard.meanchange++;
         if (IsPlayerOwn(duelcard.controller)) monserOwn.ShowMonsterCard(duelcard);
         else monserOps.ShowMonsterCard(duelcard);
-    }
-
-    private IEnumerator Battle(DuelCard atkmonster)
-    {
-        int atkplayer = atkmonster.controller; // 攻击方
-        int antiplayer = GetOppPlayer(atkplayer); // 被攻击方
-        // 战斗步骤
-        duelData.duelPhase = GamePhase.battlestep;
-        int target = duelAI.GetAttackTarget();
-        atkmonster.battledeclare++;
-        DuelCard antimonster = null;
-        if (target != -1) antimonster = duelData.monster[antiplayer][target];
-        DuelRecord record = new DuelRecord(PlayerAction.battle);
-        record.AddCard(atkmonster);
-        record.AddCard(antimonster);
-        duelData.record.Add(record);
-        Debug.Log("战斗步骤");
-        yield return EffectChain();
-        BuffRefresh();
-        // 伤害步骤开始时
-        duelData.duelPhase = GamePhase.damageStepStart;
-        Debug.Log("伤害步骤开始时");
-        yield return EffectChain();
-        BuffRefresh();
-        // 伤害计算前
-        duelData.duelPhase = GamePhase.damageCalBefore;
-        Debug.Log("伤害计算前");
-        yield return EffectChain();
-        BuffRefresh();
-        // 伤害计算时
-        duelData.duelPhase = GamePhase.damageCalculate;
-        Debug.Log("伤害计算时");
-        yield return EffectChain();
-        int destroycard = 0;
-        if (target == -1)
-        { // 直接攻击对方
-            int atk = atkmonster.atk;
-            LPUpdate(antiplayer, -atk);
-        }
-        else
-        { // 攻击选定的目标
-            if (antimonster.mean == CardMean.faceupatk)
-            { // 对方的怪兽处于攻击表示
-                int atk1 = atkmonster.atk;
-                int atk2 = antimonster.atk;
-                if (atk1 > atk2)
-                {
-                    LPUpdate(antiplayer, -(atk1 - atk2));
-                    destroycard = 2;
-                }
-                if (atk1 == atk2)
-                {
-                    if (atk1 != 0)
-                    { // 攻击力为0的怪兽不造成伤害
-                        destroycard = 3;
-                    }
-                }
-                if (atk1 < atk2)
-                {
-                    LPUpdate(atkplayer, -(atk2 - atk1));
-                    destroycard = 1;
-                }
-            }
-            else
-            { // 对方的怪兽处于防御表示
-                int atk1 = atkmonster.atk;
-                int def2 = antimonster.def;
-                if (atk1 > def2)
-                {
-                    destroycard = 2;
-                }
-                if (atk1 <= def2)
-                {
-                    LPUpdate(atkplayer, -(def2 - atk1));
-                }
-            }
-        }
-        BuffRefresh();
-        // 伤害计算后
-        duelData.duelPhase = GamePhase.damageCalAfter;
-        Debug.Log("伤害计算后");
-        yield return EffectChain();
-        BuffRefresh();
-        // 伤害步骤终了时
-        duelData.duelPhase = GamePhase.damageStepEnd;
-        Debug.Log("伤害步骤终了时");
-        if (destroycard == 1)
-        {
-            CardLeave(atkmonster, GameEvent.battledestroy);
-        }
-        if (destroycard == 2)
-        {
-            CardLeave(antimonster, GameEvent.battledestroy);
-        }
-        if (destroycard == 3)
-        {
-            CardLeave(atkmonster, GameEvent.battledestroy);
-            CardLeave(antimonster, GameEvent.battledestroy);
-        }
-        yield return EffectChain();
-        BuffRefresh();
-        duelData.duelPhase = GamePhase.battle;
-        yield return null;
     }
 
     private void CardLeave(DuelCard duelcard, int way)
@@ -881,6 +928,56 @@ public class Duel : MonoBehaviour
                 return buff;
         }
         return null;
+    }
+
+    public List<DuelCard> GetTargetCard(TargetCard targetcard)
+    {
+        List<DuelCard> targetlist = new List<DuelCard>();
+        int player = duelData.opWho;
+        if (targetcard.side == PlayerSide.ops)
+            player = GetOppPlayer(duelData.opWho);
+        targetlist.AddRange(duelData.GetAllCards(player));
+        if (targetcard.side == PlayerSide.both)
+            targetlist.AddRange(duelData.GetAllCards(GetOppPlayer(player)));
+
+        List<DuelCard> positionlist = new List<DuelCard>();
+        foreach (int position in targetcard.position)
+        {
+            foreach (DuelCard duelcard in targetlist)
+            {
+                if (position == duelcard.position)
+                {
+                    positionlist.Add(duelcard);
+                }
+            }
+        }
+        if (targetcard.position.Count != 0) targetlist = positionlist;
+
+        List<DuelCard> tlist = new List<DuelCard>();
+        foreach (KeyValuePair<int, object> kv in targetcard.target)
+        {
+            foreach (DuelCard duelcard in targetlist)
+            {
+                if (kv.Key == GameCard.name)
+                {
+                    if (duelcard.name.Equals(kv.Value))
+                        tlist.Add(duelcard);
+                }
+            }
+        }
+        if (targetcard.target.Count != 0) targetlist = tlist;
+
+        return targetlist;
+    }
+
+    public bool CardActivated(DuelCard duelcard, int effect)
+    {
+        foreach (CardEffect cardEffect in duelData.chainEffect)
+        {
+            if (cardEffect.duelcard.Equals(duelcard) && cardEffect.effect == effect)
+                return true;
+        }
+        return false;
     }
     /* 对决斗的判断 */
 

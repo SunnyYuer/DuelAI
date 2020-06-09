@@ -16,7 +16,7 @@ public class DuelEventWrap
 		L.RegFunction("NormalSummon", NormalSummon);
 		L.RegFunction("SpecialSummon", SpecialSummon);
 		L.RegFunction("ChangeMean", ChangeMean);
-		L.RegFunction("Battle", Battle);
+		L.RegFunction("SelectCard", SelectCard);
 		L.RegFunction("InCase", InCase);
 		L.RegFunction("DrawnCard", DrawnCard);
 		L.RegFunction("ThisCardIsBattle", ThisCardIsBattle);
@@ -218,14 +218,16 @@ public class DuelEventWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Battle(IntPtr L)
+	static int SelectCard(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
+			ToLua.CheckArgsCount(L, 4);
 			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-			DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
-			obj.Battle(arg0);
+			TargetCard arg0 = (TargetCard)ToLua.CheckObject<TargetCard>(L, 2);
+			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+			int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
+			obj.SelectCard(arg0, arg1, arg2);
 			return 0;
 		}
 		catch (Exception e)

@@ -63,7 +63,11 @@ public static class CustomSettings
         _GT(typeof(DuelCard)),
         _GT(typeof(Card)),
         _GT(typeof(DuelBuff)),
+        _GT(typeof(TargetCard)),
 
+        _GT(typeof(PlayerSide)),
+        _GT(typeof(CardPosition)),
+        _GT(typeof(GameCard)),
         _GT(typeof(GamePhase)),
         _GT(typeof(GameEvent)),
         _GT(typeof(BuffType)),

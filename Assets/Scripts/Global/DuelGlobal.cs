@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PlayerSide
 {
-    public const int both = 0;
-    public const int own = 1;
-    public const int ops = 2;
+    public const int own = 0;
+    public const int ops = 1;
+    public const int both = 2;
 }
 
 public class CardPosition
@@ -23,7 +23,7 @@ public class CardPosition
     public const int special = 19;
 }
 
-public class CardAtt
+public class GameCard
 {
     public const int name = 30;
     public const int type = 31;
@@ -100,12 +100,13 @@ public class GamePhase
 public class GameEvent
 {
     public const int drawcard = 1;
-    public const int normalsummon = 2;
-    public const int specialsummon = 3;
-    public const int changemean = 4;
-    public const int battle = 5;
-    public const int battledestroy = 6;
-    public const int effectdestroy = 7;
+    public const int selectcard = 2;
+    public const int normalsummon = 3;
+    public const int specialsummon = 4;
+    public const int changemean = 5;
+    public const int battle = 6;
+    public const int battledestroy = 7;
+    public const int effectdestroy = 8;
 }
 
 public class PlayerAction : GameEvent
