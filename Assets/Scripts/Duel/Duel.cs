@@ -363,7 +363,6 @@ public class Duel : MonoBehaviour
         int intdata2;
         DuelCard duelcarddata;
         List<DuelCard> cardlistdata;
-        EventData eventdata;
         while (true)
         {
             yield return null;
@@ -397,19 +396,9 @@ public class Duel : MonoBehaviour
                     intdata1 = (int)eData.data["num"];
                     intdata2 = (int)eData.data["gameEvent"];
                     yield return SelectCard(cardlistdata, intdata1);
-                    if (intdata1 == 1)
+                    if (intdata2 == GameEvent.specialsummon)
                     {
-                        duelcarddata = cardlistdata[0];
-                        eventdata = new EventData
-                        {
-                            oplayer = duelData.opWho,
-                            gameEvent = intdata2,
-                            data = new Dictionary<string, object>
-                            {
-                                { "monstercard", duelcarddata },
-                            }
-                        };
-                        duelData.eventDate.Add(eventdata);
+                        duelEvent.SpecialSummon(cardlistdata);
                     }
                     break;
                 case GameEvent.normalsummon:
@@ -422,10 +411,7 @@ public class Duel : MonoBehaviour
                     duelcarddata = eData.data["monstercard"] as DuelCard;
                     yield return SelectMonsterPlace();
                     intdata1 = SelectMonsterMean(eData.gameEvent);
-                    if (duelcarddata.position == CardPosition.handcard)
-                    {
-                        SpecialSummonFromHand(duelcarddata, duelData.placeSelect, intdata1);
-                    }
+                    SpecialSummon(duelcarddata, duelData.placeSelect, intdata1);
                     break;
                 case GameEvent.changemean:
                     duelcarddata = eData.data["monstercard"] as DuelCard;
@@ -727,13 +713,30 @@ public class Duel : MonoBehaviour
         duelData.normalsummon[player]++;
     }
 
-    private void SpecialSummonFromHand(DuelCard duelcard, int place, int mean)
+    private void SpecialSummon(DuelCard duelcard, int place, int mean)
     {
         int player = duelcard.controller;
-        if (IsPlayerOwn(player)) handOwn.RemoveHandCard(duelcard.index);
-        else handOps.RemoveHandCard(duelcard.index);
-        duelData.handcard[player].RemoveAt(duelcard.index);
-        duelData.SortCard(duelData.handcard[player]);
+        if (duelcard.position == CardPosition.handcard)
+        {
+            if (IsPlayerOwn(player)) handOwn.RemoveHandCard(duelcard.index);
+            else handOps.RemoveHandCard(duelcard.index);
+            duelData.handcard[player].RemoveAt(duelcard.index);
+            duelData.SortCard(duelData.handcard[player]);
+        }
+        if (duelcard.position == CardPosition.deck)
+        {
+            duelData.deck[player].Remove(duelcard);
+            duelData.SortCard(duelData.deck[player]);
+            if (IsPlayerOwn(player)) deckOwn.DeckUpdate(player);
+            else deckOps.DeckUpdate(player);
+        }
+        if (duelcard.position == CardPosition.grave)
+        {
+            duelData.grave[player].Remove(duelcard);
+            duelData.SortCard(duelData.grave[player]);
+            if (IsPlayerOwn(player)) graveOwn.GraveUpdate(player);
+            else graveOps.GraveUpdate(player);
+        }
         duelcard.position = CardPosition.monster;
         duelcard.index = place;
         duelcard.mean = mean;

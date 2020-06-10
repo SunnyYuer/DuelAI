@@ -23,11 +23,11 @@ function c71703785condition1()
 end
 
 function c71703785cost1()
-    Duel:ShowCard("")
+    Duel:ShowCard(Duel.thiscard)
 end
 
 function c71703785effect1()
-    Duel:SpecialSummon("")
+    Duel:SpecialSummon(Duel.thiscard)
 end
 
 function c71703785condition2()

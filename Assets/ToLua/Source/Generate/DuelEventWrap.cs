@@ -140,7 +140,7 @@ public class DuelEventWrap
 		{
 			ToLua.CheckArgsCount(L, 2);
 			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-			string arg0 = ToLua.CheckString(L, 2);
+			DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
 			obj.ShowCard(arg0);
 			return 0;
 		}
@@ -172,11 +172,26 @@ public class DuelEventWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
-			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-			string arg0 = ToLua.CheckString(L, 2);
-			obj.SpecialSummon(arg0);
-			return 0;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<DuelCard>(L, 2))
+			{
+				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+				DuelCard arg0 = (DuelCard)ToLua.ToObject(L, 2);
+				obj.SpecialSummon(arg0);
+				return 0;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<System.Collections.Generic.List<DuelCard>>(L, 2))
+			{
+				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+				System.Collections.Generic.List<DuelCard> arg0 = (System.Collections.Generic.List<DuelCard>)ToLua.ToObject(L, 2);
+				obj.SpecialSummon(arg0);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.SpecialSummon");
+			}
 		}
 		catch (Exception e)
 		{

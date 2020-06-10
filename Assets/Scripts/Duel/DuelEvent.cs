@@ -100,15 +100,10 @@ public class DuelEvent : MonoBehaviour
     /// <summary>
     /// 把这张卡给对方观看
     /// </summary>
-    /// <param name="card"></param>
-    public void ShowCard(string card)
+    /// <param name="duelcard"></param>
+    public void ShowCard(DuelCard duelcard)
     {
         if (precheck) return;
-        DuelCard duelcard = null;
-        if (card.Equals(""))
-        {
-            duelcard = thiscard;
-        }
         Debug.Log("给对方观看卡牌  " + duelcard.name);
     }
 
@@ -134,26 +129,36 @@ public class DuelEvent : MonoBehaviour
     /// <summary>
     /// 把这张卡特殊召唤
     /// </summary>
-    /// <param name="card"></param>
-    public void SpecialSummon(string card)
+    /// <param name="duelcard"></param>
+    public void SpecialSummon(DuelCard duelcard)
     {
         if (precheck)
         {
             if (!duel.SpecialSummonCheck()) activatable = false;
             return;
         }
-        if (card.Equals(""))
+        EventData eData = new EventData
         {
-            EventData eData = new EventData
+            oplayer = duelData.opWho,
+            gameEvent = GameEvent.specialsummon,
+            data = new Dictionary<string, object>
             {
-                oplayer = duelData.opWho,
-                gameEvent = GameEvent.specialsummon,
-                data = new Dictionary<string, object>
-                {
-                    { "monstercard", thiscard }
-                }
-            };
-            duelData.eventDate.Add(eData);
+                { "monstercard", duelcard },
+            }
+        };
+        duelData.eventDate.Add(eData);
+    }
+
+    /// <summary>
+    /// 把这些卡特殊召唤
+    /// </summary>
+    /// <param name="cardlist"></param>
+    public void SpecialSummon(List<DuelCard> cardlist)
+    {
+        if (precheck) return;
+        foreach (DuelCard duelcard in cardlist)
+        {
+            SpecialSummon(duelcard);
         }
     }
 
