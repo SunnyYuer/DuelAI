@@ -508,6 +508,7 @@ public class Duel : MonoBehaviour
             duelData.chainEffect.RemoveAt(0);
         }
         duelData.opWho = duelData.player;
+        duelData.duelcase.Clear();
         duelData.effectChain = false;
     }
 
