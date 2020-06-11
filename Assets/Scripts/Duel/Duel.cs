@@ -490,7 +490,7 @@ public class Duel : MonoBehaviour
                     int opWho = duelData.opWho;
                     if (activateEffect.cost) yield return PayCost(activateEffect);
                     Debug.Log("玩家" + activateEffect.duelcard.controller + " 卡牌 " + activateEffect.duelcard.name + " 的效果" + activateEffect.effect + " 发动");
-                    duelData.chainEffect.Add(activateEffect);
+                    duelData.chainEffect.Insert(0, activateEffect);
                     duelData.opWho = GetOppPlayer(opWho);
                 }
             }
