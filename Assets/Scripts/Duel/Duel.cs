@@ -156,11 +156,13 @@ public class Duel : MonoBehaviour
                 if (IsPlayerOwn(duelData.player)) phaseText.text = "我的回合";
                 else phaseText.text = "对方回合";
                 Debug.Log("玩家" + duelData.player);
+                yield return new WaitForSeconds(1);
                 StartCoroutine(EndPhase());
                 break;
             case GamePhase.draw:
                 phaseText.text = "抽卡阶段";
                 Debug.Log("抽卡阶段");
+                yield return new WaitForSeconds(1);
                 duelEvent.DrawCard(0, 1);
                 yield return WaitEventChain();
                 StartCoroutine(EndPhase());
@@ -168,29 +170,34 @@ public class Duel : MonoBehaviour
             case GamePhase.standby:
                 phaseText.text = "准备阶段";
                 Debug.Log("准备阶段");
+                yield return new WaitForSeconds(1);
                 StartCoroutine(EndPhase());
                 break;
             case GamePhase.main1:
                 phaseText.text = "主一阶段";
                 ChangeBattleButtonText();
                 Debug.Log("主一阶段");
+                yield return new WaitForSeconds(1);
                 yield return DuelAI();
                 break;
             case GamePhase.battle:
                 phaseText.text = "战斗阶段";
                 ChangeBattleButtonText();
                 Debug.Log("战斗阶段");
+                yield return new WaitForSeconds(1);
                 yield return EffectChain();
                 yield return DuelAI();
                 break;
             case GamePhase.main2:
                 phaseText.text = "主二阶段";
                 Debug.Log("主二阶段");
+                yield return new WaitForSeconds(1);
                 yield return DuelAI();
                 break;
             case GamePhase.end:
                 phaseText.text = "结束阶段";
                 Debug.Log("结束阶段");
+                yield return new WaitForSeconds(1);
                 StartCoroutine(EndPhase());
                 break;
             default:
@@ -208,10 +215,7 @@ public class Duel : MonoBehaviour
                 TurnEndReset();
         }
         if (phase == 0)
-        {
-            yield return new WaitForSeconds(1);
             duelData.duelPhase += 10;
-        }
         else
             duelData.duelPhase = phase;
         if (duelData.duelPhase > GamePhase.end)
@@ -270,6 +274,7 @@ public class Duel : MonoBehaviour
         record.AddCard(antimonster);
         duelData.record.Add(record);
         Debug.Log("战斗步骤");
+        yield return new WaitForSeconds(1);
         yield return EffectChain();
         BuffRefresh();
         // 伤害步骤开始时
@@ -487,11 +492,12 @@ public class Duel : MonoBehaviour
                 CutCardOutLine();
                 if (chain)
                 {
+                    Debug.Log("玩家" + activateEffect.duelcard.controller + " 卡牌 " + activateEffect.duelcard.name + " 的效果" + activateEffect.effect + " 发动");
                     int opWho = duelData.opWho;
                     if (activateEffect.cost) yield return PayCost(activateEffect);
-                    Debug.Log("玩家" + activateEffect.duelcard.controller + " 卡牌 " + activateEffect.duelcard.name + " 的效果" + activateEffect.effect + " 发动");
                     duelData.chainEffect.Insert(0, activateEffect);
                     duelData.opWho = GetOppPlayer(opWho);
+                    yield return new WaitForSeconds(1);
                 }
             }
             if (!chain && scannum == 0)
@@ -506,6 +512,7 @@ public class Duel : MonoBehaviour
             duelData.opWho = duelData.chainEffect[0].duelcard.controller;
             yield return ActivateEffect(duelData.chainEffect[0]);
             duelData.chainEffect.RemoveAt(0);
+            yield return new WaitForSeconds(1);
         }
         duelData.opWho = duelData.player;
         duelData.duelcase.Clear();
