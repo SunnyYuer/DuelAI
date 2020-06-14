@@ -18,7 +18,7 @@ public class DuelEventWrap
 		L.RegFunction("ChangeMean", ChangeMean);
 		L.RegFunction("SelectCard", SelectCard);
 		L.RegFunction("InCase", InCase);
-		L.RegFunction("DrawnCard", DrawnCard);
+		L.RegFunction("InTimePoint", InTimePoint);
 		L.RegFunction("ThisCardIsBattle", ThisCardIsBattle);
 		L.RegFunction("GetAntiMonster", GetAntiMonster);
 		L.RegFunction("__eq", op_Equality);
@@ -256,12 +256,11 @@ public class DuelEventWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 4);
+			ToLua.CheckArgsCount(L, 3);
 			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
 			object arg0 = ToLua.ToVarObject(L, 2);
 			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-			int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
-			bool o = obj.InCase(arg0, arg1, arg2);
+			bool o = obj.InCase(arg0, arg1);
 			LuaDLL.lua_pushboolean(L, o);
 			return 1;
 		}
@@ -272,14 +271,15 @@ public class DuelEventWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int DrawnCard(IntPtr L)
+	static int InTimePoint(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
+			ToLua.CheckArgsCount(L, 3);
 			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-			string arg0 = ToLua.CheckString(L, 2);
-			bool o = obj.DrawnCard(arg0);
+			object arg0 = ToLua.ToVarObject(L, 2);
+			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+			bool o = obj.InTimePoint(arg0, arg1);
 			LuaDLL.lua_pushboolean(L, o);
 			return 1;
 		}

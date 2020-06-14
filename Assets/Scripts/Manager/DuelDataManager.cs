@@ -29,7 +29,6 @@ public class DuelDataManager
     public DuelCard[] fieldcard;
     public DuelCard[][] special;
     public int[] normalsummon; // 这回合已通常召唤的次数
-    public List<string>[] cardsJustDrawn;
 
     // 效果连锁
     public List<CardEffect> chainEffect;
@@ -66,7 +65,6 @@ public class DuelDataManager
         handcard = new List<DuelCard>[playerNum];
         monster = new DuelCard[playerNum][];
         magictrap = new DuelCard[playerNum][];
-        cardsJustDrawn = new List<string>[playerNum];
         normalsummon = new int[playerNum];
         for (int i = 0; i < playerNum; i++)
         {
@@ -77,7 +75,6 @@ public class DuelDataManager
             handcard[i] = new List<DuelCard>();
             monster[i] = new DuelCard[areaNum];
             magictrap[i] = new DuelCard[areaNum];
-            cardsJustDrawn[i] = new List<string>();
         }
         LP = new int[2];
         fieldcard = new DuelCard[2];

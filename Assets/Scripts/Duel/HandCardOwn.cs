@@ -25,7 +25,7 @@ public class HandCardOwn : MonoBehaviour
 
     }
 
-    public void AddHandCardFromDeck(DuelCard duelcard)
+    public void AddHandCard(DuelCard duelcard)
     {
         GameObject handcard = Instantiate(card, handcardlist);
         handcard.GetComponent<Image>().sprite = Duel.spriteManager.GetCardSprite(duelcard.id, false);

@@ -14,9 +14,10 @@ public class GameEventWrap
 		L.RegConstant("normalsummon", 3);
 		L.RegConstant("specialsummon", 4);
 		L.RegConstant("changemean", 5);
-		L.RegConstant("battle", 6);
-		L.RegConstant("battledestroy", 7);
-		L.RegConstant("effectdestroy", 8);
+		L.RegConstant("activateeffect", 6);
+		L.RegConstant("battle", 7);
+		L.RegConstant("battledestroy", 8);
+		L.RegConstant("effectdestroy", 9);
 		L.EndClass();
 	}
 

@@ -104,9 +104,10 @@ public class GameEvent
     public const int normalsummon = 3;
     public const int specialsummon = 4;
     public const int changemean = 5;
-    public const int battle = 6;
-    public const int battledestroy = 7;
-    public const int effectdestroy = 8;
+    public const int activateeffect = 6;
+    public const int battle = 7;
+    public const int battledestroy = 8;
+    public const int effectdestroy = 9;
 }
 
 public class PlayerAction : GameEvent

@@ -19,7 +19,7 @@ function c71703785()
 end
 
 function c71703785condition1()
-    return Duel:DrawnCard("")
+    return Duel:InTimePoint(Duel.thiscard, GameEvent.drawcard)
 end
 
 function c71703785cost1()
@@ -53,10 +53,10 @@ function c71703785buff2()
 end
 
 function c71703785condition3()
-    if(Duel:InCase(Duel.thiscard, GameEvent.battledestroy, 1)) then
+    if(Duel:InCase(Duel.thiscard, GameEvent.battledestroy)) then
         return true
     end
-    if(Duel:InCase(Duel.thiscard, GameEvent.effectdestroy, 1)) then
+    if(Duel:InCase(Duel.thiscard, GameEvent.effectdestroy)) then
         return true
     end
     return false

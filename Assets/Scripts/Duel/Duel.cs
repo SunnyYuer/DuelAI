@@ -55,6 +55,7 @@ public class Duel : MonoBehaviour
         //各自起手5张卡
         yield return DrawCard(0, 5);
         yield return DrawCard(1, 5);
+        duelData.duelcase.Clear();
         //决斗开始
         StartCoroutine(DuelPhase(duelData.duelPhase));
         StartCoroutine(Game());
@@ -163,7 +164,7 @@ public class Duel : MonoBehaviour
                 phaseText.text = "抽卡阶段";
                 Debug.Log("抽卡阶段");
                 yield return new WaitForSeconds(1);
-                duelEvent.DrawCard(0, 1);
+                duelEvent.DrawCard(0, 2);
                 yield return WaitEventChain();
                 StartCoroutine(EndPhase());
                 break;
@@ -472,11 +473,10 @@ public class Duel : MonoBehaviour
     private IEnumerator EffectChain()
     {
         duelData.effectChain = true;
-        bool chain = true;
-        int scannum = 0;
-        while (chain)
-        {
-            chain = false;
+        int noactivate = 0;
+        while (noactivate < 2)
+        { // 双方都不发动才不继续扫描
+            bool chain = false;
             ScanEffect();
             SetCardOutLine();
             if (duelData.activatableEffect.Count > 0)
@@ -493,19 +493,17 @@ public class Duel : MonoBehaviour
                 if (chain)
                 {
                     Debug.Log("玩家" + activateEffect.duelcard.controller + " 卡牌 " + activateEffect.duelcard.name + " 的效果" + activateEffect.effect + " 发动");
-                    int opWho = duelData.opWho;
+                    DuelCase duelcase = new DuelCase(GameEvent.activateeffect);
+                    duelcase.card.Add(activateEffect.duelcard);
+                    duelData.duelcase.Add(duelcase);
                     if (activateEffect.cost) yield return PayCost(activateEffect);
                     duelData.chainEffect.Insert(0, activateEffect);
-                    duelData.opWho = GetOppPlayer(opWho);
                     yield return new WaitForSeconds(1);
                 }
             }
-            if (!chain && scannum == 0)
-            { // 回合玩家不发动，再看敌对玩家发不发动
-                duelData.opWho = GetOppPlayer(duelData.opWho);
-                chain = true;
-            }
-            scannum++;
+            if (chain) noactivate = 0;
+            else noactivate++;
+            duelData.opWho = GetOppPlayer(duelData.opWho);
         }
         while (duelData.chainEffect.Count > 0)
         {
@@ -681,24 +679,25 @@ public class Duel : MonoBehaviour
 
     private IEnumerator DrawCard(int player, int num)
     {
-        duelData.cardsJustDrawn[player].Clear();
         if (duelData.deck[player].Count == 0) yield break;
+        DuelCase duelcase = new DuelCase(GameEvent.drawcard);
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
             DuelCard duelcard = duelData.deck[player][0];
-            if (IsPlayerOwn(player)) handOwn.AddHandCardFromDeck(duelcard);
-            else handOps.AddHandCardFromDeck(duelcard);
-            duelcard.position = CardPosition.handcard;
-            duelcard.index = duelData.handcard[player].Count;
-            duelData.handcard[player].Add(duelcard);
-            duelData.cardsJustDrawn[player].Add(duelcard.id);
             duelData.deck[player].RemoveAt(0);
             duelData.SortCard(duelData.deck[player]);
             if (IsPlayerOwn(player)) deckOwn.DeckUpdate(player);
             else deckOps.DeckUpdate(player);
+            duelcard.position = CardPosition.handcard;
+            duelcard.index = duelData.handcard[player].Count;
+            if (IsPlayerOwn(player)) handOwn.AddHandCard(duelcard);
+            else handOps.AddHandCard(duelcard);
+            duelData.handcard[player].Add(duelcard);
+            duelcase.card.Add(duelcard);
             num--;
         }
+        duelData.duelcase.Add(duelcase);
     }
 
     private void NormalSummonFromHand(DuelCard duelcard, int place, int mean)

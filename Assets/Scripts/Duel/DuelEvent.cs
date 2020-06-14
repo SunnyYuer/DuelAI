@@ -216,13 +216,12 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// 场合与时点的判断
+    /// 场合的判断
     /// </summary>
     /// <param name="targetcard"></param>
     /// <param name="gameEvent"></param>
-    /// <param name="casetime">1为场合 0为时点</param>
     /// <returns></returns>
-    public bool InCase(object targetcard, int gameEvent, int casetime)
+    public bool InCase(object targetcard, int gameEvent)
     {
         foreach (DuelCase duelcase in duelData.duelcase)
         {
@@ -251,28 +250,35 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// 判断是否把这张卡抽到
+    /// 时点的判断
     /// </summary>
-    /// <param name="card"></param>
+    /// <param name="targetcard"></param>
+    /// <param name="gameEvent"></param>
     /// <returns></returns>
-    public bool DrawnCard(string card)
+    public bool InTimePoint(object targetcard, int gameEvent)
     {
-        //判断刚刚是否有抽卡
-        int drawNum = duelData.cardsJustDrawn[duelData.opWho].Count;
-        if (drawNum == 0) return false;
-        if (card.Equals(""))
+        int count = duelData.duelcase.Count;
+        if (count == 0) return false;
+        DuelCase duelcase = duelData.duelcase[count - 1];
+        if (duelcase.gameEvent != gameEvent) return false;
+        DuelCard tcard = null;
+        if (targetcard is DuelCard)
         {
-            //判断是否在手卡
-            if (thiscard.position != CardPosition.handcard) return false;
-            //判断是否在抽到的卡中
-            int drawIndex = duelData.handcard[duelData.opWho].Count - drawNum;
-            if (thiscard.index < drawIndex) return false;
-            else return true;
+            tcard = targetcard as DuelCard;
         }
         else
         {
-            return duelData.cardsJustDrawn[duelData.opWho].Contains(card);
         }
+        switch (gameEvent)
+        {
+            case GameEvent.drawcard:
+                if (duelcase.card.Contains(tcard))
+                    return true;
+                break;
+            default:
+                break;
+        }
+        return false;
     }
 
     /// <summary>
