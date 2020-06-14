@@ -164,7 +164,7 @@ public class Duel : MonoBehaviour
                 phaseText.text = "抽卡阶段";
                 Debug.Log("抽卡阶段");
                 yield return new WaitForSeconds(1);
-                duelEvent.DrawCard(0, 2);
+                duelEvent.DrawCard(0, 1);
                 yield return WaitEventChain();
                 StartCoroutine(EndPhase());
                 break;
@@ -211,9 +211,14 @@ public class Duel : MonoBehaviour
         if (duelData.duelPhase >= GamePhase.draw)
         {
             yield return EffectChain();
+            if (duelData.duelPhase == GamePhase.end && duelData.handcard[duelData.player].Count > 6)
+            {
+                TargetCard targetcard = new TargetCard();
+                targetcard.SetPosition(CardPosition.handcard);
+                duelEvent.SelectCard(targetcard, duelData.handcard[duelData.player].Count - 6, GameEvent.discard);
+                yield return WaitEventChain();
+            }
             BuffRefresh();
-            if (duelData.duelPhase == GamePhase.end)
-                TurnEndReset();
         }
         if (phase == 0)
             duelData.duelPhase += 10;
@@ -221,6 +226,7 @@ public class Duel : MonoBehaviour
             duelData.duelPhase = phase;
         if (duelData.duelPhase > GamePhase.end)
         {
+            TurnEndReset();
             duelData.duelPhase = GamePhase.turnstart;
             duelData.ChangeNextPlayer();
         }
@@ -347,16 +353,16 @@ public class Duel : MonoBehaviour
         Debug.Log("伤害步骤终了时");
         if (destroycard == 1)
         {
-            CardLeave(atkmonster, GameEvent.battledestroy);
+            yield return CardLeave(atkmonster, GameEvent.battledestroy);
         }
         if (destroycard == 2)
         {
-            CardLeave(antimonster, GameEvent.battledestroy);
+            yield return CardLeave(antimonster, GameEvent.battledestroy);
         }
         if (destroycard == 3)
         {
-            CardLeave(atkmonster, GameEvent.battledestroy);
-            CardLeave(antimonster, GameEvent.battledestroy);
+            yield return CardLeave(atkmonster, GameEvent.battledestroy);
+            yield return CardLeave(antimonster, GameEvent.battledestroy);
         }
         yield return EffectChain();
         BuffRefresh();
@@ -397,11 +403,19 @@ public class Duel : MonoBehaviour
                         yield return DrawCard(GetOppPlayer(player), intdata2);
                     }
                     break;
+                case GameEvent.discard:
+                    cardlistdata = eData.data["discardlist"] as List<DuelCard>;
+                    yield return CardLeave(cardlistdata, GameEvent.discard);
+                    break;
                 case GameEvent.selectcard:
                     cardlistdata = eData.data["targetlist"] as List<DuelCard>;
                     intdata1 = (int)eData.data["num"];
                     intdata2 = (int)eData.data["gameEvent"];
                     yield return SelectCard(cardlistdata, intdata1);
+                    if (intdata2 == GameEvent.discard)
+                    {
+                        duelEvent.DisCard(cardlistdata);
+                    }
                     if (intdata2 == GameEvent.specialsummon)
                     {
                         duelEvent.SpecialSummon(cardlistdata);
@@ -770,23 +784,43 @@ public class Duel : MonoBehaviour
         else monserOps.ShowMonsterCard(duelcard);
     }
 
-    private void CardLeave(DuelCard duelcard, int way)
+    private IEnumerator CardLeave(DuelCard duelcard, int way)
+    { // 卡牌被送入墓地或者被除外
+        List<DuelCard> cardlist = new List<DuelCard>
+        {
+            duelcard
+        };
+        yield return CardLeave(cardlist, way);
+    }
+
+    private IEnumerator CardLeave(List<DuelCard> cardlist, int way)
     { // 卡牌被送入墓地或者被除外
         DuelCase duelcase = new DuelCase(way);
-        duelcase.old.Add(duelcard.Clone());
-        if (duelcard.position == CardPosition.monster)
+        foreach (DuelCard duelcard in cardlist)
         {
-            if (IsPlayerOwn(duelcard.controller)) monserOwn.HideMonsterCard(duelcard);
-            else monserOps.HideMonsterCard(duelcard);
-            duelData.monster[duelcard.controller][duelcard.index] = null;
+            duelcase.old.Add(duelcard.Clone());
+            if (duelcard.position == CardPosition.handcard)
+            {
+                if (IsPlayerOwn(duelcard.controller)) handOwn.RemoveHandCard(duelcard.index);
+                else handOps.RemoveHandCard(duelcard.index);
+                duelData.handcard[duelcard.controller].Remove(duelcard);
+                duelData.SortCard(duelData.handcard[duelcard.controller]);
+            }
+            if (duelcard.position == CardPosition.monster)
+            {
+                if (IsPlayerOwn(duelcard.controller)) monserOwn.HideMonsterCard(duelcard);
+                else monserOps.HideMonsterCard(duelcard);
+                duelData.monster[duelcard.controller][duelcard.index] = null;
+            }
+            duelcard.position = CardPosition.grave;
+            duelcard.index = 0;
+            duelData.grave[duelcard.owner].Insert(0, duelcard);
+            duelData.SortCard(duelData.grave[duelcard.owner]);
+            if (IsPlayerOwn(duelcard.owner)) graveOwn.GraveUpdate(duelcard.owner);
+            else graveOps.GraveUpdate(duelcard.owner);
+            duelcase.card.Add(duelcard);
+            yield return new WaitForSeconds(0.1f);
         }
-        duelcard.position = CardPosition.grave;
-        duelcard.index = 0;
-        duelData.grave[duelcard.owner].Insert(0, duelcard);
-        duelData.SortCard(duelData.grave[duelcard.owner]);
-        if (IsPlayerOwn(duelcard.owner)) graveOwn.GraveUpdate(duelcard.owner);
-        else graveOps.GraveUpdate(duelcard.owner);
-        duelcase.card.Add(duelcard);
         duelData.duelcase.Add(duelcase);
     }
 

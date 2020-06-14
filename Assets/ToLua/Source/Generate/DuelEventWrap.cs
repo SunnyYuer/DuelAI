@@ -12,6 +12,7 @@ public class DuelEventWrap
 		L.RegFunction("SetContinuousEffect", SetContinuousEffect);
 		L.RegFunction("CreateDuelBuff", CreateDuelBuff);
 		L.RegFunction("DrawCard", DrawCard);
+		L.RegFunction("DisCard", DisCard);
 		L.RegFunction("ShowCard", ShowCard);
 		L.RegFunction("NormalSummon", NormalSummon);
 		L.RegFunction("SpecialSummon", SpecialSummon);
@@ -125,6 +126,23 @@ public class DuelEventWrap
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
 			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
 			obj.DrawCard(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DisCard(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			System.Collections.Generic.List<DuelCard> arg0 = (System.Collections.Generic.List<DuelCard>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<DuelCard>));
+			obj.DisCard(arg0);
 			return 0;
 		}
 		catch (Exception e)

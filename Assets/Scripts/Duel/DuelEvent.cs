@@ -98,6 +98,25 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
+    /// 丢弃卡
+    /// </summary>
+    /// <param name="cardlist"></param>
+    public void DisCard(List<DuelCard> discardlist)
+    {
+        if (precheck) return;
+        EventData eData = new EventData
+        {
+            oplayer = duelData.opWho,
+            gameEvent = GameEvent.discard,
+            data = new Dictionary<string, object>
+            {
+                { "discardlist", discardlist },
+            }
+        };
+        duelData.eventDate.Add(eData);
+    }
+
+    /// <summary>
     /// 把这张卡给对方观看
     /// </summary>
     /// <param name="duelcard"></param>

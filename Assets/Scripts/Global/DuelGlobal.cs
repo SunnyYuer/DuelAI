@@ -100,14 +100,15 @@ public class GamePhase
 public class GameEvent
 {
     public const int drawcard = 1;
-    public const int selectcard = 2;
-    public const int normalsummon = 3;
-    public const int specialsummon = 4;
-    public const int changemean = 5;
-    public const int activateeffect = 6;
-    public const int battle = 7;
-    public const int battledestroy = 8;
-    public const int effectdestroy = 9;
+    public const int discard = 2;
+    public const int selectcard = 3;
+    public const int normalsummon = 4;
+    public const int specialsummon = 5;
+    public const int changemean = 6;
+    public const int activateeffect = 7;
+    public const int battle = 8;
+    public const int battledestroy = 9;
+    public const int effectdestroy = 10;
 }
 
 public class PlayerAction : GameEvent
