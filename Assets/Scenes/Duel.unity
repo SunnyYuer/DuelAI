@@ -522,6 +522,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 320207155}
+  - component: {fileID: 320207156}
   m_Layer: 0
   m_Name: MagicTrapAreaOwn
   m_TagString: Untagged
@@ -548,6 +549,19 @@ Transform:
   m_Father: {fileID: 617262024}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &320207156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 320207154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eae6515f034cf0e46aeebfc9171e7e58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  magictrapArea: {fileID: 320207155}
 --- !u!1 &377300918
 GameObject:
   m_ObjectHideFlags: 0
@@ -1584,6 +1598,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1273172830}
+  - component: {fileID: 1273172831}
   m_Layer: 0
   m_Name: MagicTrapAreaOps
   m_TagString: Untagged
@@ -1610,6 +1625,19 @@ Transform:
   m_Father: {fileID: 1541546380}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1273172831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1273172829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e476881ca488f54c9416a3b5b450aea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  magictrapArea: {fileID: 1273172830}
 --- !u!1 &1443603537
 GameObject:
   m_ObjectHideFlags: 0

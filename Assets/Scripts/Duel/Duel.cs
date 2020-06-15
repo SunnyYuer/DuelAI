@@ -17,6 +17,8 @@ public class Duel : MonoBehaviour
     public HandCardOps handOps;
     private MonsterOwn monserOwn;
     private MonsterOps monserOps;
+    private MagicTrapOwn magictrapOwn;
+    private MagicTrapOps magictrapOps;
     public GameObject endTurnButton;
     public Text phaseText;
     public GameObject battleButton;
@@ -39,6 +41,8 @@ public class Duel : MonoBehaviour
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         monserOwn = GameObject.Find("MonsterAreaOwn").GetComponent<MonsterOwn>();
         monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
+        magictrapOwn = GameObject.Find("MagicTrapAreaOwn").GetComponent<MagicTrapOwn>();
+        magictrapOps = GameObject.Find("MagicTrapAreaOps").GetComponent<MagicTrapOps>();
         //加载卡组数据
         ReadDeckFile();
         duelEvent.duelData = duelData;
@@ -767,6 +771,25 @@ public class Duel : MonoBehaviour
         duelData.monster[player][place] = duelcard;
         if (IsPlayerOwn(player)) monserOwn.ShowMonsterCard(duelcard);
         else monserOps.ShowMonsterCard(duelcard);
+    }
+
+    private void UseMagicTrap(DuelCard duelcard, int place, int mean)
+    {
+        int player = duelcard.controller;
+        if (duelcard.position == CardPosition.handcard)
+        {
+            if (IsPlayerOwn(player)) handOwn.RemoveHandCard(duelcard.index);
+            else handOps.RemoveHandCard(duelcard.index);
+            duelData.handcard[player].RemoveAt(duelcard.index);
+            duelData.SortCard(duelData.handcard[player]);
+        }
+        duelcard.position = CardPosition.magictrap;
+        duelcard.index = place;
+        duelcard.mean = mean;
+        duelcard.appearturn = duelData.turnNum;
+        duelData.magictrap[player][place] = duelcard;
+        if (IsPlayerOwn(player)) magictrapOwn.ShowMagicTrapCard(duelcard);
+        else magictrapOps.ShowMagicTrapCard(duelcard);
     }
 
     private void ChangeMean(DuelCard duelcard, int mean)
