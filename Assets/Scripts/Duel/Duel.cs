@@ -429,13 +429,19 @@ public class Duel : MonoBehaviour
                     duelcarddata = eData.data["handcard"] as DuelCard;
                     yield return SelectMonsterPlace();
                     intdata1 = SelectMonsterMean(eData.gameEvent);
-                    NormalSummonFromHand(duelcarddata, duelData.placeSelect, intdata1);
+                    NormalSummon(duelcarddata, duelData.placeSelect, intdata1);
                     break;
                 case GameEvent.specialsummon:
                     duelcarddata = eData.data["monstercard"] as DuelCard;
                     yield return SelectMonsterPlace();
                     intdata1 = SelectMonsterMean(eData.gameEvent);
                     SpecialSummon(duelcarddata, duelData.placeSelect, intdata1);
+                    break;
+                case GameEvent.setmagictrap:
+                    duelcarddata = eData.data["magictrapcard"] as DuelCard;
+                    intdata1 = (int)eData.data["mean"];
+                    yield return SelectMagicTrapPlace();
+                    UseMagicTrap(duelcarddata, duelData.placeSelect, intdata1);
                     break;
                 case GameEvent.changemean:
                     duelcarddata = eData.data["monstercard"] as DuelCard;
@@ -675,6 +681,23 @@ public class Duel : MonoBehaviour
         yield return null;
     }
 
+    private IEnumerator SelectMagicTrapPlace()
+    { // 选择魔法陷阱放置
+        List<int> place = GetMagicTrapPlace();
+        // 由玩家选择或者AI选择
+        int select = 0;
+        if (IsPlayerOwn(duelData.opWho))
+        {
+            // yield return monserOwn.MonsterPlace(place);
+            duelData.placeSelect = place[select];
+        }
+        else
+        {
+            duelData.placeSelect = place[select];
+        }
+        yield return null;
+    }
+
     private int SelectMonsterMean(int gameEvent)
     { // 召唤怪兽时的表示选择
         // 由玩家选择或者AI选择
@@ -718,9 +741,13 @@ public class Duel : MonoBehaviour
         duelData.duelcase.Add(duelcase);
     }
 
-    private void NormalSummonFromHand(DuelCard duelcard, int place, int mean)
+    private void NormalSummon(DuelCard duelcard, int place, int mean)
     {
         int player = duelcard.controller;
+        if (mean == CardMean.faceupatk)
+            Debug.Log("玩家" + player + " 通常召唤 " + duelcard.name);
+        if (mean == CardMean.facedowndef)
+            Debug.Log("玩家" + player + " 盖放 " + duelcard.name);
         if (IsPlayerOwn(player)) handOwn.RemoveHandCard(duelcard.index);
         else handOps.RemoveHandCard(duelcard.index);
         duelData.handcard[player].RemoveAt(duelcard.index);
@@ -741,6 +768,7 @@ public class Duel : MonoBehaviour
     private void SpecialSummon(DuelCard duelcard, int place, int mean)
     {
         int player = duelcard.controller;
+        Debug.Log("玩家" + player + " 特殊召唤 " + duelcard.name);
         if (duelcard.position == CardPosition.handcard)
         {
             if (IsPlayerOwn(player)) handOwn.RemoveHandCard(duelcard.index);
@@ -776,6 +804,10 @@ public class Duel : MonoBehaviour
     private void UseMagicTrap(DuelCard duelcard, int place, int mean)
     {
         int player = duelcard.controller;
+        if (mean == CardMean.faceupmgt)
+            Debug.Log("玩家" + player + " 发动 " + duelcard.name);
+        if (mean == CardMean.facedownmgt)
+            Debug.Log("玩家" + player + " 盖放 " + duelcard.name);
         if (duelcard.position == CardPosition.handcard)
         {
             if (IsPlayerOwn(player)) handOwn.RemoveHandCard(duelcard.index);
@@ -915,7 +947,7 @@ public class Duel : MonoBehaviour
     }
 
     public int GetOppPlayer(int who)
-    {//获取对立的玩家
+    { // 获取对立的玩家
         int oppPlayer = who;
         oppPlayer++;
         if (oppPlayer == duelData.playerNum) oppPlayer = 0;
@@ -923,7 +955,7 @@ public class Duel : MonoBehaviour
     }
 
     public List<int> GetCanNormalSummon()
-    {//获取手卡中可以通常召唤的怪兽
+    { // 获取手卡中可以通常召唤的怪兽
         int player = duelData.opWho;
         List<int> monster = new List<int>();
         for (int i = 0; i < duelData.handcard[player].Count; i++)
@@ -936,7 +968,7 @@ public class Duel : MonoBehaviour
     }
 
     public List<int> GetMonsterPlace()
-    {//获取可放置的位置
+    { // 获取怪兽可放置的位置
         List<int> place = new List<int>();
         int player = duelData.opWho;
         for (int i = 0; i < duelData.areaNum; i++)
@@ -950,14 +982,35 @@ public class Duel : MonoBehaviour
     }
 
     public bool MonsterPlaceCheck()
-    {//检查是否有足够召唤的位置
+    { // 检查是否有足够召唤怪兽的位置
         List<int> place = GetMonsterPlace();
         if (place.Count == 0) return false;
         return true;
     }
 
+    public List<int> GetMagicTrapPlace()
+    { // 获取魔法陷阱可放置的位置
+        List<int> place = new List<int>();
+        int player = duelData.opWho;
+        for (int i = 0; i < duelData.areaNum; i++)
+        {
+            if (duelData.magictrap[player][i] == null)
+            {
+                place.Add(i);
+            }
+        }
+        return place;
+    }
+
+    public bool MagicTrapPlaceCheck()
+    { // 检查是否有足够放置魔法陷阱的位置
+        List<int> place = GetMagicTrapPlace();
+        if (place.Count == 0) return false;
+        return true;
+    }
+
     public bool NormalSummonCheck(DuelCard duelcard)
-    {//检查能否通常召唤
+    { // 检查能否通常召唤
         if (duelData.normalsummon[duelcard.controller] > 0) return false;
         if (!MonsterPlaceCheck()) return false;
         if (!duelcard.type.Contains(CardType.monster)) return false;
@@ -966,8 +1019,15 @@ public class Duel : MonoBehaviour
     }
 
     public bool SpecialSummonCheck()
-    {//检查能否特殊召唤
+    { // 检查能否特殊召唤
         if (!MonsterPlaceCheck()) return false;
+        return true;
+    }
+
+    public bool UseMagicTrapCheck(DuelCard duelcard)
+    {
+        if (!MagicTrapPlaceCheck()) return false;
+        if (!duelcard.type.Contains(CardType.magic) && !duelcard.type.Contains(CardType.trap) || duelcard.type.Contains(MagicType.field)) return false;
         return true;
     }
 
