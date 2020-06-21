@@ -18,18 +18,29 @@ public class MagicTrapOps : MonoBehaviour
         
     }
 
+    public void SetCover()
+    {
+        Sprite sprite = Duel.spriteManager.GetTextureSprite("cover");
+        foreach (Transform child in transform)
+        {
+            if (sprite == null)
+                child.GetComponent<Renderer>().materials[2].mainTexture = null;
+            else
+                child.GetComponent<Renderer>().materials[2].mainTexture = sprite.texture;
+        }
+    }
+
     public void ShowMagicTrapCard(DuelCard duelcard)
     {
         Transform montrans = magictrapArea.GetChild(duelcard.index);
         Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.id, false);
         if (duelcard.mean == CardMean.faceupmgt)
         {//表侧表示
-            montrans.rotation = Quaternion.Euler(90, 180, 0);
+            montrans.rotation = Quaternion.Euler(270, 180, 0);
         }
         if (duelcard.mean == CardMean.facedownmgt)
         {//里侧表示
-            montrans.rotation = Quaternion.Euler(90, 180, 0);
-            sprite = Duel.spriteManager.GetTextureSprite("cover");
+            montrans.rotation = Quaternion.Euler(90, 0, 0);
         }
         if (sprite == null)
             montrans.GetComponent<Renderer>().material.mainTexture = null;

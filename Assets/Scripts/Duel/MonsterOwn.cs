@@ -18,22 +18,33 @@ public class MonsterOwn : MonoBehaviour
 
     }
 
+    public void SetCover()
+    {
+        Sprite sprite = Duel.spriteManager.GetTextureSprite("cover");
+        foreach (Transform child in transform)
+        {
+            if (sprite == null)
+                child.GetComponent<Renderer>().materials[2].mainTexture = null;
+            else
+                child.GetComponent<Renderer>().materials[2].mainTexture = sprite.texture;
+        }
+    }
+
     public void ShowMonsterCard(DuelCard duelcard)
     {
         Transform montrans = monsterArea.GetChild(duelcard.index);
         Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.id, false);
         if (duelcard.mean == CardMean.faceupatk)
         {//表侧攻击表示
-            montrans.rotation = Quaternion.Euler(90, 0, 0);
+            montrans.rotation = Quaternion.Euler(270, 0, 0);
         }
         if (duelcard.mean == CardMean.faceupdef)
         {//表侧守备表示
-            montrans.rotation = Quaternion.Euler(90, 0, 90);
+            montrans.rotation = Quaternion.Euler(270, -90, 0);
         }
         if (duelcard.mean == CardMean.facedowndef)
         {//里侧守备表示
-            montrans.rotation = Quaternion.Euler(90, 0, 90);
-            sprite = Duel.spriteManager.GetTextureSprite("cover");
+            montrans.rotation = Quaternion.Euler(90, 90, 0);
         }
         if (sprite == null)
             montrans.GetComponent<Renderer>().material.mainTexture = null;

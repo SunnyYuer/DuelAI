@@ -43,6 +43,10 @@ public class Duel : MonoBehaviour
         monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
         magictrapOwn = GameObject.Find("MagicTrapAreaOwn").GetComponent<MagicTrapOwn>();
         magictrapOps = GameObject.Find("MagicTrapAreaOps").GetComponent<MagicTrapOps>();
+        monserOwn.SetCover();
+        monserOps.SetCover();
+        magictrapOwn.SetCover();
+        magictrapOps.SetCover();
         //加载卡组数据
         ReadDeckFile();
         duelEvent.duelData = duelData;
@@ -704,7 +708,7 @@ public class Duel : MonoBehaviour
         if (gameEvent == GameEvent.normalsummon)
         {
             if (IsPlayerOwn(duelData.opWho))
-                return CardMean.facedowndef;
+                return CardMean.faceupdef;
             else
                 return CardMean.facedowndef;
         }
