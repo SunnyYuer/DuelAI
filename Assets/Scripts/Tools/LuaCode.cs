@@ -8,6 +8,7 @@ using UnityEngine;
 public class LuaCode
 {
     private static LuaState luaState;
+    public string testcard;
 
     public LuaCode()
     {
@@ -24,8 +25,13 @@ public class LuaCode
 
     public void SetCode(string code)
     {
+        luaState.DoString(code);
+    }
+
+    public void SetTestCard()
+    {
         luaState.DoFile("test.lua");
-        //luaState.DoString(code);
+        testcard = (string)luaState["testcard"];
     }
 
     public void Run(string function)
@@ -65,12 +71,20 @@ public class LuaCode
     {
         string code = 
             @"
-            function Card71703785()
-                print('运行成功')
+            function Card1()
+                print('运行成功1')
             end
             ";
         SetCode(code);
-        Run("Card71703785");
+        code =
+            @"
+            function Card2()
+                print('运行成功2')
+            end
+            ";
+        SetCode(code);
+        Run("Card1");
+        Run("Card2");
     }
 
     public static void TestLog(object msg)

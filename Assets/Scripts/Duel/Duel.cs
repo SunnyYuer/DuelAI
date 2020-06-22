@@ -51,6 +51,7 @@ public class Duel : MonoBehaviour
         ReadDeckFile();
         duelEvent.duelData = duelData;
         luaCode.SetCode(duelData.cardData.allcode);
+        luaCode.SetTestCard();
         //放置卡组
         deckOwn.DeckUpdate(0);
         deckOps.DeckUpdate(1);

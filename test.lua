@@ -2,6 +2,8 @@ DuelLayout = UnityEngine.GameObject.Find("DuelLayout(Clone)")
 Duel = DuelLayout:GetComponent("DuelEvent")
 duelData = Duel.duelData
 
+testcard = "71703785"
+
 function c71703785()
     if(c71703785condition1()) then
         c71703785cost1()
