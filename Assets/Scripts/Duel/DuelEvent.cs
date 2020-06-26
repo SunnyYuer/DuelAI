@@ -9,9 +9,9 @@ public class DuelEvent : MonoBehaviour
 {
     private Duel duel;
     public DuelDataManager duelData;
-    public DuelCard thiscard;//当前卡
-    public bool precheck;//发动效果和支付代价前预先检查能否执行
-    public bool activatable;//卡牌能否发动
+    public DuelCard thiscard; // 当前卡
+    public bool precheck; // 发动效果和支付代价前预先检查能否执行
+    private bool activatable; // 卡牌能否发动
 
     // Start is called before the first frame update
     void Start()
@@ -36,13 +36,29 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
+    /// 设置启动效果
+    /// </summary>
+    /// <param name="effect"></param>
+    /// <param name="cost"></param>
+    public void SetStartupEffect(int effect, bool cost = false)
+    {
+        if (!duel.ActivateCheck(thiscard, effect, EffectType.startup))
+            activatable = false;
+        if (activatable)
+            duel.SetActivatableEffect(thiscard, effect, 1, cost);
+        activatable = true; // 一张卡可能有多个效果能发动
+    }
+
+    /// <summary>
     /// 设置诱发效果，之后可以进行发动
     /// </summary>
     /// <param name="effect"></param>
     /// <param name="cost"></param>
     public void SetTriggerEffect(int effect, bool cost = false)
     {
-        if (activatable && !duel.CardActivated(thiscard, effect))
+        if (!duel.ActivateCheck(thiscard, effect, EffectType.trigger))
+            activatable = false;
+        if (activatable)
             duel.SetActivatableEffect(thiscard, effect, 1, cost);
         activatable = true; // 一张卡可能有多个效果能发动
     }
@@ -79,18 +95,18 @@ public class DuelEvent : MonoBehaviour
     /// <summary>
     /// 抽卡
     /// </summary>
-    /// <param name="who"></param>
     /// <param name="num"></param>
-    public void DrawCard(int who, int num)
+    /// <param name="side"></param>
+    public void DrawCard(int num, int side = PlayerSide.own)
     {
+        int oplayer = duel.GetSidePlayer(side);
         if (precheck) return;
         EventData eData = new EventData
         {
-            oplayer = duelData.opWho,
+            oplayer = oplayer,
             gameEvent = GameEvent.drawcard,
             data = new Dictionary<string, object>
             {
-                { "drawplayer", who },
                 { "drawnum", num }
             }
         };
@@ -111,6 +127,62 @@ public class DuelEvent : MonoBehaviour
             data = new Dictionary<string, object>
             {
                 { "discardlist", discardlist },
+            }
+        };
+        duelData.eventDate.Add(eData);
+    }
+
+    /// <summary>
+    /// 丢弃全部手卡
+    /// </summary>
+    /// <param name="side"></param>
+    /// <returns></returns>
+    public int DisCardAll(int side = PlayerSide.own)
+    {
+        int oplayer = duel.GetSidePlayer(side);
+        List<DuelCard> discardlist = new List<DuelCard>();
+        discardlist.AddRange(duelData.handcard[oplayer]);
+        if (precheck) return discardlist.Count;
+        EventData eData = new EventData
+        {
+            oplayer = oplayer,
+            gameEvent = GameEvent.discard,
+            data = new Dictionary<string, object>
+            {
+                { "discardlist", discardlist },
+            }
+        };
+        duelData.eventDate.Add(eData);
+        return discardlist.Count;
+    }
+
+    /// <summary>
+    /// 从目标卡选取n张进行操作
+    /// </summary>
+    /// <param name="targetcard"></param>
+    /// <param name="num"></param>
+    /// <param name="gameEvent"></param>
+    public void SelectCard(TargetCard targetcard, int num, int gameEvent)
+    {
+        List<DuelCard> targetlist = duel.GetTargetCard(targetcard);
+        if (precheck)
+        {
+            if (targetlist.Count == 0) activatable = false;
+            if (gameEvent == GameEvent.specialsummon)
+            {
+                if (!duel.SpecialSummonCheck()) activatable = false;
+            }
+            return;
+        }
+        EventData eData = new EventData
+        {
+            oplayer = duelData.opWho,
+            gameEvent = GameEvent.selectcard,
+            data = new Dictionary<string, object>
+            {
+                { "targetlist", targetlist },
+                { "num", num },
+                { "gameEvent", gameEvent },
             }
         };
         duelData.eventDate.Add(eData);
@@ -182,6 +254,26 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
+    /// 发动魔法陷阱
+    /// </summary>
+    /// <param name="duelcard"></param>
+    public void ActivateMagicTrap(DuelCard duelcard)
+    {
+        if (precheck) return;
+        EventData eData = new EventData
+        {
+            oplayer = duelData.opWho,
+            gameEvent = GameEvent.activatemagictrap,
+            data = new Dictionary<string, object>
+            {
+                { "magictrapcard", duelcard },
+                { "mean", CardMean.faceupmgt },
+            }
+        };
+        duelData.eventDate.Add(eData);
+    }
+
+    /// <summary>
     /// 盖放魔法陷阱
     /// </summary>
     /// <param name="duelcard"></param>
@@ -217,38 +309,6 @@ public class DuelEvent : MonoBehaviour
             {
                 { "monstercard", duelcard },
                 { "monstermean", mean }
-            }
-        };
-        duelData.eventDate.Add(eData);
-    }
-
-    /// <summary>
-    /// 从目标卡选取n张进行操作
-    /// </summary>
-    /// <param name="targetcard"></param>
-    /// <param name="num"></param>
-    /// <param name="gameEvent"></param>
-    public void SelectCard(TargetCard targetcard, int num, int gameEvent)
-    {
-        List<DuelCard> targetlist = duel.GetTargetCard(targetcard);
-        if (precheck)
-        { 
-            if (targetlist.Count == 0) activatable = false;
-            if (gameEvent == GameEvent.specialsummon)
-            {
-                if (!duel.SpecialSummonCheck()) activatable = false;
-            }
-            return;
-        }
-        EventData eData = new EventData
-        {
-            oplayer = duelData.opWho,
-            gameEvent = GameEvent.selectcard,
-            data = new Dictionary<string, object>
-            {
-                { "targetlist", targetlist },
-                { "num", num },
-                { "gameEvent", gameEvent },
             }
         };
         duelData.eventDate.Add(eData);

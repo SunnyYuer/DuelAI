@@ -225,7 +225,7 @@ public class TargetCard
 /// </summary>
 public class EventData
 {
-    public int oplayer;//产生事件的玩家
+    public int oplayer;//执行事件的玩家
     public int gameEvent;
     public Dictionary<string, object> data;
 }

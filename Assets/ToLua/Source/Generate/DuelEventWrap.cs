@@ -8,17 +8,20 @@ public class DuelEventWrap
 	{
 		L.BeginClass(typeof(DuelEvent), typeof(UnityEngine.MonoBehaviour));
 		L.RegFunction("SetThisCard", SetThisCard);
+		L.RegFunction("SetStartupEffect", SetStartupEffect);
 		L.RegFunction("SetTriggerEffect", SetTriggerEffect);
 		L.RegFunction("SetContinuousEffect", SetContinuousEffect);
 		L.RegFunction("CreateDuelBuff", CreateDuelBuff);
 		L.RegFunction("DrawCard", DrawCard);
 		L.RegFunction("DisCard", DisCard);
+		L.RegFunction("DisCardAll", DisCardAll);
+		L.RegFunction("SelectCard", SelectCard);
 		L.RegFunction("ShowCard", ShowCard);
 		L.RegFunction("NormalSummon", NormalSummon);
 		L.RegFunction("SpecialSummon", SpecialSummon);
+		L.RegFunction("ActivateMagicTrap", ActivateMagicTrap);
 		L.RegFunction("SetMagicTrap", SetMagicTrap);
 		L.RegFunction("ChangeMean", ChangeMean);
-		L.RegFunction("SelectCard", SelectCard);
 		L.RegFunction("InCase", InCase);
 		L.RegFunction("InTimePoint", InTimePoint);
 		L.RegFunction("ThisCardIsBattle", ThisCardIsBattle);
@@ -28,7 +31,6 @@ public class DuelEventWrap
 		L.RegVar("duelData", get_duelData, set_duelData);
 		L.RegVar("thiscard", get_thiscard, set_thiscard);
 		L.RegVar("precheck", get_precheck, set_precheck);
-		L.RegVar("activatable", get_activatable, set_activatable);
 		L.EndClass();
 	}
 
@@ -42,6 +44,39 @@ public class DuelEventWrap
 			DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
 			obj.SetThisCard(arg0);
 			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetStartupEffect(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				obj.SetStartupEffect(arg0);
+				return 0;
+			}
+			else if (count == 3)
+			{
+				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+				obj.SetStartupEffect(arg0, arg1);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.SetStartupEffect");
+			}
 		}
 		catch (Exception e)
 		{
@@ -122,12 +157,27 @@ public class DuelEventWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 3);
-			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-			obj.DrawCard(arg0, arg1);
-			return 0;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				obj.DrawCard(arg0);
+				return 0;
+			}
+			else if (count == 3)
+			{
+				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+				obj.DrawCard(arg0, arg1);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.DrawCard");
+			}
 		}
 		catch (Exception e)
 		{
@@ -144,6 +194,58 @@ public class DuelEventWrap
 			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
 			System.Collections.Generic.List<DuelCard> arg0 = (System.Collections.Generic.List<DuelCard>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<DuelCard>));
 			obj.DisCard(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DisCardAll(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+				int o = obj.DisCardAll();
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else if (count == 2)
+			{
+				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				int o = obj.DisCardAll(arg0);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.DisCardAll");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SelectCard(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 4);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			TargetCard arg0 = (TargetCard)ToLua.CheckObject<TargetCard>(L, 2);
+			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+			int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
+			obj.SelectCard(arg0, arg1, arg2);
 			return 0;
 		}
 		catch (Exception e)
@@ -219,6 +321,23 @@ public class DuelEventWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ActivateMagicTrap(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
+			obj.ActivateMagicTrap(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int SetMagicTrap(IntPtr L)
 	{
 		try
@@ -261,25 +380,6 @@ public class DuelEventWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.ChangeMean");
 			}
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SelectCard(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 4);
-			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-			TargetCard arg0 = (TargetCard)ToLua.CheckObject<TargetCard>(L, 2);
-			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-			int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
-			obj.SelectCard(arg0, arg1, arg2);
-			return 0;
 		}
 		catch (Exception e)
 		{
@@ -435,25 +535,6 @@ public class DuelEventWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_activatable(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			DuelEvent obj = (DuelEvent)o;
-			bool ret = obj.activatable;
-			LuaDLL.lua_pushboolean(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index activatable on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_duelData(IntPtr L)
 	{
 		object o = null;
@@ -507,25 +588,6 @@ public class DuelEventWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index precheck on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_activatable(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			DuelEvent obj = (DuelEvent)o;
-			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
-			obj.activatable = arg0;
-			return 0;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index activatable on a nil value");
 		}
 	}
 }

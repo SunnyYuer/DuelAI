@@ -173,7 +173,7 @@ public class Duel : MonoBehaviour
                 phaseText.text = "抽卡阶段";
                 Debug.Log("抽卡阶段");
                 yield return new WaitForSeconds(1);
-                duelEvent.DrawCard(0, 1);
+                duelEvent.DrawCard(1);
                 yield return WaitEventChain();
                 StartCoroutine(EndPhase());
                 break;
@@ -394,23 +394,8 @@ public class Duel : MonoBehaviour
             switch (eData.gameEvent)
             {
                 case GameEvent.drawcard:
-                    intdata1 = (int)eData.data["drawplayer"];
-                    intdata2 = (int)eData.data["drawnum"];
-                    if (intdata1 == 0)
-                    { // 自己抽卡
-                        yield return DrawCard(player, intdata2);
-                    }
-                    if (intdata1 == 1)
-                    { // 对方抽卡
-                        yield return DrawCard(GetOppPlayer(player), intdata2);
-                    }
-                    if (intdata1 == 2)
-                    { // 双方同时抽卡
-                    // 同时行动时，先处理回合玩家
-                        player = duelData.player;
-                        yield return DrawCard(player, intdata2);
-                        yield return DrawCard(GetOppPlayer(player), intdata2);
-                    }
+                    intdata1 = (int)eData.data["drawnum"];
+                    yield return DrawCard(player, intdata1);
                     break;
                 case GameEvent.discard:
                     cardlistdata = eData.data["discardlist"] as List<DuelCard>;
@@ -441,6 +426,15 @@ public class Duel : MonoBehaviour
                     yield return SelectMonsterPlace();
                     intdata1 = SelectMonsterMean(eData.gameEvent);
                     SpecialSummon(duelcarddata, duelData.placeSelect, intdata1);
+                    break;
+                case GameEvent.activatemagictrap:
+                    duelcarddata = eData.data["magictrapcard"] as DuelCard;
+                    intdata1 = (int)eData.data["mean"];
+                    if (duelcarddata.position == CardPosition.handcard)
+                    {
+                        yield return SelectMagicTrapPlace();
+                    }
+                    UseMagicTrap(duelcarddata, duelData.placeSelect, intdata1);
                     break;
                 case GameEvent.setmagictrap:
                     duelcarddata = eData.data["magictrapcard"] as DuelCard;
@@ -476,27 +470,65 @@ public class Duel : MonoBehaviour
         }
     }
 
+    private IEnumerator ActivateEffect(CardEffect cardEffect)
+    {
+        DuelCard duelcard = cardEffect.duelcard;
+        if (!duelcard.type.Contains(CardType.monster))
+        {
+            duelEvent.ActivateMagicTrap(duelcard);
+            yield return WaitGameEvent();
+        }
+        Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 发动");
+        DuelCase duelcase = new DuelCase(GameEvent.activateeffect);
+        duelcase.card.Add(duelcard);
+        duelData.duelcase.Add(duelcase);
+        if (cardEffect.cost) yield return PayCost(cardEffect);
+        duelData.chainEffect.Insert(0, cardEffect);
+        yield return new WaitForSeconds(1);
+    }
+
     private IEnumerator PayCost(CardEffect cardEffect)
     {
-        Debug.Log("玩家" + cardEffect.duelcard.controller + " 卡牌 " + cardEffect.duelcard.name + " 的效果" + cardEffect.effect + " 支付代价");
-        duelEvent.SetThisCard(cardEffect.duelcard);
-        luaCode.Run(luaCode.CostFunStr(cardEffect.duelcard, cardEffect.effect));
+        DuelCard duelcard = cardEffect.duelcard;
+        Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 支付代价");
+        duelEvent.SetThisCard(duelcard);
+        luaCode.Run(luaCode.CostFunStr(duelcard, cardEffect.effect));
         yield return WaitGameEvent();
     }
 
-    private IEnumerator ActivateEffect(CardEffect cardEffect)
+    private IEnumerator EffectApply(CardEffect cardEffect)
     {
-        Debug.Log("玩家" + cardEffect.duelcard.controller + " 卡牌 " + cardEffect.duelcard.name + " 的效果" + cardEffect.effect + " 生效");
-        duelEvent.SetThisCard(cardEffect.duelcard);
-        luaCode.Run(luaCode.EffectFunStr(cardEffect.duelcard, cardEffect.effect));
+        DuelCard duelcard = cardEffect.duelcard;
+        Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 生效");
+        duelEvent.SetThisCard(duelcard);
+        luaCode.Run(luaCode.EffectFunStr(duelcard, cardEffect.effect));
         yield return WaitGameEvent();
+        if (!duelcard.type.Contains(CardType.monster))
+        {
+            if (!duelcard.type.Contains(MagicType.continuous) &&
+                !duelcard.type.Contains(MagicType.equip) &&
+                !duelcard.type.Contains(MagicType.field))
+            {
+                yield return CardLeave(duelcard, GameEvent.activatemagictrap);
+            }
+        }
     }
 
     public void BuffEffect(DuelBuff buff)
     { // 让buff生效
-        Debug.Log("玩家" + buff.fromcard.controller + " 卡牌 " + buff.fromcard.name + " 的效果" + buff.effect + " 生效");
-        duelEvent.SetThisCard(buff.fromcard);
-        luaCode.Run(luaCode.EffectFunStr(buff.fromcard, buff.effect));
+        DuelCard duelcard = buff.fromcard;
+        Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + buff.effect + " 生效");
+        duelEvent.SetThisCard(duelcard);
+        luaCode.Run(luaCode.EffectFunStr(duelcard, buff.effect));
+    }
+
+    public IEnumerator CardActivate(CardEffect activateEffect)
+    {
+        duelData.effectChain = true;
+        duelData.activatableEffect.Clear();
+        yield return ActivateEffect(activateEffect);
+        duelData.opWho = GetOppPlayer(duelData.opWho);
+        yield return EffectChain();
     }
 
     private IEnumerator EffectChain()
@@ -521,13 +553,7 @@ public class Duel : MonoBehaviour
                 CutCardOutLine();
                 if (chain)
                 {
-                    Debug.Log("玩家" + activateEffect.duelcard.controller + " 卡牌 " + activateEffect.duelcard.name + " 的效果" + activateEffect.effect + " 发动");
-                    DuelCase duelcase = new DuelCase(GameEvent.activateeffect);
-                    duelcase.card.Add(activateEffect.duelcard);
-                    duelData.duelcase.Add(duelcase);
-                    if (activateEffect.cost) yield return PayCost(activateEffect);
-                    duelData.chainEffect.Insert(0, activateEffect);
-                    yield return new WaitForSeconds(1);
+                    yield return ActivateEffect(activateEffect);
                 }
             }
             if (chain) noactivate = 0;
@@ -537,7 +563,7 @@ public class Duel : MonoBehaviour
         while (duelData.chainEffect.Count > 0)
         {
             duelData.opWho = duelData.chainEffect[0].duelcard.controller;
-            yield return ActivateEffect(duelData.chainEffect[0]);
+            yield return EffectApply(duelData.chainEffect[0]);
             duelData.chainEffect.RemoveAt(0);
             yield return new WaitForSeconds(1);
         }
@@ -546,7 +572,7 @@ public class Duel : MonoBehaviour
         duelData.effectChain = false;
     }
 
-    private void ScanEffect()
+    public int ScanEffect()
     {
         int player = duelData.opWho;
         Debug.Log("扫描效果 player=" + player);
@@ -564,12 +590,21 @@ public class Duel : MonoBehaviour
                 luaCode.Run("c" + duelcard.id);
             }
         }
+        foreach (DuelCard duelcard in duelData.magictrap[player])
+        {
+            if (duelcard != null)
+            {
+                duelEvent.SetThisCard(duelcard);
+                luaCode.Run("c" + duelcard.id);
+            }
+        }
         foreach (DuelCard duelcard in duelData.grave[player])
         {
             duelEvent.SetThisCard(duelcard);
             luaCode.Run("c" + duelcard.id);
         }
         duelEvent.precheck = false;
+        return duelData.activatableEffect.Count;
     }
 
     public void SetActivatableEffect(DuelCard duelcard, int effect, int speed, bool cost)
@@ -709,7 +744,7 @@ public class Duel : MonoBehaviour
         if (gameEvent == GameEvent.normalsummon)
         {
             if (IsPlayerOwn(duelData.opWho))
-                return CardMean.faceupdef;
+                return CardMean.facedowndef;
             else
                 return CardMean.facedowndef;
         }
@@ -872,6 +907,12 @@ public class Duel : MonoBehaviour
                 else monserOps.HideMonsterCard(duelcard);
                 duelData.monster[duelcard.controller][duelcard.index] = null;
             }
+            if (duelcard.position == CardPosition.magictrap)
+            {
+                if (IsPlayerOwn(duelcard.controller)) magictrapOwn.HideMagicTrapCard(duelcard);
+                else magictrapOps.HideMagicTrapCard(duelcard);
+                duelData.magictrap[duelcard.controller][duelcard.index] = null;
+            }
             duelcard.position = CardPosition.grave;
             duelcard.index = 0;
             duelData.grave[duelcard.owner].Insert(0, duelcard);
@@ -959,6 +1000,14 @@ public class Duel : MonoBehaviour
         return oppPlayer;
     }
 
+    public int GetSidePlayer(int side)
+    { // 获取对应方的玩家
+        int player = duelData.opWho;
+        if (side == PlayerSide.ops)
+            player = GetOppPlayer(player);
+        return player;
+    }
+
     public List<int> GetCanNormalSummon()
     { // 获取手卡中可以通常召唤的怪兽
         int player = duelData.opWho;
@@ -1030,7 +1079,7 @@ public class Duel : MonoBehaviour
     }
 
     public bool UseMagicTrapCheck(DuelCard duelcard)
-    {
+    { // 检查能否从手卡使用魔法陷阱
         if (!MagicTrapPlaceCheck()) return false;
         if (!duelcard.type.Contains(CardType.magic) && !duelcard.type.Contains(CardType.trap) || duelcard.type.Contains(MagicType.field)) return false;
         return true;
@@ -1045,15 +1094,59 @@ public class Duel : MonoBehaviour
     }
 
     public bool BattleCheck(DuelCard duelcard)
-    {
+    { // 检查怪兽能否攻击
         if (duelcard.mean != CardMean.faceupatk) return false;
         if (duelcard.battledeclare > 0) return false;
         if (duelData.turnNum == 1) return false;
         return true;
     }
 
+    public bool ActivateCheck(DuelCard duelcard, int effect, int effecttype)
+    {  // 检查能否发动
+        if (effecttype == EffectType.startup)
+        {
+            if (duelcard.type.Contains(CardType.monster))
+            { // 怪兽卡必须在场上
+                if (duelcard.position < CardPosition.area) return false;
+            }
+            if (duelcard.type.Contains(MagicType.field))
+            { // 场地卡必须在场上或者手卡
+                if (duelcard.position < CardPosition.handcard) return false;
+            }
+            if (duelcard.type.Contains(CardType.magic) && !duelcard.type.Contains(MagicType.field))
+            { // 魔法卡必须在场上或者手卡且有能发动的位置
+                if (duelcard.position == CardPosition.handcard)
+                {
+                    if (!MagicTrapPlaceCheck()) return false;
+                }
+                if (duelcard.position < CardPosition.handcard) return false;
+            }
+            if (duelcard.type.Contains(CardType.trap))
+            { // 陷阱卡必须在场上
+                if (duelcard.position < CardPosition.area) return false;
+            }
+            // 连锁期间，启动效果不能发动
+            if (duelData.effectChain) return false;
+        }
+        if (effecttype == EffectType.trigger)
+        {
+            if(CardActivated(duelcard, effect)) return false;
+        }
+        return true;
+    }
+
+    public bool CardActivated(DuelCard duelcard, int effect)
+    { // 卡牌的效果是否已经发动
+        foreach (CardEffect cardEffect in duelData.chainEffect)
+        {
+            if (cardEffect.duelcard.Equals(duelcard) && cardEffect.effect == effect)
+                return true;
+        }
+        return false;
+    }
+
     public DuelBuff GetDuelBuff(DuelCard duelcard, int effect)
-    { 
+    { // 获取已存在的buff
         foreach (DuelBuff buff in duelData.duelbuff)
         {
             if (buff.fromcard.Equals(duelcard) && buff.effect == effect)
@@ -1100,16 +1193,6 @@ public class Duel : MonoBehaviour
         if (targetcard.target.Count != 0) targetlist = tlist;
 
         return targetlist;
-    }
-
-    public bool CardActivated(DuelCard duelcard, int effect)
-    {
-        foreach (CardEffect cardEffect in duelData.chainEffect)
-        {
-            if (cardEffect.duelcard.Equals(duelcard) && cardEffect.effect == effect)
-                return true;
-        }
-        return false;
     }
     /* 对决斗的判断 */
 

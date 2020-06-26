@@ -73,6 +73,18 @@ function c71703785effect3()
     Duel:SelectCard(targetcard, 1, GameEvent.specialsummon)
 end
 
+function c72892473()
+    c72892473effect1()
+    Duel:SetStartupEffect(1)
+end
+ 
+function c72892473effect1()
+    local num1 = Duel:DisCardAll(PlayerSide.own)
+    local num2 = Duel:DisCardAll(PlayerSide.ops)
+    Duel:DrawCard(num1, PlayerSide.own)
+    Duel:DrawCard(num2, PlayerSide.ops)
+end
+
 function c54250060()
 end
 
@@ -95,4 +107,7 @@ function c20501450()
 end
 
 function c46986414()
+end
+
+function c48680970()
 end
