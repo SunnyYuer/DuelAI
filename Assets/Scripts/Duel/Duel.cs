@@ -427,15 +427,6 @@ public class Duel : MonoBehaviour
                     intdata1 = SelectMonsterMean(eData.gameEvent);
                     SpecialSummon(duelcarddata, duelData.placeSelect, intdata1);
                     break;
-                case GameEvent.activatemagictrap:
-                    duelcarddata = eData.data["magictrapcard"] as DuelCard;
-                    intdata1 = (int)eData.data["mean"];
-                    if (duelcarddata.position == CardPosition.handcard)
-                    {
-                        yield return SelectMagicTrapPlace();
-                    }
-                    UseMagicTrap(duelcarddata, duelData.placeSelect, intdata1);
-                    break;
                 case GameEvent.setmagictrap:
                     duelcarddata = eData.data["magictrapcard"] as DuelCard;
                     intdata1 = (int)eData.data["mean"];
@@ -451,6 +442,12 @@ public class Duel : MonoBehaviour
                     break;
             }
             duelData.eventDate.RemoveAt(0);
+            if (duelData.eventDate.Count == 0 && !duelData.effectChain)
+            {
+                Debug.Log("效果处理后连锁");
+                duelData.opWho = duelData.player;
+                StartCoroutine(EffectChain());
+            }
         }
     }
 
@@ -475,8 +472,11 @@ public class Duel : MonoBehaviour
         DuelCard duelcard = cardEffect.duelcard;
         if (!duelcard.type.Contains(CardType.monster))
         {
-            duelEvent.ActivateMagicTrap(duelcard);
-            yield return WaitGameEvent();
+            if (duelcard.position == CardPosition.handcard)
+            {
+                yield return SelectMagicTrapPlace();
+            }
+            UseMagicTrap(duelcard, duelData.placeSelect, CardMean.faceupmgt);
         }
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 发动");
         DuelCase duelcase = new DuelCase(GameEvent.activateeffect);
@@ -509,7 +509,7 @@ public class Duel : MonoBehaviour
                 !duelcard.type.Contains(MagicType.equip) &&
                 !duelcard.type.Contains(MagicType.field))
             {
-                yield return CardLeave(duelcard, GameEvent.activatemagictrap);
+                yield return CardLeave(duelcard, GameEvent.activateeffect);
             }
         }
     }
@@ -844,8 +844,6 @@ public class Duel : MonoBehaviour
     private void UseMagicTrap(DuelCard duelcard, int place, int mean)
     {
         int player = duelcard.controller;
-        if (mean == CardMean.faceupmgt)
-            Debug.Log("玩家" + player + " 发动 " + duelcard.name);
         if (mean == CardMean.facedownmgt)
             Debug.Log("玩家" + player + " 盖放 " + duelcard.name);
         if (duelcard.position == CardPosition.handcard)

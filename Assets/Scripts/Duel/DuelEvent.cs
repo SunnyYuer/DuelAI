@@ -254,26 +254,6 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// 发动魔法陷阱
-    /// </summary>
-    /// <param name="duelcard"></param>
-    public void ActivateMagicTrap(DuelCard duelcard)
-    {
-        if (precheck) return;
-        EventData eData = new EventData
-        {
-            oplayer = duelData.opWho,
-            gameEvent = GameEvent.activatemagictrap,
-            data = new Dictionary<string, object>
-            {
-                { "magictrapcard", duelcard },
-                { "mean", CardMean.faceupmgt },
-            }
-        };
-        duelData.eventDate.Add(eData);
-    }
-
-    /// <summary>
     /// 盖放魔法陷阱
     /// </summary>
     /// <param name="duelcard"></param>

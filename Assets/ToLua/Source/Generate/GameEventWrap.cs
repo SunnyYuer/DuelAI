@@ -14,13 +14,12 @@ public class GameEventWrap
 		L.RegConstant("selectcard", 3);
 		L.RegConstant("normalsummon", 4);
 		L.RegConstant("specialsummon", 5);
-		L.RegConstant("activatemagictrap", 6);
-		L.RegConstant("setmagictrap", 7);
-		L.RegConstant("changemean", 8);
-		L.RegConstant("activateeffect", 9);
-		L.RegConstant("battle", 10);
-		L.RegConstant("battledestroy", 11);
-		L.RegConstant("effectdestroy", 12);
+		L.RegConstant("setmagictrap", 6);
+		L.RegConstant("changemean", 7);
+		L.RegConstant("activateeffect", 8);
+		L.RegConstant("battle", 9);
+		L.RegConstant("battledestroy", 10);
+		L.RegConstant("effectdestroy", 11);
 		L.EndClass();
 	}
 
