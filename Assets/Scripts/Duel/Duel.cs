@@ -444,9 +444,7 @@ public class Duel : MonoBehaviour
             duelData.eventDate.RemoveAt(0);
             if (duelData.eventDate.Count == 0 && !duelData.effectChain)
             {
-                Debug.Log("效果处理后连锁");
-                duelData.opWho = duelData.player;
-                StartCoroutine(EffectChain());
+                NewChain();
             }
         }
     }
@@ -531,9 +529,17 @@ public class Duel : MonoBehaviour
         yield return EffectChain();
     }
 
+    public void NewChain()
+    {
+        Debug.Log("效果处理完后新开连锁");
+        duelData.opWho = duelData.player;
+        StartCoroutine(EffectChain());
+    }
+
     private IEnumerator EffectChain()
     {
         duelData.effectChain = true;
+        yield return null;
         int noactivate = 0;
         while (noactivate < 2)
         { // 双方都不发动才不继续扫描
@@ -566,6 +572,11 @@ public class Duel : MonoBehaviour
             yield return EffectApply(duelData.chainEffect[0]);
             duelData.chainEffect.RemoveAt(0);
             yield return new WaitForSeconds(1);
+            if (duelData.chainEffect.Count == 0)
+            {
+                NewChain();
+                yield break;
+            }
         }
         duelData.opWho = duelData.player;
         duelData.duelcase.Clear();
