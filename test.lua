@@ -1,6 +1,7 @@
 DuelLayout = UnityEngine.GameObject.Find("DuelLayout(Clone)")
 Duel = DuelLayout:GetComponent("DuelEvent")
 duelData = Duel.duelData
+cost = true
 
 testcard = "71703785"
 
@@ -8,7 +9,7 @@ function c71703785()
     if(c71703785condition1()) then
         c71703785cost1()
         c71703785effect1()
-        Duel:SetTriggerEffect(1, true)
+        Duel:SetTriggerEffect(EffectType.cantrigger, 1, cost)
     end
     if(c71703785condition2()) then
         local buff = c71703785buff2()
@@ -16,7 +17,7 @@ function c71703785()
     end
     if(c71703785condition3()) then
         c71703785effect3()
-        Duel:SetTriggerEffect(3)
+        Duel:SetTriggerEffect(EffectType.cantrigger, 3)
     end
 end
 

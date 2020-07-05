@@ -70,7 +70,9 @@ public class EffectType
 {
     public const int startup = 1; // 启动效果
     public const int trigger = 2; // 诱发效果
-    public const int continuous = 3; // 永续效果
+    public const int cantrigger = 3; // 选发诱发效果
+    public const int musttrigger = 4; // 必发诱发效果
+    public const int continuous = 5; // 永续效果
 }
 
 public class CardMean

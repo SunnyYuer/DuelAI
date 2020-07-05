@@ -68,6 +68,7 @@ public static class CustomSettings
         _GT(typeof(PlayerSide)),
         _GT(typeof(CardPosition)),
         _GT(typeof(GameCard)),
+        _GT(typeof(EffectType)),
         _GT(typeof(GamePhase)),
         _GT(typeof(GameEvent)),
         _GT(typeof(BuffType)),

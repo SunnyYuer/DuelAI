@@ -237,6 +237,7 @@ public class CardEffect
 {
     public DuelCard duelcard;
     public int effect;
+    public int effectType;
     public int speed;
     public bool cost;
 }

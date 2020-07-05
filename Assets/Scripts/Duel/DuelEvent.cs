@@ -45,21 +45,42 @@ public class DuelEvent : MonoBehaviour
         if (!duel.ActivateCheck(thiscard, effect, EffectType.startup))
             activatable = false;
         if (activatable)
-            duel.SetActivatableEffect(thiscard, effect, 1, cost);
+        {
+            CardEffect cardEffect = new CardEffect
+            {
+                duelcard = thiscard,
+                effect = effect,
+                effectType = EffectType.startup,
+                speed = 1,
+                cost = cost
+            };
+            duelData.activatableEffect.Add(cardEffect);
+        }
         activatable = true; // 一张卡可能有多个效果能发动
     }
 
     /// <summary>
     /// 设置诱发效果，之后可以进行发动
     /// </summary>
+    /// <param name="effectType"></param>
     /// <param name="effect"></param>
     /// <param name="cost"></param>
-    public void SetTriggerEffect(int effect, bool cost = false)
+    public void SetTriggerEffect(int effectType, int effect, bool cost = false)
     {
         if (!duel.ActivateCheck(thiscard, effect, EffectType.trigger))
             activatable = false;
         if (activatable)
-            duel.SetActivatableEffect(thiscard, effect, 1, cost);
+        {
+            CardEffect cardEffect = new CardEffect
+            {
+                duelcard = thiscard,
+                effect = effect,
+                effectType = effectType,
+                speed = 1,
+                cost = cost
+            };
+            duelData.activatableEffect.Add(cardEffect);
+        }
         activatable = true; // 一张卡可能有多个效果能发动
     }
 

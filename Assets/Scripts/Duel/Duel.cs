@@ -618,18 +618,6 @@ public class Duel : MonoBehaviour
         return duelData.activatableEffect.Count;
     }
 
-    public void SetActivatableEffect(DuelCard duelcard, int effect, int speed, bool cost)
-    {
-        CardEffect cardEffect = new CardEffect
-        {
-            duelcard = duelcard,
-            effect = effect,
-            speed = speed,
-            cost = cost
-        };
-        duelData.activatableEffect.Add(cardEffect);
-    }
-
     public void SetCardOutLine()
     {
         if (!IsPlayerOwn(duelData.opWho)) return;

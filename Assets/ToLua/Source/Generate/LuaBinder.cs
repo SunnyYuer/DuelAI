@@ -18,6 +18,7 @@ public static class LuaBinder
 		PlayerSideWrap.Register(L);
 		CardPositionWrap.Register(L);
 		GameCardWrap.Register(L);
+		EffectTypeWrap.Register(L);
 		GamePhaseWrap.Register(L);
 		GameEventWrap.Register(L);
 		BuffTypeWrap.Register(L);
