@@ -540,11 +540,12 @@ public class Duel : MonoBehaviour
     {
         duelData.effectChain = true;
         yield return null;
+        yield return TriggerChain();
         int noactivate = 0;
         while (noactivate < 2)
         { // 双方都不发动才不继续扫描
             bool chain = false;
-            ScanEffect();
+            ScanEffect(duelData.opWho);
             SetCardOutLine();
             if (duelData.activatableEffect.Count > 0)
             {
@@ -583,9 +584,41 @@ public class Duel : MonoBehaviour
         duelData.effectChain = false;
     }
 
-    public int ScanEffect()
+    private IEnumerator TriggerChain()
     {
-        int player = duelData.opWho;
+        for (int order = 0; order < 6; order++)
+        { // 同一时点发动多个诱发类效果
+            List<CardEffect> effectList = ScanTriggerEffect(order);
+            if (effectList.Count > 0)
+            {
+                Debug.Log("顺序" + (order + 1) + " 诱发类效果");
+                duelData.opWho = effectList[0].duelcard.controller;
+                if (effectList[0].effectType == EffectType.musttrigger || effectList[0].effectType == EffectType.musttriggerinstant)
+                {
+                    while (effectList.Count > 0)
+                    {
+                        yield return ActivateEffect(effectList[0]);
+                        effectList.RemoveAt(0);
+                    }
+                }
+                else
+                {
+                    while (effectList.Count > 0)
+                    {
+                        yield return WantActivate();
+                        if (Tip.select == 1)
+                        {
+                            yield return ActivateEffect(effectList[0]);
+                        }
+                        effectList.RemoveAt(0);
+                    }
+                }
+            }
+        }
+    }
+
+    public int ScanEffect(int player)
+    {
         Debug.Log("扫描效果 player=" + player);
         duelEvent.precheck = true;
         foreach (DuelCard duelcard in duelData.handcard[player])
@@ -616,6 +649,38 @@ public class Duel : MonoBehaviour
         }
         duelEvent.precheck = false;
         return duelData.activatableEffect.Count;
+    }
+
+    public List<CardEffect> ScanTriggerEffect(int order)
+    {
+        if (order == 0)
+        {
+            ScanEffect(duelData.player);
+            ScanEffect(GetOppPlayer(duelData.player));
+        }
+        List<CardEffect> effectList = new List<CardEffect>();
+        int player;
+        if (order % 2 == 0) player = duelData.player;
+        else player = GetOppPlayer(duelData.player);
+        foreach (CardEffect cardeffect in duelData.activatableEffect)
+        { 
+            if ((order == 0 || order == 1) && cardeffect.duelcard.controller == player && cardeffect.effectType == EffectType.musttrigger &&
+                cardeffect.speed == 1)
+            { // 回合玩家的1速必发的诱发类效果  非回合玩家的1速必发的诱发类效果
+                effectList.Add(cardeffect);
+            }
+            if ((order == 2 || order == 3) && cardeffect.duelcard.controller == player && cardeffect.effectType == EffectType.cantrigger &&
+                cardeffect.speed == 1)
+            { // 回合玩家的公开情报的1速选发的诱发类效果  非回合玩家的公开情报的1速选发的诱发类效果
+                effectList.Add(cardeffect);
+            }
+            if ((order == 4 || order == 5) && cardeffect.duelcard.controller == player && cardeffect.effectType == EffectType.musttriggerinstant &&
+                cardeffect.speed == 2)
+            { // 回合玩家的2速必发的诱发即时类效果  非回合玩家的2速必发的诱发即时类效果
+                effectList.Add(cardeffect);
+            }
+        }
+        return effectList;
     }
 
     public void SetCardOutLine()
