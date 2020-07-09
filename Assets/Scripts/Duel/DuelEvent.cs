@@ -216,7 +216,16 @@ public class DuelEvent : MonoBehaviour
     public void ShowCard(DuelCard duelcard)
     {
         if (precheck) return;
-        Debug.Log("给对方观看卡牌  " + duelcard.name);
+        EventData eData = new EventData
+        {
+            oplayer = duelData.opWho,
+            gameEvent = GameEvent.showcard,
+            data = new Dictionary<string, object>
+            {
+                { "showcard", duelcard },
+            }
+        };
+        duelData.eventDate.Add(eData);
     }
 
     /// <summary>
@@ -357,26 +366,28 @@ public class DuelEvent : MonoBehaviour
     /// <returns></returns>
     public bool InTimePoint(object targetcard, int gameEvent)
     {
-        int count = duelData.duelcase.Count;
-        if (count == 0) return false;
-        DuelCase duelcase = duelData.duelcase[count - 1];
-        if (duelcase.gameEvent != gameEvent) return false;
-        DuelCard tcard = null;
-        if (targetcard is DuelCard)
+        foreach (DuelCase duelcase in duelData.duelcase)
         {
-            tcard = targetcard as DuelCard;
-        }
-        else
-        {
-        }
-        switch (gameEvent)
-        {
-            case GameEvent.drawcard:
-                if (duelcase.card.Contains(tcard))
-                    return true;
-                break;
-            default:
-                break;
+            if (duelcase.timepoint == 0 && duelcase.gameEvent == gameEvent)
+            {
+                DuelCard tcard = null;
+                if (targetcard is DuelCard)
+                {
+                    tcard = targetcard as DuelCard;
+                }
+                else
+                {
+                }
+                switch (gameEvent)
+                {
+                    case GameEvent.drawcard:
+                        if (duelcase.card.Contains(tcard))
+                            return true;
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
         return false;
     }

@@ -415,6 +415,10 @@ public class Duel : MonoBehaviour
                         duelEvent.SpecialSummon(cardlistdata);
                     }
                     break;
+                case GameEvent.showcard:
+                    duelcarddata = eData.data["showcard"] as DuelCard;
+                    ShowCard(duelcarddata);
+                    break;
                 case GameEvent.normalsummon:
                     duelcarddata = eData.data["handcard"] as DuelCard;
                     yield return SelectMonsterPlace();
@@ -476,11 +480,12 @@ public class Duel : MonoBehaviour
             }
             UseMagicTrap(duelcard, duelData.placeSelect, CardMean.faceupmgt);
         }
+        if (cardEffect.cost) yield return PayCost(cardEffect);
+        ActivateTimePointPass();
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 发动");
         DuelCase duelcase = new DuelCase(GameEvent.activateeffect);
         duelcase.card.Add(duelcard);
         duelData.duelcase.Add(duelcase);
-        if (cardEffect.cost) yield return PayCost(cardEffect);
         duelData.chainEffect.Insert(0, cardEffect);
         yield return new WaitForSeconds(1);
     }
@@ -492,6 +497,7 @@ public class Duel : MonoBehaviour
         duelEvent.SetThisCard(duelcard);
         luaCode.Run(luaCode.CostFunStr(duelcard, cardEffect.effect));
         yield return WaitGameEvent();
+        LastTimePointPass();
     }
 
     private IEnumerator EffectApply(CardEffect cardEffect)
@@ -540,11 +546,13 @@ public class Duel : MonoBehaviour
     {
         duelData.effectChain = true;
         yield return null;
-        yield return TriggerChain();
+        if (duelData.chainEffect.Count == 0)
+            yield return TriggerChain();
         int noactivate = 0;
         while (noactivate < 2)
         { // 双方都不发动才不继续扫描
             bool chain = false;
+            Debug.Log("扫描效果 玩家" + duelData.opWho);
             ScanEffect(duelData.opWho);
             SetCardOutLine();
             if (duelData.activatableEffect.Count > 0)
@@ -569,6 +577,7 @@ public class Duel : MonoBehaviour
         }
         while (duelData.chainEffect.Count > 0)
         {
+            AllTimePointPass();
             duelData.opWho = duelData.chainEffect[0].duelcard.controller;
             yield return EffectApply(duelData.chainEffect[0]);
             duelData.chainEffect.RemoveAt(0);
@@ -615,11 +624,13 @@ public class Duel : MonoBehaviour
                 }
             }
         }
+        duelData.activatableEffect.Clear();
+        if (duelData.chainEffect.Count > 0)
+            duelData.opWho = GetOppPlayer(duelData.opWho);
     }
 
     public int ScanEffect(int player)
     {
-        Debug.Log("扫描效果 player=" + player);
         duelEvent.precheck = true;
         foreach (DuelCard duelcard in duelData.handcard[player])
         {
@@ -845,6 +856,14 @@ public class Duel : MonoBehaviour
         duelData.duelcase.Add(duelcase);
     }
 
+    private void ShowCard(DuelCard duelcard)
+    {
+        DuelCase duelcase = new DuelCase(GameEvent.showcard);
+        Debug.Log("给对方观看卡牌  " + duelcard.name);
+        duelcase.card.Add(duelcard);
+        duelData.duelcase.Add(duelcase);
+    }
+
     private void NormalSummon(DuelCard duelcard, int place, int mean)
     {
         int player = duelcard.controller;
@@ -1043,6 +1062,33 @@ public class Duel : MonoBehaviour
             }
         }
         duelData.normalsummon[player] = 0;
+    }
+
+    private void ActivateTimePointPass()
+    { // 上一个发动时点过期
+        int count = duelData.duelcase.Count;
+        for (int i = count - 1; i >= 0; i--)
+        {
+            if (duelData.duelcase[i].gameEvent == GameEvent.activateeffect)
+            {
+                duelData.duelcase[i].timepoint = 1;
+                break;
+            }
+        }
+    }
+
+    private void LastTimePointPass()
+    {
+        int count = duelData.duelcase.Count;
+        duelData.duelcase[count - 1].timepoint = 1;
+    }
+
+    private void AllTimePointPass()
+    {
+        foreach (DuelCase duelcase in duelData.duelcase)
+        {
+            duelcase.timepoint = 1;
+        }
     }
 
     /* 对决斗的判断 */

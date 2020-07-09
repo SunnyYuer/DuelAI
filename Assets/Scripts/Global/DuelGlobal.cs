@@ -114,14 +114,15 @@ public class GameEvent
     public const int drawcard = 1;
     public const int discard = 2;
     public const int selectcard = 3;
-    public const int normalsummon = 4;
-    public const int specialsummon = 5;
-    public const int setmagictrap = 6;
-    public const int changemean = 7;
-    public const int activateeffect = 8;
-    public const int battle = 9;
-    public const int battledestroy = 10;
-    public const int effectdestroy = 11;
+    public const int showcard = 4;
+    public const int normalsummon = 5;
+    public const int specialsummon = 6;
+    public const int setmagictrap = 7;
+    public const int changemean = 8;
+    public const int activateeffect = 9;
+    public const int battle = 10;
+    public const int battledestroy = 11;
+    public const int effectdestroy = 12;
 }
 
 public class PlayerAction : GameEvent
