@@ -9,7 +9,8 @@ public class DuelEventWrap
 		L.BeginClass(typeof(DuelEvent), typeof(UnityEngine.MonoBehaviour));
 		L.RegFunction("SetThisCard", SetThisCard);
 		L.RegFunction("SetStartupEffect", SetStartupEffect);
-		L.RegFunction("SetTriggerEffect", SetTriggerEffect);
+		L.RegFunction("SetCanTriggerEffect", SetCanTriggerEffect);
+		L.RegFunction("SetMustTriggerEffect", SetMustTriggerEffect);
 		L.RegFunction("SetContinuousEffect", SetContinuousEffect);
 		L.RegFunction("CreateDuelBuff", CreateDuelBuff);
 		L.RegFunction("DrawCard", DrawCard);
@@ -84,32 +85,63 @@ public class DuelEventWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SetTriggerEffect(IntPtr L)
+	static int SetCanTriggerEffect(IntPtr L)
 	{
 		try
 		{
 			int count = LuaDLL.lua_gettop(L);
 
-			if (count == 3)
+			if (count == 2)
 			{
 				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
 				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-				obj.SetTriggerEffect(arg0, arg1);
+				obj.SetCanTriggerEffect(arg0);
 				return 0;
 			}
-			else if (count == 4)
+			else if (count == 3)
 			{
 				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
 				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
-				obj.SetTriggerEffect(arg0, arg1, arg2);
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+				obj.SetCanTriggerEffect(arg0, arg1);
 				return 0;
 			}
 			else
 			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.SetTriggerEffect");
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.SetCanTriggerEffect");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetMustTriggerEffect(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				obj.SetMustTriggerEffect(arg0);
+				return 0;
+			}
+			else if (count == 3)
+			{
+				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+				obj.SetMustTriggerEffect(arg0, arg1);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.SetMustTriggerEffect");
 			}
 		}
 		catch (Exception e)

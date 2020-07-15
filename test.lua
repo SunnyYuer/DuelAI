@@ -9,7 +9,7 @@ function c71703785()
     if(c71703785condition1()) then
         c71703785cost1()
         c71703785effect1()
-        Duel:SetTriggerEffect(EffectType.cantrigger, 1, cost)
+        Duel:SetCanTriggerEffect(1, cost)
     end
     if(c71703785condition2()) then
         local buff = c71703785buff2()
@@ -17,7 +17,7 @@ function c71703785()
     end
     if(c71703785condition3()) then
         c71703785effect3()
-        Duel:SetTriggerEffect(EffectType.cantrigger, 3)
+        Duel:SetCanTriggerEffect(3)
     end
 end
 

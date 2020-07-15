@@ -125,6 +125,7 @@ public class Duel : MonoBehaviour
                     position = CardPosition.deck,
                     index = duelData.deck[player].Count,
                     mean = CardMean.faceup,
+                    infopublic = false,
                 };
                 duelcard.SetCard(cardDic[card]);
                 duelData.deck[player].Add(duelcard);
@@ -139,6 +140,7 @@ public class Duel : MonoBehaviour
                     position = CardPosition.extra,
                     index = duelData.extra[player].Count,
                     mean = CardMean.faceup,
+                    infopublic = false,
                 };
                 duelcard.SetCard(cardDic[card]);
                 duelData.extra[player].Add(duelcard);
@@ -879,6 +881,7 @@ public class Duel : MonoBehaviour
         duelcard.index = place;
         duelcard.mean = mean;
         duelcard.meanchange = 0;
+        if (mean != CardMean.facedowndef) duelcard.infopublic = true;
         duelcard.appearturn = duelData.turnNum;
         duelcard.battledeclare = 0;
         duelData.monster[player][place] = duelcard;
@@ -917,6 +920,7 @@ public class Duel : MonoBehaviour
         duelcard.index = place;
         duelcard.mean = mean;
         duelcard.meanchange = 0;
+        duelcard.infopublic = true;
         duelcard.appearturn = duelData.turnNum;
         duelcard.battledeclare = 0;
         duelData.monster[player][place] = duelcard;
@@ -996,6 +1000,7 @@ public class Duel : MonoBehaviour
             }
             duelcard.position = CardPosition.grave;
             duelcard.index = 0;
+            duelcard.infopublic = true;
             duelData.grave[duelcard.owner].Insert(0, duelcard);
             duelData.SortCard(duelData.grave[duelcard.owner]);
             if (IsPlayerOwn(duelcard.owner)) graveOwn.GraveUpdate(duelcard.owner);

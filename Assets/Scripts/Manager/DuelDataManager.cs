@@ -126,6 +126,7 @@ public class DuelCard : Card
     public int position;
     public int index;
     public int mean; // 在场上的表示形式
+    public bool infopublic; // 情报是否已公开
     public int appearturn; // 出现在场上的回合
     // 回合值
     public int meanchange; // 表示形式变更次数

@@ -59,28 +59,50 @@ public class DuelEvent : MonoBehaviour
         activatable = true; // 一张卡可能有多个效果能发动
     }
 
+    private void SetTriggerEffect(int effectType, int effect, bool cost)
+    {
+        int speed = 1;
+        if (thiscard.type.Contains(CardType.monster) && thiscard.position == CardPosition.handcard && !thiscard.infopublic)
+        { // 从手卡发动的怪兽的诱发效果，尽管咒文速度是1，实际处理时当作2速
+            Debug.Log("实际处理时当作2速");
+            speed = 2;
+        }
+        CardEffect cardEffect = new CardEffect
+        {
+            duelcard = thiscard,
+            effect = effect,
+            effectType = effectType,
+            speed = speed,
+            cost = cost
+        };
+        duelData.activatableEffect.Add(cardEffect);
+    }
+
     /// <summary>
-    /// 设置诱发效果，之后可以进行发动
+    /// 设置选发诱发效果，之后可以进行发动
     /// </summary>
-    /// <param name="effectType"></param>
     /// <param name="effect"></param>
     /// <param name="cost"></param>
-    public void SetTriggerEffect(int effectType, int effect, bool cost = false)
+    public void SetCanTriggerEffect(int effect, bool cost = false)
     {
         if (!duel.ActivateCheck(thiscard, effect, EffectType.trigger))
             activatable = false;
         if (activatable)
-        {
-            CardEffect cardEffect = new CardEffect
-            {
-                duelcard = thiscard,
-                effect = effect,
-                effectType = effectType,
-                speed = 1,
-                cost = cost
-            };
-            duelData.activatableEffect.Add(cardEffect);
-        }
+            SetTriggerEffect(EffectType.cantrigger, effect, cost);
+        activatable = true; // 一张卡可能有多个效果能发动
+    }
+
+    /// <summary>
+    /// 设置必发诱发效果，之后可以进行发动
+    /// </summary>
+    /// <param name="effect"></param>
+    /// <param name="cost"></param>
+    public void SetMustTriggerEffect(int effect, bool cost = false)
+    {
+        if (!duel.ActivateCheck(thiscard, effect, EffectType.trigger))
+            activatable = false;
+        if (activatable)
+            SetTriggerEffect(EffectType.musttrigger, effect, cost);
         activatable = true; // 一张卡可能有多个效果能发动
     }
 
