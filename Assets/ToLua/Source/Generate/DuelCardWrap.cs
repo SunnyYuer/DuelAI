@@ -16,6 +16,7 @@ public class DuelCardWrap
 		L.RegVar("position", get_position, set_position);
 		L.RegVar("index", get_index, set_index);
 		L.RegVar("mean", get_mean, set_mean);
+		L.RegVar("infopublic", get_infopublic, set_infopublic);
 		L.RegVar("appearturn", get_appearturn, set_appearturn);
 		L.RegVar("meanchange", get_meanchange, set_meanchange);
 		L.RegVar("battledeclare", get_battledeclare, set_battledeclare);
@@ -176,6 +177,25 @@ public class DuelCardWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_infopublic(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelCard obj = (DuelCard)o;
+			bool ret = obj.infopublic;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index infopublic on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_appearturn(IntPtr L)
 	{
 		object o = null;
@@ -324,6 +344,25 @@ public class DuelCardWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index mean on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_infopublic(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelCard obj = (DuelCard)o;
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.infopublic = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index infopublic on a nil value");
 		}
 	}
 

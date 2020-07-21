@@ -11,10 +11,8 @@ public class EffectTypeWrap
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegConstant("startup", 1);
 		L.RegConstant("continuous", 2);
-		L.RegConstant("trigger", 3);
 		L.RegConstant("cantrigger", 4);
 		L.RegConstant("musttrigger", 5);
-		L.RegConstant("triggerinstant", 6);
 		L.RegConstant("cantriggerinstant", 7);
 		L.RegConstant("musttriggerinstant", 8);
 		L.EndClass();

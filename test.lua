@@ -7,8 +7,6 @@ testcard = "71703785"
 
 function c71703785()
     if(c71703785condition1()) then
-        c71703785cost1()
-        c71703785effect1()
         Duel:SetCanTriggerEffect(1, cost)
     end
     if(c71703785condition2()) then
@@ -16,7 +14,6 @@ function c71703785()
         Duel:SetContinuousEffect(buff)
     end
     if(c71703785condition3()) then
-        c71703785effect3()
         Duel:SetCanTriggerEffect(3)
     end
 end

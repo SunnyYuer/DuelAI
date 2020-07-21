@@ -70,10 +70,8 @@ public class EffectType
 {
     public const int startup = 1; // 启动效果
     public const int continuous = 2; // 永续效果
-    public const int trigger = 3; // 诱发效果
     public const int cantrigger = 4; // 选发诱发效果
     public const int musttrigger = 5; // 必发诱发效果
-    public const int triggerinstant = 6; // 诱发即时效果
     public const int cantriggerinstant = 7; // 选发诱发即时效果
     public const int musttriggerinstant = 8; // 必发诱发即时效果
 }
@@ -139,4 +137,13 @@ public class BuffType
     public const int attnew = 3;  // 怪兽属性
     public const int levelnew = 4;  // 怪兽星级
     public const int racenew = 5;  // 怪兽种族
+}
+
+public class LimitType
+{
+    public const int normalsummon = 1;
+    public const int turnactivate = 2;
+    public const int turnuse = 3;
+    public const int specialsummonself = 4;
+    public const int chain = 5;
 }

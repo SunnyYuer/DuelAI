@@ -10,6 +10,7 @@ public class DuelEvent : MonoBehaviour
     private Duel duel;
     public DuelDataManager duelData;
     public DuelCard thiscard; // 当前卡
+    public CardEffect cardEffect; // 当前检查的效果
     public bool precheck; // 发动效果和支付代价前预先检查能否执行
     private bool activatable; // 卡牌能否发动
 
@@ -42,20 +43,18 @@ public class DuelEvent : MonoBehaviour
     /// <param name="cost"></param>
     public void SetStartupEffect(int effect, bool cost = false)
     {
-        if (!duel.ActivateCheck(thiscard, effect, EffectType.startup))
+        cardEffect = new CardEffect
+        {
+            duelcard = thiscard,
+            effect = effect,
+            effectType = EffectType.startup,
+            speed = 1,
+            cost = cost
+        };
+        if (!duel.ActivateCheck(cardEffect))
             activatable = false;
         if (activatable)
-        {
-            CardEffect cardEffect = new CardEffect
-            {
-                duelcard = thiscard,
-                effect = effect,
-                effectType = EffectType.startup,
-                speed = 1,
-                cost = cost
-            };
             duelData.activatableEffect.Add(cardEffect);
-        }
         activatable = true; // 一张卡可能有多个效果能发动
     }
 
@@ -64,10 +63,9 @@ public class DuelEvent : MonoBehaviour
         int speed = 1;
         if (thiscard.type.Contains(CardType.monster) && thiscard.position == CardPosition.handcard && !thiscard.infopublic)
         { // 从手卡发动的怪兽的诱发效果，尽管咒文速度是1，实际处理时当作2速
-            Debug.Log("实际处理时当作2速");
             speed = 2;
         }
-        CardEffect cardEffect = new CardEffect
+        cardEffect = new CardEffect
         {
             duelcard = thiscard,
             effect = effect,
@@ -75,7 +73,11 @@ public class DuelEvent : MonoBehaviour
             speed = speed,
             cost = cost
         };
-        duelData.activatableEffect.Add(cardEffect);
+        if (!duel.ActivateCheck(cardEffect))
+            activatable = false;
+        if (activatable)
+            duelData.activatableEffect.Add(cardEffect);
+        activatable = true; // 一张卡可能有多个效果能发动
     }
 
     /// <summary>
@@ -85,11 +87,7 @@ public class DuelEvent : MonoBehaviour
     /// <param name="cost"></param>
     public void SetCanTriggerEffect(int effect, bool cost = false)
     {
-        if (!duel.ActivateCheck(thiscard, effect, EffectType.trigger))
-            activatable = false;
-        if (activatable)
-            SetTriggerEffect(EffectType.cantrigger, effect, cost);
-        activatable = true; // 一张卡可能有多个效果能发动
+        SetTriggerEffect(EffectType.cantrigger, effect, cost);
     }
 
     /// <summary>
@@ -99,11 +97,7 @@ public class DuelEvent : MonoBehaviour
     /// <param name="cost"></param>
     public void SetMustTriggerEffect(int effect, bool cost = false)
     {
-        if (!duel.ActivateCheck(thiscard, effect, EffectType.trigger))
-            activatable = false;
-        if (activatable)
-            SetTriggerEffect(EffectType.musttrigger, effect, cost);
-        activatable = true; // 一张卡可能有多个效果能发动
+        SetTriggerEffect(EffectType.musttrigger, effect, cost);
     }
 
     /// <summary>
@@ -278,6 +272,11 @@ public class DuelEvent : MonoBehaviour
         if (precheck)
         {
             if (!duel.SpecialSummonCheck()) activatable = false;
+            if (duelcard.position == CardPosition.handcard && duelcard.Equals(thiscard) && cardEffect.effectType == EffectType.cantrigger)
+            {
+                duel.AddLimit(-1, cardEffect, LimitType.specialsummonself, 1);
+                if (!duel.LimitCheck(cardEffect)) activatable = false;
+            }
             return;
         }
         EventData eData = new EventData

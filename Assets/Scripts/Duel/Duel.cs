@@ -488,6 +488,7 @@ public class Duel : MonoBehaviour
         DuelCase duelcase = new DuelCase(GameEvent.activateeffect);
         duelcase.card.Add(duelcard);
         duelData.duelcase.Add(duelcase);
+        if (cardEffect.limitType > 0) LimitCount(cardEffect);
         duelData.chainEffect.Insert(0, cardEffect);
         yield return new WaitForSeconds(1);
     }
@@ -577,6 +578,8 @@ public class Duel : MonoBehaviour
             else noactivate++;
             duelData.opWho = GetOppPlayer(duelData.opWho);
         }
+        bool newchain = false;
+        if (duelData.chainEffect.Count > 0) newchain = true;
         while (duelData.chainEffect.Count > 0)
         {
             AllTimePointPass();
@@ -584,11 +587,12 @@ public class Duel : MonoBehaviour
             yield return EffectApply(duelData.chainEffect[0]);
             duelData.chainEffect.RemoveAt(0);
             yield return new WaitForSeconds(1);
-            if (duelData.chainEffect.Count == 0)
-            {
-                NewChain();
-                yield break;
-            }
+        }
+        ChainLimitReset();
+        if (newchain)
+        {
+            NewChain();
+            yield break;
         }
         duelData.opWho = duelData.player;
         duelData.duelcase.Clear();
@@ -1011,50 +1015,6 @@ public class Duel : MonoBehaviour
         duelData.duelcase.Add(duelcase);
     }
 
-    private void BuffRefresh()
-    {
-        List<DuelBuff> remove = new List<DuelBuff>();
-        foreach (DuelBuff buff in duelData.duelbuff)
-        {
-            if ((duelData.turnNum == buff.conturn && duelData.duelPhase >= buff.conphase) || 
-                duelData.turnNum > buff.conturn)
-            {
-                remove.Add(buff);
-            }
-        }
-        foreach (DuelBuff buff in remove)
-        {
-            duelData.duelbuff.Remove(buff);
-        }
-        foreach (DuelBuff rmbuff in remove)
-        {
-            // buff失效后，同类型的buff让其重新生效
-            List<DuelBuff> affected = new List<DuelBuff>();
-            foreach (DuelBuff buff in duelData.duelbuff)
-            {
-                if (buff.bufftype == rmbuff.bufftype)
-                    affected.Add(buff);
-            }
-            if (rmbuff.bufftype == BuffType.atknew)
-            { // 重置所有怪兽的攻击
-                for (int p = 0; p < duelData.playerNum; p++)
-                {
-                    foreach (DuelCard duelcard in duelData.monster[p])
-                    {
-                        if (duelcard != null)
-                        {
-                            duelcard.atk = cardDic[duelcard.id].atk;
-                        }
-                    }
-                }
-            }
-            foreach (DuelBuff buff in affected)
-            {   
-                BuffEffect(buff);
-            }
-        }
-    }
-
     private void TurnEndReset()
     {
         int player = duelData.player;
@@ -1067,33 +1027,7 @@ public class Duel : MonoBehaviour
             }
         }
         duelData.normalsummon[player] = 0;
-    }
-
-    private void ActivateTimePointPass()
-    { // 上一个发动时点过期
-        int count = duelData.duelcase.Count;
-        for (int i = count - 1; i >= 0; i--)
-        {
-            if (duelData.duelcase[i].gameEvent == GameEvent.activateeffect)
-            {
-                duelData.duelcase[i].timepoint = 1;
-                break;
-            }
-        }
-    }
-
-    private void LastTimePointPass()
-    {
-        int count = duelData.duelcase.Count;
-        duelData.duelcase[count - 1].timepoint = 1;
-    }
-
-    private void AllTimePointPass()
-    {
-        foreach (DuelCase duelcase in duelData.duelcase)
-        {
-            duelcase.timepoint = 1;
-        }
+        TurnLimitReset();
     }
 
     /* 对决斗的判断 */
@@ -1214,9 +1148,10 @@ public class Duel : MonoBehaviour
         return true;
     }
 
-    public bool ActivateCheck(DuelCard duelcard, int effect, int effecttype)
+    public bool ActivateCheck(CardEffect cardEffect)
     {  // 检查能否发动
-        if (effecttype == EffectType.startup)
+        DuelCard duelcard = cardEffect.duelcard;
+        if (cardEffect.effectType == EffectType.startup)
         {
             if (duelcard.type.Contains(CardType.monster))
             { // 怪兽卡必须在场上
@@ -1241,10 +1176,12 @@ public class Duel : MonoBehaviour
             // 连锁期间，启动效果不能发动
             if (duelData.effectChain) return false;
         }
-        if (effecttype == EffectType.trigger)
+        if (cardEffect.effectType == EffectType.cantrigger || cardEffect.effectType == EffectType.musttrigger)
         {
-            if(CardActivated(duelcard, effect)) return false;
+            if(CardActivated(duelcard, cardEffect.effect)) return false;
         }
+        if (cardEffect.cost) luaCode.Run(luaCode.CostFunStr(duelcard, cardEffect.effect));
+        luaCode.Run(luaCode.EffectFunStr(duelcard, cardEffect.effect));
         return true;
     }
 
@@ -1257,7 +1194,9 @@ public class Duel : MonoBehaviour
         }
         return false;
     }
+    /* 对决斗的判断 */
 
+    /* 决斗buff */
     public DuelBuff GetDuelBuff(DuelCard duelcard, int effect)
     { // 获取已存在的buff
         foreach (DuelBuff buff in duelData.duelbuff)
@@ -1268,6 +1207,52 @@ public class Duel : MonoBehaviour
         return null;
     }
 
+    private void BuffRefresh()
+    {
+        List<DuelBuff> remove = new List<DuelBuff>();
+        foreach (DuelBuff buff in duelData.duelbuff)
+        {
+            if ((duelData.turnNum == buff.conturn && duelData.duelPhase >= buff.conphase) ||
+                duelData.turnNum > buff.conturn)
+            {
+                remove.Add(buff);
+            }
+        }
+        foreach (DuelBuff buff in remove)
+        {
+            duelData.duelbuff.Remove(buff);
+        }
+        foreach (DuelBuff rmbuff in remove)
+        {
+            // buff失效后，同类型的buff让其重新生效
+            List<DuelBuff> affected = new List<DuelBuff>();
+            foreach (DuelBuff buff in duelData.duelbuff)
+            {
+                if (buff.bufftype == rmbuff.bufftype)
+                    affected.Add(buff);
+            }
+            if (rmbuff.bufftype == BuffType.atknew)
+            { // 重置所有怪兽的攻击
+                for (int p = 0; p < duelData.playerNum; p++)
+                {
+                    foreach (DuelCard duelcard in duelData.monster[p])
+                    {
+                        if (duelcard != null)
+                        {
+                            duelcard.atk = cardDic[duelcard.id].atk;
+                        }
+                    }
+                }
+            }
+            foreach (DuelBuff buff in affected)
+            {
+                BuffEffect(buff);
+            }
+        }
+    }
+    /* 决斗buff */
+
+    /* 目标卡 */
     public List<DuelCard> GetTargetCard(TargetCard targetcard)
     {
         List<DuelCard> targetlist = new List<DuelCard>();
@@ -1307,9 +1292,133 @@ public class Duel : MonoBehaviour
 
         return targetlist;
     }
-    /* 对决斗的判断 */
+    /* 目标卡 */
 
-    /* 决斗行动记录的运用 */
+    /* 时点 */
+    private void ActivateTimePointPass()
+    { // 上一个发动时点过期
+        int count = duelData.duelcase.Count;
+        for (int i = count - 1; i >= 0; i--)
+        {
+            if (duelData.duelcase[i].gameEvent == GameEvent.activateeffect)
+            {
+                duelData.duelcase[i].timepoint = 1;
+                break;
+            }
+        }
+    }
+
+    private void LastTimePointPass()
+    {
+        int count = duelData.duelcase.Count;
+        duelData.duelcase[count - 1].timepoint = 1;
+    }
+
+    private void AllTimePointPass()
+    {
+        foreach (DuelCase duelcase in duelData.duelcase)
+        {
+            duelcase.timepoint = 1;
+        }
+    }
+    /* 时点 */
+
+    /* 限制 */
+    public void AddLimit(int range, CardEffect cardEffect, int limitType, int max)
+    {
+        cardEffect.limitType = limitType;
+        Limit limit;
+        limit = FindLimit(cardEffect);
+        if (limit != null) return;
+        limit = new Limit
+        {
+            range = range,
+            cardEffect = cardEffect,
+            type = limitType,
+            max = max,
+            count = 0,
+        };
+        int player = cardEffect.duelcard.controller;
+        duelData.limit[player].Add(limit);
+    }
+
+    private Limit FindLimit(CardEffect cardEffect)
+    {
+        int player = cardEffect.duelcard.controller;
+        foreach (Limit limit in duelData.limit[player])
+        {
+            if (limit.type != cardEffect.limitType) continue;
+            CardEffect cEffect = limit.cardEffect;
+            if (limit.range == 0)
+            { // 这张卡
+                
+            }
+            if (limit.range == GameCard.name)
+            { // 这个卡名
+
+            }
+            if (limit.range < 0)
+            { // 不限卡
+                if (limit.type == LimitType.specialsummonself)
+                {
+                    return limit;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void LimitCount(CardEffect cardEffect)
+    {
+        Limit limit = FindLimit(cardEffect);
+        limit.count++;
+    }
+
+    public bool LimitCheck(CardEffect cardEffect)
+    {
+        int player = cardEffect.duelcard.controller;
+        foreach (Limit limit in duelData.limit[player])
+        {
+            if (limit.type != cardEffect.limitType) continue;
+            if (limit.type == LimitType.specialsummonself)
+            {
+                if (limit.count == limit.max) return false;
+            }
+        }
+        return true;
+    }
+
+    private void ChainLimitReset()
+    {
+        for (int player = 0; player < duelData.playerNum; player++)
+        {
+            foreach (Limit limit in duelData.limit[player])
+            {
+                if (limit.type == LimitType.specialsummonself && limit.count != 0)
+                {
+                    limit.count = 0;
+                    Debug.Log("解除限制");
+                }
+            }
+        }
+    }
+
+    private void TurnLimitReset()
+    {
+        for (int player = 0; player < duelData.playerNum; player++)
+        {
+            foreach (Limit limit in duelData.limit[player])
+            {
+                if (limit.type == LimitType.turnactivate && limit.count != 0)
+                {
+                    limit.count = 0;
+                }
+            }
+        }
+    }
+    /* 限制 */
+
+    /* 决斗行动记录 */
     public List<DuelCard> GetLastBattleCard()
     {
         List<DuelCard> duelcard = new List<DuelCard>();
@@ -1327,5 +1436,5 @@ public class Duel : MonoBehaviour
         }
         return duelcard;
     }
-    /* 决斗行动记录的运用 */
+    /* 决斗行动记录 */
 }
