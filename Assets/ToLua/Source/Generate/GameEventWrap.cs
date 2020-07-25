@@ -21,6 +21,7 @@ public class GameEventWrap
 		L.RegConstant("battle", 10);
 		L.RegConstant("battledestroy", 11);
 		L.RegConstant("effectdestroy", 12);
+		L.RegConstant("afterthat", 13);
 		L.EndClass();
 	}
 

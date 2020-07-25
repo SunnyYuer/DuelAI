@@ -349,6 +349,20 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
+    /// 那之后，时点过时
+    /// </summary>
+    public void AfterThat()
+    {
+        if (precheck) return;
+        EventData eData = new EventData
+        {
+            oplayer = duelData.opWho,
+            gameEvent = GameEvent.afterthat,
+        };
+        duelData.eventDate.Add(eData);
+    }
+
+    /// <summary>
     /// 场合的判断
     /// </summary>
     /// <param name="targetcard"></param>

@@ -81,6 +81,7 @@ function c72892473effect1()
     for i = 0, player.Count-1 do
         num[i] = Duel:DisCardAll(player[i])
     end
+    Duel:AfterThat()
     for i = 0, player.Count-1 do
         Duel:DrawCard(num[i], player[i])
     end

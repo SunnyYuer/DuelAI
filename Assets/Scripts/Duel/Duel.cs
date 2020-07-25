@@ -444,6 +444,9 @@ public class Duel : MonoBehaviour
                     intdata1 = (int)eData.data["monstermean"];
                     ChangeMean(duelcarddata, intdata1);
                     break;
+                case GameEvent.afterthat:
+                    AllTimePointPass();
+                    break;
                 default:
                     break;
             }
@@ -1315,7 +1318,7 @@ public class Duel : MonoBehaviour
 
     /* 时点 */
     private void ActivateTimePointPass()
-    { // 上一个发动时点过期
+    { // 上一个发动时点过时
         int count = duelData.duelcase.Count;
         for (int i = count - 1; i >= 0; i--)
         {

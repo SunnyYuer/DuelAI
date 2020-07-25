@@ -121,6 +121,7 @@ public class GameEvent
     public const int battle = 10;
     public const int battledestroy = 11;
     public const int effectdestroy = 12;
+    public const int afterthat = 13;
 }
 
 public class PlayerAction : GameEvent
