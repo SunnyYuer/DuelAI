@@ -239,7 +239,7 @@ public class Duel : MonoBehaviour
         {
             TurnEndReset();
             duelData.duelPhase = GamePhase.turnstart;
-            duelData.ChangeNextPlayer();
+            ChangeNextPlayer();
         }
         StartCoroutine(DuelPhase(duelData.duelPhase));
     }
@@ -1055,6 +1055,25 @@ public class Duel : MonoBehaviour
         return player;
     }
 
+    public void ChangeNextPlayer()
+    {
+        duelData.player++;
+        if (duelData.player == duelData.playerNum) duelData.player = 0;
+        duelData.opWho = duelData.player;
+    }
+
+    public List<int> GetPlayerOrder()
+    {
+        List<int> order = new List<int>();
+        int player = duelData.player;
+        for (int i = 0; i < duelData.playerNum; i++)
+        {
+            order.Add(player);
+            player = GetOppPlayer(player);
+        }
+        return order;
+    }
+
     public List<int> GetCanNormalSummon()
     { // 获取手卡中可以通常召唤的怪兽
         int player = duelData.opWho;
@@ -1397,7 +1416,6 @@ public class Duel : MonoBehaviour
                 if (limit.type == LimitType.specialsummonself && limit.count != 0)
                 {
                     limit.count = 0;
-                    Debug.Log("解除限制");
                 }
             }
         }

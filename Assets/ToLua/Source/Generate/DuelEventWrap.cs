@@ -26,6 +26,7 @@ public class DuelEventWrap
 		L.RegFunction("InTimePoint", InTimePoint);
 		L.RegFunction("ThisCardIsBattle", ThisCardIsBattle);
 		L.RegFunction("GetAntiMonster", GetAntiMonster);
+		L.RegFunction("GetPlayerOrder", GetPlayerOrder);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("duelData", get_duelData, set_duelData);
@@ -241,27 +242,12 @@ public class DuelEventWrap
 	{
 		try
 		{
-			int count = LuaDLL.lua_gettop(L);
-
-			if (count == 1)
-			{
-				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-				int o = obj.DisCardAll();
-				LuaDLL.lua_pushinteger(L, o);
-				return 1;
-			}
-			else if (count == 2)
-			{
-				DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-				int o = obj.DisCardAll(arg0);
-				LuaDLL.lua_pushinteger(L, o);
-				return 1;
-			}
-			else
-			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: DuelEvent.DisCardAll");
-			}
+			ToLua.CheckArgsCount(L, 2);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			int o = obj.DisCardAll(arg0);
+			LuaDLL.lua_pushinteger(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{
@@ -468,6 +454,23 @@ public class DuelEventWrap
 			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
 			DuelCard o = obj.GetAntiMonster();
 			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPlayerOrder(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			System.Collections.Generic.List<int> o = obj.GetPlayerOrder();
+			ToLua.PushSealed(L, o);
 			return 1;
 		}
 		catch (Exception e)

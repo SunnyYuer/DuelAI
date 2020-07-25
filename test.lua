@@ -72,15 +72,18 @@ function c71703785effect3()
 end
 
 function c72892473()
-    c72892473effect1()
     Duel:SetStartupEffect(1)
 end
  
 function c72892473effect1()
-    local num1 = Duel:DisCardAll(PlayerSide.own)
-    local num2 = Duel:DisCardAll(PlayerSide.ops)
-    Duel:DrawCard(num1, PlayerSide.own)
-    Duel:DrawCard(num2, PlayerSide.ops)
+    local player = Duel:GetPlayerOrder()
+    local num = {}
+    for i = 0, player.Count-1 do
+        num[i] = Duel:DisCardAll(player[i])
+    end
+    for i = 0, player.Count-1 do
+        Duel:DrawCard(num[i], player[i])
+    end
 end
 
 function c54250060()

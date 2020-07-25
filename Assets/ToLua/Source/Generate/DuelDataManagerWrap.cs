@@ -9,7 +9,6 @@ public class DuelDataManagerWrap
 		L.BeginClass(typeof(DuelDataManager), typeof(System.Object));
 		L.RegFunction("InitialArray", InitialArray);
 		L.RegFunction("SortCard", SortCard);
-		L.RegFunction("ChangeNextPlayer", ChangeNextPlayer);
 		L.RegFunction("GetAllCards", GetAllCards);
 		L.RegFunction("New", _CreateDuelDataManager);
 		L.RegFunction("__tostring", ToLua.op_ToString);
@@ -94,22 +93,6 @@ public class DuelDataManagerWrap
 			DuelDataManager obj = (DuelDataManager)ToLua.CheckObject<DuelDataManager>(L, 1);
 			System.Collections.Generic.List<DuelCard> arg0 = (System.Collections.Generic.List<DuelCard>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<DuelCard>));
 			obj.SortCard(arg0);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ChangeNextPlayer(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			DuelDataManager obj = (DuelDataManager)ToLua.CheckObject<DuelDataManager>(L, 1);
-			obj.ChangeNextPlayer();
 			return 0;
 		}
 		catch (Exception e)

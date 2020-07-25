@@ -133,10 +133,9 @@ public class DuelEvent : MonoBehaviour
     /// 抽卡
     /// </summary>
     /// <param name="num"></param>
-    /// <param name="side"></param>
-    public void DrawCard(int num, int side = PlayerSide.own)
+    /// <param name="oplayer"></param>
+    public void DrawCard(int num, int oplayer)
     {
-        int oplayer = duel.GetSidePlayer(side);
         if (precheck) return;
         EventData eData = new EventData
         {
@@ -148,6 +147,11 @@ public class DuelEvent : MonoBehaviour
             }
         };
         duelData.eventDate.Add(eData);
+    }
+
+    public void DrawCard(int num)
+    {
+        DrawCard(num, duelData.opWho);
     }
 
     /// <summary>
@@ -172,11 +176,10 @@ public class DuelEvent : MonoBehaviour
     /// <summary>
     /// 丢弃全部手卡
     /// </summary>
-    /// <param name="side"></param>
+    /// <param name="oplayer"></param>
     /// <returns></returns>
-    public int DisCardAll(int side = PlayerSide.own)
+    public int DisCardAll(int oplayer)
     {
-        int oplayer = duel.GetSidePlayer(side);
         List<DuelCard> discardlist = new List<DuelCard>();
         discardlist.AddRange(duelData.handcard[oplayer]);
         if (precheck) return discardlist.Count;
@@ -435,5 +438,14 @@ public class DuelEvent : MonoBehaviour
             return duelcard[1];
         else
             return duelcard[0];
+    }
+
+    /// <summary>
+    /// 获取当前的玩家操作顺序
+    /// </summary>
+    /// <returns></returns>
+    public List<int> GetPlayerOrder()
+    {
+        return duel.GetPlayerOrder();
     }
 }

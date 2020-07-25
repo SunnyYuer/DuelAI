@@ -91,13 +91,6 @@ public class DuelDataManager
         }
     }
 
-    public void ChangeNextPlayer()
-    {
-        player++;
-        if (player == playerNum) player = 0;
-        opWho = player;
-    }
-
     public List<DuelCard> GetAllCards(int player)
     {
         List<DuelCard> allcards = new List<DuelCard>();
