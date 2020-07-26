@@ -513,15 +513,6 @@ public class Duel : MonoBehaviour
         duelEvent.SetThisCard(duelcard);
         luaCode.Run(luaCode.EffectFunStr(duelcard, cardEffect.effect));
         yield return WaitGameEvent();
-        if (!duelcard.type.Contains(CardType.monster))
-        {
-            if (!duelcard.type.Contains(MagicType.continuous) &&
-                !duelcard.type.Contains(MagicType.equip) &&
-                !duelcard.type.Contains(MagicType.field))
-            {
-                yield return CardLeave(duelcard, GameEvent.activateeffect);
-            }
-        }
     }
 
     public void BuffEffect(DuelBuff buff)
@@ -530,6 +521,27 @@ public class Duel : MonoBehaviour
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + buff.effect + " 生效");
         duelEvent.SetThisCard(duelcard);
         luaCode.Run(luaCode.EffectFunStr(duelcard, buff.effect));
+    }
+
+    private IEnumerator MagicTrapLeave()
+    { // 连锁完魔法陷阱送去墓地
+        for (int player = 0; player < duelData.playerNum; player++)
+        {
+            foreach (DuelCard duelcard in duelData.magictrap[player])
+            {
+                if (duelcard == null) continue;
+                if (!duelcard.type.Contains(CardType.monster))
+                {
+                    if (!duelcard.type.Contains(MagicType.continuous) &&
+                        !duelcard.type.Contains(MagicType.equip) &&
+                        !duelcard.type.Contains(MagicType.field) &&
+                        duelcard.mean == CardMean.faceupmgt)
+                    {
+                        yield return CardLeave(duelcard, GameEvent.activateover);
+                    }
+                }
+            }
+        }
     }
 
     public IEnumerator CardActivate(CardEffect activateEffect)
@@ -592,6 +604,7 @@ public class Duel : MonoBehaviour
             yield return new WaitForSeconds(1);
         }
         ChainLimitReset();
+        yield return MagicTrapLeave();
         if (newchain)
         {
             NewChain();
@@ -985,6 +998,7 @@ public class Duel : MonoBehaviour
         DuelCase duelcase = new DuelCase(way);
         foreach (DuelCard duelcard in cardlist)
         {
+            Debug.Log("玩家" + duelcard.controller + " " + duelcard.name + " 送入墓地");
             duelcase.old.Add(duelcard.Clone());
             if (duelcard.position == CardPosition.handcard)
             {

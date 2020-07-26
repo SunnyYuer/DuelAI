@@ -118,10 +118,11 @@ public class GameEvent
     public const int setmagictrap = 7;
     public const int changemean = 8;
     public const int activateeffect = 9;
-    public const int battle = 10;
-    public const int battledestroy = 11;
-    public const int effectdestroy = 12;
-    public const int afterthat = 13;
+    public const int activateover = 10;
+    public const int battle = 11;
+    public const int battledestroy = 12;
+    public const int effectdestroy = 13;
+    public const int afterthat = 14;
 }
 
 public class PlayerAction : GameEvent

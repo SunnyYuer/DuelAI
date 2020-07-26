@@ -18,10 +18,11 @@ public class GameEventWrap
 		L.RegConstant("setmagictrap", 7);
 		L.RegConstant("changemean", 8);
 		L.RegConstant("activateeffect", 9);
-		L.RegConstant("battle", 10);
-		L.RegConstant("battledestroy", 11);
-		L.RegConstant("effectdestroy", 12);
-		L.RegConstant("afterthat", 13);
+		L.RegConstant("activateover", 10);
+		L.RegConstant("battle", 11);
+		L.RegConstant("battledestroy", 12);
+		L.RegConstant("effectdestroy", 13);
+		L.RegConstant("afterthat", 14);
 		L.EndClass();
 	}
 
