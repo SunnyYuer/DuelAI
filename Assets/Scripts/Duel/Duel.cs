@@ -22,6 +22,7 @@ public class Duel : MonoBehaviour
     public GameObject endTurnButton;
     public Text phaseText;
     public GameObject battleButton;
+    public DuelHint duelhint;
     public static SpriteManager spriteManager;
     public static Sprite UIMask;
     private DuelEvent duelEvent;
@@ -56,11 +57,13 @@ public class Duel : MonoBehaviour
         deckOwn.DeckUpdate(0);
         deckOps.DeckUpdate(1);
         //初始化先攻，阶段，生命值
+        duelhint.SetHint("决斗");
         duelData.player = 0;
         duelData.opWho = 0;
         duelData.duelPhase = 0;
         LPUpdate(0, 8000);
         LPUpdate(1, 8000);
+        yield return new WaitForSeconds(1);
         //各自起手5张卡
         yield return DrawCard(0, 5);
         yield return DrawCard(1, 5);
