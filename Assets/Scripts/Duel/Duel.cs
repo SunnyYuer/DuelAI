@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class Duel : MonoBehaviour
 {
     public GameObject mainLayout;
+    private Camera mainCamera;
     public Text LPOwn;
     public Text LPOps;
     public DeckOwn deckOwn;
@@ -40,6 +41,7 @@ public class Duel : MonoBehaviour
         duelEvent = gameObject.GetComponent<DuelEvent>();
         duelAI = new DuelAI(this, duelEvent);
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
+        mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         monserOwn = GameObject.Find("MonsterAreaOwn").GetComponent<MonsterOwn>();
         monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
         magictrapOwn = GameObject.Find("MagicTrapAreaOwn").GetComponent<MagicTrapOwn>();
@@ -65,6 +67,7 @@ public class Duel : MonoBehaviour
         LPUpdate(1, 8000);
         yield return new WaitForSeconds(1);
         //各自起手5张卡
+        MainView();
         yield return DrawCard(0, 5);
         yield return DrawCard(1, 5);
         duelData.duelcase.Clear();
@@ -149,6 +152,46 @@ public class Duel : MonoBehaviour
                 duelData.extra[player].Add(duelcard);
             }
         }
+    }
+
+    private void MainView()
+    {
+        if (duelAI.done)
+        {
+            mainCamera.transform.position = new Vector3(3f, 2.5f, -1f);
+            mainCamera.transform.eulerAngles = new Vector3(35f, 0f, 0f);
+        }
+    }
+
+    private void ObserveView(int player)
+    {
+        if (IsPlayerOwn(player))
+        {
+            mainCamera.transform.position = new Vector3(3f, 2.5f, 4f);
+            mainCamera.transform.eulerAngles = new Vector3(35f, 180f, 0f);
+        }
+        else
+        {
+            mainCamera.transform.position = new Vector3(3f, 2.5f, 2f);
+            mainCamera.transform.eulerAngles = new Vector3(35f, 0f, 0f);
+        }
+        /*
+        // 特写视角
+        Vector3 camPosition = new Vector3
+        {
+            x = obsPosition.x,
+            y = 1f,
+            z = obsPosition.z + (obsPosition.z < 3f ? 1.5f : -1.5f),
+        };
+        Vector3 dvalue = obsPosition - camPosition;
+        Vector3 camAngle = new Vector3
+        {
+            y = dvalue.z > 0f ? 0f : 180f,
+            x = Mathf.Atan2(Mathf.Abs(dvalue.y), Mathf.Abs(dvalue.z)) * Mathf.Rad2Deg * (dvalue.y < 0f ? 1f : -1f),
+        };
+        mainCamera.transform.eulerAngles = camAngle;
+        mainCamera.transform.position = camPosition;
+        */
     }
 
     public void LPUpdate(int player, int change)
@@ -400,16 +443,19 @@ public class Duel : MonoBehaviour
             {
                 case GameEvent.drawcard:
                     intdata1 = (int)eData.data["drawnum"];
+                    MainView();
                     yield return DrawCard(player, intdata1);
                     break;
                 case GameEvent.discard:
                     cardlistdata = eData.data["discardlist"] as List<DuelCard>;
+                    MainView();
                     yield return CardLeave(cardlistdata, GameEvent.discard);
                     break;
                 case GameEvent.selectcard:
                     cardlistdata = eData.data["targetlist"] as List<DuelCard>;
                     intdata1 = (int)eData.data["num"];
                     intdata2 = (int)eData.data["gameEvent"];
+                    MainView();
                     yield return SelectCard(cardlistdata, intdata1);
                     if (intdata2 == GameEvent.discard)
                     {
@@ -428,24 +474,32 @@ public class Duel : MonoBehaviour
                     duelcarddata = eData.data["handcard"] as DuelCard;
                     yield return SelectMonsterPlace();
                     intdata1 = SelectMonsterMean(eData.gameEvent);
+                    ObserveView(player);
                     NormalSummon(duelcarddata, duelData.placeSelect, intdata1);
+                    yield return new WaitForSeconds(1);
                     break;
                 case GameEvent.specialsummon:
                     duelcarddata = eData.data["monstercard"] as DuelCard;
                     yield return SelectMonsterPlace();
                     intdata1 = SelectMonsterMean(eData.gameEvent);
+                    ObserveView(player);
                     SpecialSummon(duelcarddata, duelData.placeSelect, intdata1);
+                    yield return new WaitForSeconds(1);
                     break;
                 case GameEvent.setmagictrap:
                     duelcarddata = eData.data["magictrapcard"] as DuelCard;
                     intdata1 = (int)eData.data["mean"];
                     yield return SelectMagicTrapPlace();
+                    ObserveView(player);
                     UseMagicTrap(duelcarddata, duelData.placeSelect, intdata1);
+                    yield return new WaitForSeconds(1);
                     break;
                 case GameEvent.changemean:
                     duelcarddata = eData.data["monstercard"] as DuelCard;
                     intdata1 = (int)eData.data["monstermean"];
+                    ObserveView(player);
                     ChangeMean(duelcarddata, intdata1);
+                    yield return new WaitForSeconds(1);
                     break;
                 case GameEvent.afterthat:
                     AllTimePointPass();
@@ -480,6 +534,7 @@ public class Duel : MonoBehaviour
     private IEnumerator ActivateEffect(CardEffect cardEffect)
     {
         DuelCard duelcard = cardEffect.duelcard;
+        ObserveView(duelcard.controller);
         if (!duelcard.type.Contains(CardType.monster))
         {
             if (duelcard.position == CardPosition.handcard)
@@ -604,7 +659,6 @@ public class Duel : MonoBehaviour
             duelData.opWho = duelData.chainEffect[0].duelcard.controller;
             yield return EffectApply(duelData.chainEffect[0]);
             duelData.chainEffect.RemoveAt(0);
-            yield return new WaitForSeconds(1);
         }
         ChainLimitReset();
         yield return MagicTrapLeave();
@@ -616,6 +670,7 @@ public class Duel : MonoBehaviour
         duelData.opWho = duelData.player;
         duelData.duelcase.Clear();
         duelData.effectChain = false;
+        MainView();
     }
 
     private IEnumerator TriggerChain()
@@ -777,6 +832,7 @@ public class Duel : MonoBehaviour
 
     private IEnumerator DuelAI()
     {
+        if (duelAI.done) duelAI.done = false;
         while (!duelAI.done)
         {
             duelAI.Run();
@@ -789,7 +845,7 @@ public class Duel : MonoBehaviour
             }
             yield return WaitEventChain();
         }
-        duelAI.done = false;
+        MainView();
     }
 
     public IEnumerator SelectCard(List<DuelCard> cardlist, int num)
