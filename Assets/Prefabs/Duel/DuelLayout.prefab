@@ -938,6 +938,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6791702179750288359}
+  - component: {fileID: 693861867023239282}
   m_Layer: 5
   m_Name: CardLayoutOps
   m_TagString: Untagged
@@ -970,6 +971,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -20}
   m_SizeDelta: {x: -500, y: 100}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!225 &693861867023239282
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6791702179750288360}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6791702179860909984
 GameObject:
   m_ObjectHideFlags: 0
@@ -2254,6 +2267,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainLayout: {fileID: 8344503884013952710, guid: a78711cb244002d46b00664ad0ae8398,
     type: 3}
+  cardLayoutOwn: {fileID: 6791702181814629270}
+  cardLayoutOps: {fileID: 6791702179750288360}
   LPOwn: {fileID: 6791702180096512850}
   LPOps: {fileID: 6791702179941635201}
   deckOwn: {fileID: 1236780718351047031}
@@ -2288,6 +2303,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6791702181814629269}
+  - component: {fileID: 4225851734808566238}
   m_Layer: 5
   m_Name: CardLayoutOwn
   m_TagString: Untagged
@@ -2320,6 +2336,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 100}
   m_SizeDelta: {x: 0, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &4225851734808566238
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6791702181814629270}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6959245512858716636
 GameObject:
   m_ObjectHideFlags: 0

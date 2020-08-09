@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class Duel : MonoBehaviour
 {
     public GameObject mainLayout;
+    public GameObject cardLayoutOwn;
+    public GameObject cardLayoutOps;
     private Camera mainCamera;
     public Text LPOwn;
     public Text LPOps;
@@ -156,11 +158,13 @@ public class Duel : MonoBehaviour
 
     private void MainView()
     {
-        if (duelAI.done)
-        {
-            mainCamera.transform.position = new Vector3(3f, 2.5f, -1f);
-            mainCamera.transform.eulerAngles = new Vector3(35f, 0f, 0f);
-        }
+        if (!duelAI.done && duelData.eventDate.Count == 0) return;
+        mainCamera.transform.position = new Vector3(3f, 2.5f, -1f);
+        mainCamera.transform.eulerAngles = new Vector3(35f, 0f, 0f);
+        cardLayoutOwn.GetComponent<CanvasGroup>().alpha = 1;
+        cardLayoutOwn.GetComponent<CanvasGroup>().interactable = true;
+        cardLayoutOps.GetComponent<CanvasGroup>().alpha = 1;
+        cardLayoutOps.GetComponent<CanvasGroup>().interactable = true;
     }
 
     private void ObserveView(int player)
@@ -175,6 +179,11 @@ public class Duel : MonoBehaviour
             mainCamera.transform.position = new Vector3(3f, 2.5f, 2f);
             mainCamera.transform.eulerAngles = new Vector3(35f, 0f, 0f);
         }
+        // 隐藏手卡布局
+        cardLayoutOwn.GetComponent<CanvasGroup>().alpha = 0;
+        cardLayoutOwn.GetComponent<CanvasGroup>().interactable = false;
+        cardLayoutOps.GetComponent<CanvasGroup>().alpha = 0;
+        cardLayoutOps.GetComponent<CanvasGroup>().interactable = false;
         /*
         // 特写视角
         Vector3 camPosition = new Vector3
@@ -292,12 +301,14 @@ public class Duel : MonoBehaviour
 
     private void PhaseButtonShow()
     {
-        if (duelData.duelPhase == GamePhase.main1 || duelData.duelPhase == GamePhase.battle)
+        if ((duelData.duelPhase == GamePhase.main1 || duelData.duelPhase == GamePhase.battle) &&
+            duelAI.done && duelData.eventDate.Count == 0 && !duelData.effectChain)
             battleButton.SetActive(true);
         else
             battleButton.SetActive(false);
-        if (duelData.duelPhase == GamePhase.main1 || duelData.duelPhase == GamePhase.battle ||
-            duelData.duelPhase == GamePhase.main2)
+        if ((duelData.duelPhase == GamePhase.main1 || duelData.duelPhase == GamePhase.battle ||
+            duelData.duelPhase == GamePhase.main2) &&
+            duelAI.done && duelData.eventDate.Count == 0 && !duelData.effectChain)
             endTurnButton.SetActive(true);
         else
             endTurnButton.SetActive(false);
