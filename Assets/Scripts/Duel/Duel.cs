@@ -502,7 +502,7 @@ public class Duel : MonoBehaviour
                     intdata1 = (int)eData.data["mean"];
                     yield return SelectMagicTrapPlace();
                     ObserveView(player);
-                    UseMagicTrap(duelcarddata, duelData.placeSelect, intdata1);
+                    yield return UseMagicTrap(duelcarddata, duelData.placeSelect, intdata1, GameEvent.setmagictrap);
                     yield return new WaitForSeconds(1);
                     break;
                 case GameEvent.changemean:
@@ -551,8 +551,12 @@ public class Duel : MonoBehaviour
             if (duelcard.position == CardPosition.handcard)
             {
                 yield return SelectMagicTrapPlace();
+                yield return UseMagicTrap(duelcard, duelData.placeSelect, CardMean.faceupmgt, GameEvent.activatecard);
             }
-            UseMagicTrap(duelcard, duelData.placeSelect, CardMean.faceupmgt);
+            if (duelcard.position == CardPosition.magictrap && duelcard.mean == CardMean.facedownmgt)
+            {
+                yield return ActivateCoverCard(duelcard, GameEvent.activatecard);
+            }
         }
         if (cardEffect.cost) yield return PayCost(cardEffect);
         ActivateTimePointPass();
@@ -1018,27 +1022,6 @@ public class Duel : MonoBehaviour
         else monserOps.ShowMonsterCard(duelcard);
     }
 
-    private void UseMagicTrap(DuelCard duelcard, int place, int mean)
-    {
-        int player = duelcard.controller;
-        if (mean == CardMean.facedownmgt)
-            Debug.Log("玩家" + player + " 盖放 " + duelcard.name);
-        if (duelcard.position == CardPosition.handcard)
-        {
-            if (IsPlayerOwn(player)) handOwn.RemoveHandCard(duelcard.index);
-            else handOps.RemoveHandCard(duelcard.index);
-            duelData.handcard[player].RemoveAt(duelcard.index);
-            duelData.SortCard(duelData.handcard[player]);
-        }
-        duelcard.position = CardPosition.magictrap;
-        duelcard.index = place;
-        duelcard.mean = mean;
-        duelcard.appearturn = duelData.turnNum;
-        duelData.magictrap[player][place] = duelcard;
-        if (IsPlayerOwn(player)) magictrapOwn.ShowMagicTrapCard(duelcard);
-        else magictrapOps.ShowMagicTrapCard(duelcard);
-    }
-
     private void ChangeMean(DuelCard duelcard, int mean)
     {
         if (mean != 0) duelcard.mean = mean;
@@ -1052,6 +1035,42 @@ public class Duel : MonoBehaviour
         duelcard.meanchange++;
         if (IsPlayerOwn(duelcard.controller)) monserOwn.ShowMonsterCard(duelcard);
         else monserOps.ShowMonsterCard(duelcard);
+    }
+
+    private IEnumerator UseMagicTrap(DuelCard duelcard, int place, int mean, int way)
+    {
+        int player = duelcard.controller;
+        if (mean == CardMean.facedownmgt)
+            Debug.Log("玩家" + player + " 盖放 " + duelcard.name);
+        DuelCase duelcase = new DuelCase(way);
+        duelcase.old.Add(duelcard.Clone());
+        if (duelcard.position == CardPosition.handcard)
+        {
+            if (IsPlayerOwn(player)) handOwn.RemoveHandCard(duelcard.index);
+            else handOps.RemoveHandCard(duelcard.index);
+            duelData.handcard[player].RemoveAt(duelcard.index);
+            duelData.SortCard(duelData.handcard[player]);
+        }
+        duelcard.position = CardPosition.magictrap;
+        duelcard.index = place;
+        duelcard.mean = mean;
+        duelcard.appearturn = duelData.turnNum;
+        duelData.magictrap[player][place] = duelcard;
+        if (IsPlayerOwn(player)) yield return magictrapOwn.ShowMagicTrapCard(duelcard);
+        else yield return magictrapOps.ShowMagicTrapCard(duelcard);
+        duelcase.card.Add(duelcard);
+        duelData.duelcase.Add(duelcase);
+    }
+
+    private IEnumerator ActivateCoverCard(DuelCard duelcard, int way)
+    {
+        int player = duelcard.controller;
+        DuelCase duelcase = new DuelCase(way);
+        duelcard.mean = CardMean.faceupmgt;
+        if (IsPlayerOwn(player)) yield return magictrapOwn.ShowCoverCard(duelcard);
+        else yield return magictrapOps.ShowCoverCard(duelcard);
+        duelcase.card.Add(duelcard);
+        duelData.duelcase.Add(duelcase);
     }
 
     private IEnumerator CardLeave(DuelCard duelcard, int way)

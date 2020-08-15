@@ -30,28 +30,49 @@ public class MagicTrapOwn : MonoBehaviour
         }
     }
 
-    public void ShowMagicTrapCard(DuelCard duelcard)
+    public IEnumerator ShowMagicTrapCard(DuelCard duelcard)
     {
-        Transform montrans = magictrapArea.GetChild(duelcard.index);
+        Transform mgttrans = magictrapArea.GetChild(duelcard.index);
         Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.id, false);
         if (duelcard.mean == CardMean.faceupmgt)
         {//表侧表示
-            montrans.rotation = Quaternion.Euler(270, 0, 0);
+            mgttrans.localPosition = new Vector3(duelcard.index, 0.43f, -0.43f);
+            mgttrans.rotation = Quaternion.Euler(0, 0, 180);
         }
         if (duelcard.mean == CardMean.facedownmgt)
         {//里侧表示
-            montrans.rotation = Quaternion.Euler(90, 180, 0);
+            mgttrans.rotation = Quaternion.Euler(90, 180, 0);
         }
         if (sprite == null)
-            montrans.GetComponent<Renderer>().material.mainTexture = null;
+            mgttrans.GetComponent<Renderer>().material.mainTexture = null;
         else
-            montrans.GetComponent<Renderer>().material.mainTexture = sprite.texture;
-        montrans.gameObject.SetActive(true);
+            mgttrans.GetComponent<Renderer>().material.mainTexture = sprite.texture;
+        mgttrans.gameObject.SetActive(true);
+        yield return null;
+    }
+
+    public IEnumerator ShowCoverCard(DuelCard duelcard)
+    {
+        Transform mgttrans = magictrapArea.GetChild(duelcard.index);
+        float deltaTime = 0;
+        Vector3 position = mgttrans.position;
+        position.z -= 0.43f;
+        while (deltaTime < 1f)
+        {
+            if ((deltaTime + Time.deltaTime) < 1f)
+                mgttrans.RotateAround(position, new Vector3(1, 0, 0), -90f * Time.deltaTime);
+            else
+                mgttrans.RotateAround(position, new Vector3(1, 0, 0), -90f * (1f - deltaTime));
+            yield return null;
+            deltaTime += Time.deltaTime;
+        }
     }
 
     public void HideMagicTrapCard(DuelCard duelcard)
     {
-        Transform montrans = magictrapArea.GetChild(duelcard.index);
-        montrans.gameObject.SetActive(false);
+        Transform mgttrans = magictrapArea.GetChild(duelcard.index);
+        mgttrans.gameObject.SetActive(false);
+        mgttrans.localPosition = new Vector3(duelcard.index, 0, 0);
+        mgttrans.rotation = Quaternion.Euler(270, 0, 0);
     }
 }
