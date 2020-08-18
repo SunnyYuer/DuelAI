@@ -370,23 +370,22 @@ public class DuelEvent : MonoBehaviour
     /// <returns></returns>
     public bool InCase(object targetcard, int gameEvent)
     {
+        List<DuelCard> tcards = new List<DuelCard>();
+        if (targetcard is DuelCard)
+            tcards.Add(targetcard as DuelCard);
+        else
+            tcards.AddRange(duel.GetTargetCard(targetcard as TargetCard));
         foreach (DuelCase duelcase in duelData.duelcase)
         {
             if (duelcase.gameEvent == gameEvent)
             {
-                DuelCard tcard = null;
-                if (targetcard is DuelCard)
-                {
-                    tcard = targetcard as DuelCard;
-                }
-                else
-                { 
-                }
                 switch (gameEvent)
                 {
                     case GameEvent.battledestroy:
-                        if (duelcase.card.Contains(tcard))
-                            return true;
+                        foreach (DuelCard duelcard in duelcase.card)
+                        {
+                            if (tcards.Contains(duelcard)) return true;
+                        }
                         break;
                     default:
                         break;
@@ -404,23 +403,23 @@ public class DuelEvent : MonoBehaviour
     /// <returns></returns>
     public bool InTimePoint(object targetcard, int gameEvent)
     {
+        List<DuelCard> tcards = new List<DuelCard>();
+        if (targetcard is DuelCard)
+            tcards.Add(targetcard as DuelCard);
+        else
+            tcards.AddRange(duel.GetTargetCard(targetcard as TargetCard));
         foreach (DuelCase duelcase in duelData.duelcase)
         {
             if (duelcase.timepoint == 0 && duelcase.gameEvent == gameEvent)
             {
-                DuelCard tcard = null;
-                if (targetcard is DuelCard)
-                {
-                    tcard = targetcard as DuelCard;
-                }
-                else
-                {
-                }
                 switch (gameEvent)
                 {
                     case GameEvent.drawcard:
-                        if (duelcase.card.Contains(tcard))
-                            return true;
+                    case GameEvent.activatecard:
+                        foreach (DuelCard duelcard in duelcase.card)
+                        {
+                            if (tcards.Contains(duelcard)) return true;
+                        }
                         break;
                     default:
                         break;

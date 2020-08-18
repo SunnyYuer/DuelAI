@@ -17,12 +17,13 @@ public class GameEventWrap
 		L.RegConstant("specialsummon", 6);
 		L.RegConstant("setmagictrap", 7);
 		L.RegConstant("changemean", 8);
-		L.RegConstant("activateeffect", 9);
-		L.RegConstant("activateover", 10);
-		L.RegConstant("battle", 11);
-		L.RegConstant("battledestroy", 12);
-		L.RegConstant("effectdestroy", 13);
-		L.RegConstant("afterthat", 14);
+		L.RegConstant("activatecard", 9);
+		L.RegConstant("activateeffect", 10);
+		L.RegConstant("activateover", 11);
+		L.RegConstant("battle", 12);
+		L.RegConstant("battledestroy", 13);
+		L.RegConstant("effectdestroy", 14);
+		L.RegConstant("afterthat", 15);
 		L.EndClass();
 	}
 

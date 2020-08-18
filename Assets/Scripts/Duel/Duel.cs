@@ -722,10 +722,13 @@ public class Duel : MonoBehaviour
         duelData.activatableEffect.Clear();
         if (duelData.chainEffect.Count > 0)
             duelData.opWho = GetOppPlayer(duelData.opWho);
+        else
+            duelData.opWho = duelData.player;
     }
 
     public int ScanEffect(int player)
     {
+        duelData.opWho = player;
         duelEvent.precheck = true;
         foreach (DuelCard duelcard in duelData.handcard[player])
         {
@@ -1381,9 +1384,7 @@ public class Duel : MonoBehaviour
     public List<DuelCard> GetTargetCard(TargetCard targetcard)
     {
         List<DuelCard> targetlist = new List<DuelCard>();
-        int player = duelData.opWho;
-        if (targetcard.side == PlayerSide.ops)
-            player = GetOppPlayer(duelData.opWho);
+        int player = targetcard.side == PlayerSide.own ? duelData.opWho : GetOppPlayer(duelData.opWho);
         targetlist.AddRange(duelData.GetAllCards(player));
         if (targetcard.side == PlayerSide.both)
             targetlist.AddRange(duelData.GetAllCards(GetOppPlayer(player)));
