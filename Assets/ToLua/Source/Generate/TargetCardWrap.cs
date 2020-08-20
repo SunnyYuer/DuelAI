@@ -141,7 +141,7 @@ public class TargetCardWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			TargetCard obj = (TargetCard)o;
-			System.Collections.Generic.Dictionary<int,object> ret = obj.target;
+			System.Collections.Generic.Dictionary<int,System.Collections.Generic.List<object>> ret = obj.target;
 			ToLua.PushSealed(L, ret);
 			return 1;
 		}
@@ -198,7 +198,7 @@ public class TargetCardWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			TargetCard obj = (TargetCard)o;
-			System.Collections.Generic.Dictionary<int,object> arg0 = (System.Collections.Generic.Dictionary<int,object>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.Dictionary<int,object>));
+			System.Collections.Generic.Dictionary<int,System.Collections.Generic.List<object>> arg0 = (System.Collections.Generic.Dictionary<int,System.Collections.Generic.List<object>>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.Dictionary<int,System.Collections.Generic.List<object>>));
 			obj.target = arg0;
 			return 0;
 		}

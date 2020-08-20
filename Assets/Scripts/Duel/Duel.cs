@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -1403,14 +1403,22 @@ public class Duel : MonoBehaviour
         if (targetcard.position.Count != 0) targetlist = positionlist;
 
         List<DuelCard> tlist = new List<DuelCard>();
-        foreach (KeyValuePair<int, object> kv in targetcard.target)
+        foreach (KeyValuePair<int, List<object>> kv in targetcard.target)
         {
-            foreach (DuelCard duelcard in targetlist)
+            if (kv.Key == GameCard.name)
             {
-                if (kv.Key == GameCard.name)
+                List<string> values = ConvertUtil.ToList<string>(kv.Value);
+                foreach (DuelCard duelcard in targetlist)
                 {
-                    if (duelcard.name.Equals(kv.Value))
-                        tlist.Add(duelcard);
+                    if (values.Contains(duelcard.name)) tlist.Add(duelcard);
+                }
+            }
+            if (kv.Key == GameCard.type)
+            {
+                List<string> values = ConvertUtil.ToList<string>(kv.Value);
+                foreach (DuelCard duelcard in targetlist)
+                {
+                    if (values.Contains(duelcard.type)) tlist.Add(duelcard);
                 }
             }
         }

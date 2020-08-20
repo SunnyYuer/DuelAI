@@ -194,12 +194,12 @@ public class TargetCard
 {
     public int side;
     public List<int> position;
-    public Dictionary<int, object> target;
+    public Dictionary<int, List<object>> target;
 
     public TargetCard()
     {
         position = new List<int>();
-        target = new Dictionary<int, object>();
+        target = new Dictionary<int, List<object>>();
     }
 
     public void SetSide(int side)
@@ -214,7 +214,16 @@ public class TargetCard
 
     public void SetTarget(int key, object value)
     {
-        target.Add(key, value);
+        if (target.ContainsKey(key))
+        {
+            target[key].Add(value);
+        }
+        else
+        {
+            List<object> values = new List<object>();
+            values.Add(value);
+            target.Add(key, values);
+        }
     }
 }
 
