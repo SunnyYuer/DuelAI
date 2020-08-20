@@ -97,7 +97,7 @@ public class Main : MonoBehaviour
         if (!Directory.Exists(unZipDir)) Directory.CreateDirectory(unZipDir);
         saveZipVersion = PlayerPrefs.GetInt(rule+"version", 0);
 #endif
-        saveVersionTime = TimeTool.GetDateTime(PlayerPrefs.GetInt(rule+"versionTime", 0));
+        saveVersionTime = TimeUtil.GetDateTime(PlayerPrefs.GetInt(rule+"versionTime", 0));
         Debug.Log("资源版本时间："+saveVersionTime);
         Instantiate(Resources.Load("Prefabs/ProgressBackground"), GameObject.Find("Canvas").transform);
         Thread update = new Thread(UpdateAssets);
@@ -166,7 +166,7 @@ public class Main : MonoBehaviour
         {
             if (zipEntry.Name.Equals(rule + "/version.txt"))
             {
-                versionTextTime = TimeTool.GetUnixTimeStamp(zipEntry.DateTime);
+                versionTextTime = TimeUtil.GetUnixTimeStamp(zipEntry.DateTime);
                 //Debug.Log(versionTextTime);
             }
             string fileName = unZipDir + "/" + zipEntry.Name;
