@@ -1418,7 +1418,14 @@ public class Duel : MonoBehaviour
                 List<string> values = ConvertUtil.ToList<string>(kv.Value);
                 foreach (DuelCard duelcard in targetlist)
                 {
-                    if (values.Contains(duelcard.type)) tlist.Add(duelcard);
+                    foreach (string value in values)
+                    {
+                        if (duelcard.type.Contains(value))
+                        {
+                            tlist.Add(duelcard);
+                            break;
+                        }
+                    }
                 }
             }
         }
