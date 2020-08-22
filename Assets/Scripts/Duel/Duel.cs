@@ -546,22 +546,25 @@ public class Duel : MonoBehaviour
     {
         DuelCard duelcard = cardEffect.duelcard;
         ObserveView(duelcard.controller);
+        ActivateTimePointPass();
+        int way = GameEvent.activateeffect;
         if (!duelcard.type.Contains(CardType.monster))
         {
             if (duelcard.position == CardPosition.handcard)
             {
                 yield return SelectMagicTrapPlace();
                 yield return UseMagicTrap(duelcard, duelData.placeSelect, CardMean.faceupmgt, GameEvent.activatecard);
+                way = GameEvent.activatecard;
             }
             if (duelcard.position == CardPosition.magictrap && duelcard.mean == CardMean.facedownmgt)
             {
-                yield return ActivateCoverCard(duelcard, GameEvent.activatecard);
+                yield return ActivateCoverCard(duelcard);
+                way = GameEvent.activatecard;
             }
         }
         if (cardEffect.cost) yield return PayCost(cardEffect);
-        ActivateTimePointPass();
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 发动");
-        DuelCase duelcase = new DuelCase(GameEvent.activateeffect);
+        DuelCase duelcase = new DuelCase(way);
         duelcase.card.Add(duelcard);
         duelData.duelcase.Add(duelcase);
         if (cardEffect.limitType > 0) LimitCount(cardEffect);
@@ -1062,18 +1065,16 @@ public class Duel : MonoBehaviour
         if (IsPlayerOwn(player)) yield return magictrapOwn.ShowMagicTrapCard(duelcard);
         else yield return magictrapOps.ShowMagicTrapCard(duelcard);
         duelcase.card.Add(duelcard);
-        duelData.duelcase.Add(duelcase);
+        if (way != GameEvent.activatecard)
+            duelData.duelcase.Add(duelcase);
     }
 
-    private IEnumerator ActivateCoverCard(DuelCard duelcard, int way)
+    private IEnumerator ActivateCoverCard(DuelCard duelcard)
     {
         int player = duelcard.controller;
-        DuelCase duelcase = new DuelCase(way);
         duelcard.mean = CardMean.faceupmgt;
         if (IsPlayerOwn(player)) yield return magictrapOwn.ShowCoverCard(duelcard);
         else yield return magictrapOps.ShowCoverCard(duelcard);
-        duelcase.card.Add(duelcard);
-        duelData.duelcase.Add(duelcase);
     }
 
     private IEnumerator CardLeave(DuelCard duelcard, int way)
@@ -1438,12 +1439,13 @@ public class Duel : MonoBehaviour
     /* 时点 */
     private void ActivateTimePointPass()
     { // 上一个发动时点过时
-        int count = duelData.duelcase.Count;
+        List<DuelCase> duelcase = duelData.duelcase;
+        int count = duelcase.Count;
         for (int i = count - 1; i >= 0; i--)
         {
-            if (duelData.duelcase[i].gameEvent == GameEvent.activateeffect)
+            if (duelcase[i].gameEvent == GameEvent.activateeffect || duelcase[i].gameEvent == GameEvent.activatecard)
             {
-                duelData.duelcase[i].timepoint = 1;
+                duelcase[i].timepoint = 1;
                 break;
             }
         }
