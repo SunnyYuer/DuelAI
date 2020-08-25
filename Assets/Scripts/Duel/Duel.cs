@@ -1173,7 +1173,7 @@ public class Duel : MonoBehaviour
     }
 
     public List<int> GetPlayerOrder()
-    {
+    { // 从回合玩家开始获取玩家顺序
         List<int> order = new List<int>();
         int player = duelData.player;
         for (int i = 0; i < duelData.playerNum; i++)
@@ -1182,19 +1182,6 @@ public class Duel : MonoBehaviour
             player = GetOppPlayer(player);
         }
         return order;
-    }
-
-    public List<int> GetCanNormalSummon()
-    { // 获取手卡中可以通常召唤的怪兽
-        int player = duelData.opWho;
-        List<int> monster = new List<int>();
-        for (int i = 0; i < duelData.handcard[player].Count; i++)
-        {
-            DuelCard duelcard = duelData.handcard[player][i];
-            if (NormalSummonCheck(duelcard))
-                monster.Add(i);
-        }
-        return monster;
     }
 
     public List<int> GetMonsterPlace()
@@ -1215,6 +1202,42 @@ public class Duel : MonoBehaviour
     { // 检查是否有足够召唤怪兽的位置
         List<int> place = GetMonsterPlace();
         if (place.Count == 0) return false;
+        return true;
+    }
+
+    public bool NormalSummonCheck(DuelCard duelcard)
+    { // 检查能否通常召唤
+        if (duelData.normalsummon[duelcard.controller] > 0) return false;
+        if (!MonsterPlaceCheck()) return false;
+        if (!duelcard.type.Contains(CardType.monster)) return false;
+        if (duelcard.level > 4) return false;
+        return true;
+    }
+
+    public bool SpecialSummonCheck()
+    { // 检查能否特殊召唤
+        if (!MonsterPlaceCheck()) return false;
+        return true;
+    }
+
+    public List<int> GetCanNormalSummon()
+    { // 获取手卡中可以通常召唤的怪兽
+        int player = duelData.opWho;
+        List<int> monster = new List<int>();
+        for (int i = 0; i < duelData.handcard[player].Count; i++)
+        {
+            DuelCard duelcard = duelData.handcard[player][i];
+            if (NormalSummonCheck(duelcard))
+                monster.Add(i);
+        }
+        return monster;
+    }
+
+    public bool ChangeMeanCheck(DuelCard duelcard)
+    { // 检查怪兽能否主动变更表示形式
+        if (duelcard.appearturn == duelData.turnNum) return false;
+        if (duelcard.meanchange > 0) return false;
+        if (duelcard.battledeclare > 0) return false;
         return true;
     }
 
@@ -1239,21 +1262,6 @@ public class Duel : MonoBehaviour
         return true;
     }
 
-    public bool NormalSummonCheck(DuelCard duelcard)
-    { // 检查能否通常召唤
-        if (duelData.normalsummon[duelcard.controller] > 0) return false;
-        if (!MonsterPlaceCheck()) return false;
-        if (!duelcard.type.Contains(CardType.monster)) return false;
-        if (duelcard.level > 4) return false;
-        return true;
-    }
-
-    public bool SpecialSummonCheck()
-    { // 检查能否特殊召唤
-        if (!MonsterPlaceCheck()) return false;
-        return true;
-    }
-
     public bool UseMagicTrapCheck(DuelCard duelcard)
     { // 检查能否从手卡使用魔法陷阱
         if (!MagicTrapPlaceCheck()) return false;
@@ -1261,11 +1269,9 @@ public class Duel : MonoBehaviour
         return true;
     }
 
-    public bool ChangeMeanCheck(DuelCard duelcard)
-    { // 检查怪兽能否变主动更表示形式
+    public bool ActivateTrapCheck(DuelCard duelcard)
+    { // 检查能否发动陷阱
         if (duelcard.appearturn == duelData.turnNum) return false;
-        if (duelcard.meanchange > 0) return false;
-        if (duelcard.battledeclare > 0) return false;
         return true;
     }
 

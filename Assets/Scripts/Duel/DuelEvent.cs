@@ -65,6 +65,10 @@ public class DuelEvent : MonoBehaviour
         { // 从手卡发动的怪兽的诱发效果，尽管咒文速度是1，实际处理时当作2速
             speed = 2;
         }
+        if (thiscard.type.Contains(TrapType.counter))
+        { // 反击陷阱为3速
+            speed = 3;
+        }
         cardEffect = new CardEffect
         {
             duelcard = thiscard,

@@ -87,6 +87,28 @@ function c72892473effect1()
     end
 end
 
+function c77538567()
+    if(c77538567condition1()) then
+        print("1111111111111判断正确")
+        Duel:SetCanTriggerEffect(1)
+    end
+end
+
+function c77538567condition1()
+    local targetcard = TargetCard.New()
+    targetcard:SetSide(PlayerSide.ops)
+    targetcard:SetTarget(GameCard.type, "魔法")
+    targetcard:SetTarget(GameCard.type, "陷阱")
+    if(Duel:InTimePoint(targetcard, GameEvent.activatecard)) then
+        return true
+    end
+    return false
+end
+
+function c77538567effect1()
+    print("1111111111111发动效果")
+end
+
 function c54250060()
 end
 
