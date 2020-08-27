@@ -117,6 +117,7 @@ public class DuelDataManager
 /// </summary>
 public class DuelCard : Card
 {
+    public List<CardEffect> cardeffect;
     public int owner; // 原本持有者
     public int controller; // 控制者
     public int position;
@@ -140,11 +141,42 @@ public class DuelCard : Card
         atk = card.atk;
         def = card.def;
         describe = card.describe;
+        code = card.code;
     }
 
     public DuelCard Clone()
     {
         return MemberwiseClone() as DuelCard;
+    }
+}
+
+/// <summary>
+/// 卡牌上的效果
+/// </summary>
+public class CardEffect
+{
+    public int effect;
+    public int effectType;
+    public bool condition;
+    public bool cost;
+    public int limitRange;
+    public int limitType;
+    public int limitCount;
+
+    public CardEffect(int effect, int effectType)
+    {
+        this.effect = effect;
+        this.effectType = effectType;
+    }
+
+    public void SetCondition()
+    {
+        condition = true;
+    }
+
+    public void SetCost()
+    {
+        cost = true;
     }
 }
 

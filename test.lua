@@ -6,6 +6,11 @@ cost = true
 testcard = "71703785"
 
 function c71703785()
+    local effect1 = CardEffect.New(1, EffectType.cantrigger)
+    effect1:SetCondition()
+    effect1:SetCost()
+    Duel.thiscard.cardeffect:Add(effect1)
+    --[[
     if(c71703785condition1()) then
         Duel:SetCanTriggerEffect(1, cost)
     end
@@ -16,6 +21,7 @@ function c71703785()
     if(c71703785condition3()) then
         Duel:SetCanTriggerEffect(3)
     end
+    ]]
 end
 
 function c71703785condition1()
@@ -72,7 +78,7 @@ function c71703785effect3()
 end
 
 function c72892473()
-    Duel:SetStartupEffect(1)
+    --Duel:SetStartupEffect(1)
 end
  
 function c72892473effect1()
@@ -88,10 +94,12 @@ function c72892473effect1()
 end
 
 function c77538567()
+    --[[
     if(c77538567condition1()) then
         print("1111111111111判断正确")
         Duel:SetCanTriggerEffect(1)
     end
+    ]]
 end
 
 function c77538567condition1()
@@ -107,31 +115,4 @@ end
 
 function c77538567effect1()
     print("1111111111111发动效果")
-end
-
-function c54250060()
-end
-
-function c92510265()
-end
-
-function c19508728()
-end
-
-function c84877802()
-end
-
-function c94004268()
-end
-
-function c54749427()
-end
-
-function c20501450()
-end
-
-function c46986414()
-end
-
-function c48680970()
 end

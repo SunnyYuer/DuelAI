@@ -62,6 +62,7 @@ public static class CustomSettings
         _GT(typeof(DuelDataManager)),
         _GT(typeof(DuelCard)),
         _GT(typeof(Card)),
+        _GT(typeof(CardEffect)),
         _GT(typeof(DuelBuff)),
         _GT(typeof(TargetCard)),
 

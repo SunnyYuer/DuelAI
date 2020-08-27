@@ -57,6 +57,7 @@ public class Duel : MonoBehaviour
         duelEvent.duelData = duelData;
         luaCode.SetCode(duelData.cardData.allcode);
         luaCode.SetTestCard();
+        ReadCardEffect();
         //放置卡组
         deckOwn.DeckUpdate(0);
         deckOps.DeckUpdate(1);
@@ -128,6 +129,7 @@ public class Duel : MonoBehaviour
                 if (!cardDic.ContainsKey(card)) continue;
                 DuelCard duelcard = new DuelCard
                 {
+                    cardeffect = new List<CardEffect>(),
                     owner = player,
                     controller = player,
                     position = CardPosition.deck,
@@ -143,6 +145,7 @@ public class Duel : MonoBehaviour
                 if (!cardDic.ContainsKey(card)) continue;
                 DuelCard duelcard = new DuelCard
                 {
+                    cardeffect = new List<CardEffect>(),
                     owner = player,
                     controller = player,
                     position = CardPosition.extra,
@@ -152,6 +155,28 @@ public class Duel : MonoBehaviour
                 };
                 duelcard.SetCard(cardDic[card]);
                 duelData.extra[player].Add(duelcard);
+            }
+        }
+    }
+
+    private void LuaFucRun(DuelCard duelcard, string affix, int effect)
+    {
+        if (duelcard.code.Equals("") && !luaCode.testcard.Contains(duelcard.name)) return;
+        duelEvent.SetThisCard(duelcard);
+        luaCode.Run("c" + duelcard.id + affix + (effect == 0 ? "" : effect.ToString()));
+    }
+
+    private void ReadCardEffect()
+    {
+        for (int i = 0; i < duelData.playerNum; i++)
+        {
+            foreach (DuelCard duelcard in duelData.deck[i])
+            {
+                LuaFucRun(duelcard, "", 0);
+            }
+            foreach (DuelCard duelcard in duelData.extra[i])
+            {
+                LuaFucRun(duelcard, "", 0);
             }
         }
     }
@@ -576,8 +601,7 @@ public class Duel : MonoBehaviour
     {
         DuelCard duelcard = cardEffect.duelcard;
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 支付代价");
-        duelEvent.SetThisCard(duelcard);
-        luaCode.Run(luaCode.CostFunStr(duelcard, cardEffect.effect));
+        LuaFucRun(duelcard, "cost", cardEffect.effect);
         yield return WaitGameEvent();
         LastTimePointPass();
     }
@@ -586,8 +610,7 @@ public class Duel : MonoBehaviour
     {
         DuelCard duelcard = cardEffect.duelcard;
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 生效");
-        duelEvent.SetThisCard(duelcard);
-        luaCode.Run(luaCode.EffectFunStr(duelcard, cardEffect.effect));
+        LuaFucRun(duelcard, "effect", cardEffect.effect);
         yield return WaitGameEvent();
     }
 
@@ -595,8 +618,7 @@ public class Duel : MonoBehaviour
     { // 让buff生效
         DuelCard duelcard = buff.fromcard;
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + buff.effect + " 生效");
-        duelEvent.SetThisCard(duelcard);
-        luaCode.Run(luaCode.EffectFunStr(duelcard, buff.effect));
+        LuaFucRun(duelcard, "effect", buff.effect);
     }
 
     private IEnumerator MagicTrapLeave()
@@ -735,29 +757,25 @@ public class Duel : MonoBehaviour
         duelEvent.precheck = true;
         foreach (DuelCard duelcard in duelData.handcard[player])
         {
-            duelEvent.SetThisCard(duelcard);
-            luaCode.Run("c" + duelcard.id);
+            LuaFucRun(duelcard, "", 0);
         }
         foreach (DuelCard duelcard in duelData.monster[player])
         {
             if (duelcard != null)
             {
-                duelEvent.SetThisCard(duelcard);
-                luaCode.Run("c" + duelcard.id);
+                LuaFucRun(duelcard, "", 0);
             }
         }
         foreach (DuelCard duelcard in duelData.magictrap[player])
         {
             if (duelcard != null)
             {
-                duelEvent.SetThisCard(duelcard);
-                luaCode.Run("c" + duelcard.id);
+                LuaFucRun(duelcard, "", 0);
             }
         }
         foreach (DuelCard duelcard in duelData.grave[player])
         {
-            duelEvent.SetThisCard(duelcard);
-            luaCode.Run("c" + duelcard.id);
+            LuaFucRun(duelcard, "", 0);
         }
         duelEvent.precheck = false;
         return duelData.activatableEffect.Count;
@@ -1315,8 +1333,8 @@ public class Duel : MonoBehaviour
         {
             if(CardActivated(duelcard, cardEffect.effect)) return false;
         }
-        if (cardEffect.cost) luaCode.Run(luaCode.CostFunStr(duelcard, cardEffect.effect));
-        luaCode.Run(luaCode.EffectFunStr(duelcard, cardEffect.effect));
+        if (cardEffect.cost) LuaFucRun(duelcard, "cost", cardEffect.effect);
+        LuaFucRun(duelcard, "effect", cardEffect.effect);
         return true;
     }
 

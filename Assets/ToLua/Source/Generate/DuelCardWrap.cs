@@ -11,6 +11,7 @@ public class DuelCardWrap
 		L.RegFunction("Clone", Clone);
 		L.RegFunction("New", _CreateDuelCard);
 		L.RegFunction("__tostring", ToLua.op_ToString);
+		L.RegVar("cardeffect", get_cardeffect, set_cardeffect);
 		L.RegVar("owner", get_owner, set_owner);
 		L.RegVar("controller", get_controller, set_controller);
 		L.RegVar("position", get_position, set_position);
@@ -78,6 +79,25 @@ public class DuelCardWrap
 		catch (Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_cardeffect(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelCard obj = (DuelCard)o;
+			System.Collections.Generic.List<CardEffect> ret = obj.cardeffect;
+			ToLua.PushSealed(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cardeffect on a nil value");
 		}
 	}
 
@@ -249,6 +269,25 @@ public class DuelCardWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index battledeclare on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_cardeffect(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelCard obj = (DuelCard)o;
+			System.Collections.Generic.List<CardEffect> arg0 = (System.Collections.Generic.List<CardEffect>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<CardEffect>));
+			obj.cardeffect = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cardeffect on a nil value");
 		}
 	}
 
