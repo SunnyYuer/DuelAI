@@ -561,7 +561,7 @@ public class DuelEventWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelEvent obj = (DuelEvent)o;
-			CardEffect ret = obj.cardEffect;
+			DuelEffect ret = obj.cardEffect;
 			ToLua.PushObject(L, ret);
 			return 1;
 		}
@@ -637,7 +637,7 @@ public class DuelEventWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelEvent obj = (DuelEvent)o;
-			CardEffect arg0 = (CardEffect)ToLua.CheckObject<CardEffect>(L, 2);
+			DuelEffect arg0 = (DuelEffect)ToLua.CheckObject<DuelEffect>(L, 2);
 			obj.cardEffect = arg0;
 			return 0;
 		}

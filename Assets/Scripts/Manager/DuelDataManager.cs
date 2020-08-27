@@ -32,12 +32,12 @@ public class DuelDataManager
     public List<Limit>[] limit;
 
     // 效果连锁
-    public List<CardEffect> chainEffect;
-    public List<CardEffect> waitEffect; // 不入连锁，等待连锁完后要发动的效果
+    public List<DuelEffect> chainEffect;
+    public List<DuelEffect> waitEffect; // 不入连锁，等待连锁完后要发动的效果
     public bool effectChain; // 是否正在连锁
 
     // 临时保存
-    public List<CardEffect> activatableEffect;
+    public List<DuelEffect> activatableEffect;
     public int placeSelect; // 选择卡牌放置的位置
 
     public DuelDataManager(int peopleNum)
@@ -50,9 +50,9 @@ public class DuelDataManager
         duelbuff = new List<DuelBuff>();
         eventDate = new List<EventData>();
         record = new List<DuelRecord>();
-        chainEffect = new List<CardEffect>();
-        waitEffect = new List<CardEffect>();
-        activatableEffect = new List<CardEffect>();
+        chainEffect = new List<DuelEffect>();
+        waitEffect = new List<DuelEffect>();
+        activatableEffect = new List<DuelEffect>();
         turnNum = 0;
         effectChain = false;
     }
@@ -240,7 +240,7 @@ public class EventData
 /// <summary>
 /// 可发动的卡牌效果
 /// </summary>
-public class CardEffect
+public class DuelEffect
 {
     public DuelCard duelcard;
     public int effect;
@@ -256,7 +256,7 @@ public class CardEffect
 public class Limit
 {
     public int range;
-    public CardEffect cardEffect;
+    public DuelEffect cardEffect;
     public int type;
     public int max;
     public int count;

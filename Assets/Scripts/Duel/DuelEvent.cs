@@ -10,7 +10,7 @@ public class DuelEvent : MonoBehaviour
     private Duel duel;
     public DuelDataManager duelData;
     public DuelCard thiscard; // 当前卡
-    public CardEffect cardEffect; // 当前检查的效果
+    public DuelEffect cardEffect; // 当前检查的效果
     public bool precheck; // 发动效果和支付代价前预先检查能否执行
     private bool activatable; // 卡牌能否发动
 
@@ -43,7 +43,7 @@ public class DuelEvent : MonoBehaviour
     /// <param name="cost"></param>
     public void SetStartupEffect(int effect, bool cost = false)
     {
-        cardEffect = new CardEffect
+        cardEffect = new DuelEffect
         {
             duelcard = thiscard,
             effect = effect,
@@ -69,7 +69,7 @@ public class DuelEvent : MonoBehaviour
         { // 反击陷阱为3速
             speed = 3;
         }
-        cardEffect = new CardEffect
+        cardEffect = new DuelEffect
         {
             duelcard = thiscard,
             effect = effect,

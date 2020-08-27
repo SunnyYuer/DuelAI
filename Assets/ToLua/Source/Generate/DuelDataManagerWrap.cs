@@ -565,7 +565,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<CardEffect> ret = obj.chainEffect;
+			System.Collections.Generic.List<DuelEffect> ret = obj.chainEffect;
 			ToLua.PushSealed(L, ret);
 			return 1;
 		}
@@ -584,7 +584,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<CardEffect> ret = obj.waitEffect;
+			System.Collections.Generic.List<DuelEffect> ret = obj.waitEffect;
 			ToLua.PushSealed(L, ret);
 			return 1;
 		}
@@ -622,7 +622,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<CardEffect> ret = obj.activatableEffect;
+			System.Collections.Generic.List<DuelEffect> ret = obj.activatableEffect;
 			ToLua.PushSealed(L, ret);
 			return 1;
 		}
@@ -1097,7 +1097,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<CardEffect> arg0 = (System.Collections.Generic.List<CardEffect>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<CardEffect>));
+			System.Collections.Generic.List<DuelEffect> arg0 = (System.Collections.Generic.List<DuelEffect>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<DuelEffect>));
 			obj.chainEffect = arg0;
 			return 0;
 		}
@@ -1116,7 +1116,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<CardEffect> arg0 = (System.Collections.Generic.List<CardEffect>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<CardEffect>));
+			System.Collections.Generic.List<DuelEffect> arg0 = (System.Collections.Generic.List<DuelEffect>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<DuelEffect>));
 			obj.waitEffect = arg0;
 			return 0;
 		}
@@ -1154,7 +1154,7 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<CardEffect> arg0 = (System.Collections.Generic.List<CardEffect>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<CardEffect>));
+			System.Collections.Generic.List<DuelEffect> arg0 = (System.Collections.Generic.List<DuelEffect>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<DuelEffect>));
 			obj.activatableEffect = arg0;
 			return 0;
 		}
