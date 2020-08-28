@@ -52,6 +52,26 @@ public class LuaCode
         }
     }
 
+    public T Run<T>(string function)
+    {
+        T retvalue = default;
+        try
+        {
+            LuaFunction func = luaState.GetFunction(function);
+            retvalue = func.Invoke<T>();
+            func.Dispose();
+        }
+        catch (Exception e)
+        {
+#if UNITY_EDITOR || UNITY_STANDALONE
+            File.AppendAllText("error.log", e.ToString());
+#elif UNITY_ANDROID
+            File.WriteAllText(Main.rulePath+"/error.log", e.ToString());
+#endif
+        }
+        return retvalue;
+    }
+
     public void Close()
     {
         luaState.Dispose();
@@ -70,11 +90,13 @@ public class LuaCode
             @"
             function Card2()
                 print('运行成功2')
+                return 1
             end
             ";
         SetCode(code);
         Run("Card1");
-        Run("Card2");
+        int ret = Run<int>("Card2");
+        Debug.Log("获取返回值" + ret);
     }
 
     public static void TestLog(object msg)
