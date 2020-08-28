@@ -159,6 +159,7 @@ public class CardEffect
     public int effectType;
     public bool condition;
     public bool cost;
+    public bool position; // 是否有位置判断，没有就是默认位置
     public int limitRange;
     public int limitType;
     public int limitCount;
@@ -177,6 +178,11 @@ public class CardEffect
     public void SetCost()
     {
         cost = true;
+    }
+
+    public void SetPosition()
+    {
+        position = true;
     }
 }
 

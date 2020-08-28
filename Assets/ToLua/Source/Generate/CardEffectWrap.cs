@@ -9,12 +9,14 @@ public class CardEffectWrap
 		L.BeginClass(typeof(CardEffect), typeof(System.Object));
 		L.RegFunction("SetCondition", SetCondition);
 		L.RegFunction("SetCost", SetCost);
+		L.RegFunction("SetPosition", SetPosition);
 		L.RegFunction("New", _CreateCardEffect);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("effect", get_effect, set_effect);
 		L.RegVar("effectType", get_effectType, set_effectType);
 		L.RegVar("condition", get_condition, set_condition);
 		L.RegVar("cost", get_cost, set_cost);
+		L.RegVar("position", get_position, set_position);
 		L.RegVar("limitRange", get_limitRange, set_limitRange);
 		L.RegVar("limitType", get_limitType, set_limitType);
 		L.RegVar("limitCount", get_limitCount, set_limitCount);
@@ -71,6 +73,22 @@ public class CardEffectWrap
 			ToLua.CheckArgsCount(L, 1);
 			CardEffect obj = (CardEffect)ToLua.CheckObject<CardEffect>(L, 1);
 			obj.SetCost();
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetPosition(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			CardEffect obj = (CardEffect)ToLua.CheckObject<CardEffect>(L, 1);
+			obj.SetPosition();
 			return 0;
 		}
 		catch (Exception e)
@@ -152,6 +170,25 @@ public class CardEffectWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cost on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_position(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			CardEffect obj = (CardEffect)o;
+			bool ret = obj.position;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index position on a nil value");
 		}
 	}
 
@@ -285,6 +322,25 @@ public class CardEffectWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cost on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_position(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			CardEffect obj = (CardEffect)o;
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.position = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index position on a nil value");
 		}
 	}
 

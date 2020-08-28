@@ -37,71 +37,33 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// 设置启动效果
+    /// 设置决斗时发动的卡牌效果
     /// </summary>
-    /// <param name="effect"></param>
-    /// <param name="cost"></param>
-    public void SetStartupEffect(int effect, bool cost = false)
+    /// <param name="cardeffect"></param>
+    public void SetDuelEffect(CardEffect cardeffect)
     {
-        cardEffect = new DuelEffect
-        {
-            duelcard = thiscard,
-            effect = effect,
-            effectType = EffectType.startup,
-            speed = 1,
-            cost = cost
-        };
-        if (!duel.ActivateCheck(cardEffect))
-            activatable = false;
         if (activatable)
-            duelData.activatableEffect.Add(cardEffect);
-        activatable = true; // 一张卡可能有多个效果能发动
-    }
-
-    private void SetTriggerEffect(int effectType, int effect, bool cost)
-    {
-        int speed = 1;
-        if (thiscard.type.Contains(CardType.monster) && thiscard.position == CardPosition.handcard && !thiscard.infopublic)
-        { // 从手卡发动的怪兽的诱发效果，尽管咒文速度是1，实际处理时当作2速
-            speed = 2;
-        }
-        if (thiscard.type.Contains(TrapType.counter))
-        { // 反击陷阱为3速
-            speed = 3;
-        }
-        cardEffect = new DuelEffect
         {
-            duelcard = thiscard,
-            effect = effect,
-            effectType = effectType,
-            speed = speed,
-            cost = cost
-        };
-        if (!duel.ActivateCheck(cardEffect))
-            activatable = false;
-        if (activatable)
-            duelData.activatableEffect.Add(cardEffect);
+            int speed = 1;
+            if (thiscard.type.Contains(CardType.monster) && thiscard.position == CardPosition.handcard && !thiscard.infopublic)
+            { // 从手卡发动的怪兽的诱发效果，尽管咒文速度是1，实际处理时当作2速
+                speed = 2;
+            }
+            if (thiscard.type.Contains(TrapType.counter))
+            { // 反击陷阱为3速
+                speed = 3;
+            }
+            DuelEffect dueleffect = new DuelEffect
+            {
+                duelcard = thiscard,
+                effect = cardeffect.effect,
+                effectType = cardeffect.effectType,
+                speed = speed,
+                cost = cardeffect.cost,
+            };
+            duelData.activatableEffect.Add(dueleffect);
+        }
         activatable = true; // 一张卡可能有多个效果能发动
-    }
-
-    /// <summary>
-    /// 设置选发诱发效果，之后可以进行发动
-    /// </summary>
-    /// <param name="effect"></param>
-    /// <param name="cost"></param>
-    public void SetCanTriggerEffect(int effect, bool cost = false)
-    {
-        SetTriggerEffect(EffectType.cantrigger, effect, cost);
-    }
-
-    /// <summary>
-    /// 设置必发诱发效果，之后可以进行发动
-    /// </summary>
-    /// <param name="effect"></param>
-    /// <param name="cost"></param>
-    public void SetMustTriggerEffect(int effect, bool cost = false)
-    {
-        SetTriggerEffect(EffectType.musttrigger, effect, cost);
     }
 
     /// <summary>

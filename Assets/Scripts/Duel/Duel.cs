@@ -161,9 +161,18 @@ public class Duel : MonoBehaviour
 
     private void LuaFucRun(DuelCard duelcard, string affix, int effect)
     {
-        if (duelcard.code.Equals("") && !luaCode.testcard.Contains(duelcard.name)) return;
+        if (duelcard.code.Equals("") && !luaCode.testcard.Contains(duelcard.id)) return;
         duelEvent.SetThisCard(duelcard);
         luaCode.Run("c" + duelcard.id + affix + (effect == 0 ? "" : effect.ToString()));
+    }
+
+    private T LuaFucRun<T>(DuelCard duelcard, string affix, int effect)
+    {
+        T retvalue = default;
+        if (duelcard.code.Equals("") && !luaCode.testcard.Contains(duelcard.id)) return retvalue;
+        duelEvent.SetThisCard(duelcard);
+        retvalue = luaCode.Run<T>("c" + duelcard.id + affix + (effect == 0 ? "" : effect.ToString()));
+        return retvalue;
     }
 
     private void ReadCardEffect()
@@ -755,27 +764,24 @@ public class Duel : MonoBehaviour
     {
         duelData.opWho = player;
         duelEvent.precheck = true;
-        foreach (DuelCard duelcard in duelData.handcard[player])
+        TargetCard targetcard = new TargetCard();
+        targetcard.SetPosition(CardPosition.handcard);
+        targetcard.SetPosition(CardPosition.monster);
+        targetcard.SetPosition(CardPosition.magictrap);
+        targetcard.SetPosition(CardPosition.grave);
+        List<DuelCard> cardList = GetTargetCard(targetcard);
+        foreach (DuelCard duelcard in cardList)
         {
-            LuaFucRun(duelcard, "", 0);
-        }
-        foreach (DuelCard duelcard in duelData.monster[player])
-        {
-            if (duelcard != null)
+            foreach (CardEffect cEffect in duelcard.cardeffect)
             {
-                LuaFucRun(duelcard, "", 0);
+                if (!ActivateCheck(duelcard, cEffect)) continue;
+                if (!cEffect.condition || (cEffect.condition && LuaFucRun<bool>(duelcard, "condition", cEffect.effect)))
+                {
+                    if (cEffect.cost) LuaFucRun(duelcard, "cost", cEffect.effect);
+                    LuaFucRun(duelcard, "effect", cEffect.effect);
+                    duelEvent.SetDuelEffect(cEffect);
+                }
             }
-        }
-        foreach (DuelCard duelcard in duelData.magictrap[player])
-        {
-            if (duelcard != null)
-            {
-                LuaFucRun(duelcard, "", 0);
-            }
-        }
-        foreach (DuelCard duelcard in duelData.grave[player])
-        {
-            LuaFucRun(duelcard, "", 0);
         }
         duelEvent.precheck = false;
         return duelData.activatableEffect.Count;
@@ -1301,48 +1307,68 @@ public class Duel : MonoBehaviour
         return true;
     }
 
-    public bool ActivateCheck(DuelEffect cardEffect)
+    public bool ActivateCheck(DuelCard duelcard, CardEffect cardEffect)
     {  // 检查能否发动
-        DuelCard duelcard = cardEffect.duelcard;
+        // 检查场上是否有足够的位置
         if (cardEffect.effectType == EffectType.startup)
         {
-            if (duelcard.type.Contains(CardType.monster))
-            { // 怪兽卡必须在场上
-                if (duelcard.position < CardPosition.area) return false;
-            }
-            if (duelcard.type.Contains(MagicType.field))
-            { // 场地卡必须在场上或者手卡
-                if (duelcard.position < CardPosition.handcard) return false;
-            }
             if (duelcard.type.Contains(CardType.magic) && !duelcard.type.Contains(MagicType.field))
-            { // 魔法卡必须在场上或者手卡且有能发动的位置
+            { // 魔法卡必须有能发动的位置
                 if (duelcard.position == CardPosition.handcard)
                 {
                     if (!MagicTrapPlaceCheck()) return false;
                 }
-                if (duelcard.position < CardPosition.handcard) return false;
-            }
-            if (duelcard.type.Contains(CardType.trap))
-            { // 陷阱卡必须在场上
-                if (duelcard.position < CardPosition.area) return false;
             }
             // 连锁期间，启动效果不能发动
             if (duelData.effectChain) return false;
         }
+        // 检查效果是否已经发动
         if (cardEffect.effectType == EffectType.cantrigger || cardEffect.effectType == EffectType.musttrigger)
         {
-            if(CardActivated(duelcard, cardEffect.effect)) return false;
+            if (CardActivated(duelcard, cardEffect.effect)) return false;
         }
-        if (cardEffect.cost) LuaFucRun(duelcard, "cost", cardEffect.effect);
-        LuaFucRun(duelcard, "effect", cardEffect.effect);
+        // 检查发动位置是否正确
+        if (!cardEffect.position)
+        {
+            if (cardEffect.effectType == EffectType.startup)
+            {
+                if (duelcard.type.Contains(CardType.monster))
+                { // 怪兽卡必须在场上
+                    if (duelcard.position < CardPosition.area) return false;
+                }
+                if (duelcard.type.Contains(CardType.magic))
+                { // 魔法卡必须在场上或者手卡
+                    if (duelcard.position < CardPosition.handcard) return false;
+                }
+                if (duelcard.type.Contains(CardType.trap))
+                { // 陷阱卡必须在场上
+                    if (duelcard.position < CardPosition.area) return false;
+                }
+            }
+            if (cardEffect.effectType == EffectType.cantrigger || cardEffect.effectType == EffectType.musttrigger)
+            {
+                if (duelcard.type.Contains(CardType.monster))
+                { // 怪兽卡必须在场上或者手卡
+                    if (duelcard.position < CardPosition.handcard) return false;
+                }
+                if (duelcard.type.Contains(CardType.magic))
+                { // 魔法卡必须在场上
+                    if (duelcard.position < CardPosition.area) return false;
+                }
+                if (duelcard.type.Contains(CardType.trap))
+                { // 陷阱卡必须在场上
+                    if (duelcard.position < CardPosition.area) return false;
+                }
+            }
+        }
         return true;
     }
 
     public bool CardActivated(DuelCard duelcard, int effect)
     { // 卡牌的效果是否已经发动
-        foreach (DuelEffect cardEffect in duelData.chainEffect)
+        foreach (DuelEffect duelEffect in duelData.chainEffect)
         {
-            if (cardEffect.duelcard.Equals(duelcard) && cardEffect.effect == effect)
+            if (duelEffect.duelcard.Equals(duelcard) && duelEffect.effect == effect)
                 return true;
         }
         return false;
