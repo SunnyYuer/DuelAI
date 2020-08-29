@@ -10,6 +10,7 @@ public class CardEffectWrap
 		L.RegFunction("SetCondition", SetCondition);
 		L.RegFunction("SetCost", SetCost);
 		L.RegFunction("SetPosition", SetPosition);
+		L.RegFunction("SetLimit", SetLimit);
 		L.RegFunction("New", _CreateCardEffect);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("effect", get_effect, set_effect);
@@ -17,9 +18,7 @@ public class CardEffectWrap
 		L.RegVar("condition", get_condition, set_condition);
 		L.RegVar("cost", get_cost, set_cost);
 		L.RegVar("position", get_position, set_position);
-		L.RegVar("limitRange", get_limitRange, set_limitRange);
-		L.RegVar("limitType", get_limitType, set_limitType);
-		L.RegVar("limitCount", get_limitCount, set_limitCount);
+		L.RegVar("limit", get_limit, set_limit);
 		L.EndClass();
 	}
 
@@ -89,6 +88,25 @@ public class CardEffectWrap
 			ToLua.CheckArgsCount(L, 1);
 			CardEffect obj = (CardEffect)ToLua.CheckObject<CardEffect>(L, 1);
 			obj.SetPosition();
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetLimit(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 4);
+			CardEffect obj = (CardEffect)ToLua.CheckObject<CardEffect>(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+			int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
+			obj.SetLimit(arg0, arg1, arg2);
 			return 0;
 		}
 		catch (Exception e)
@@ -193,7 +211,7 @@ public class CardEffectWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_limitRange(IntPtr L)
+	static int get_limit(IntPtr L)
 	{
 		object o = null;
 
@@ -201,51 +219,13 @@ public class CardEffectWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			CardEffect obj = (CardEffect)o;
-			int ret = obj.limitRange;
-			LuaDLL.lua_pushinteger(L, ret);
+			System.Collections.Generic.List<EffectLimit> ret = obj.limit;
+			ToLua.PushSealed(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index limitRange on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_limitType(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			CardEffect obj = (CardEffect)o;
-			int ret = obj.limitType;
-			LuaDLL.lua_pushinteger(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index limitType on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_limitCount(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			CardEffect obj = (CardEffect)o;
-			int ret = obj.limitCount;
-			LuaDLL.lua_pushinteger(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index limitCount on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index limit on a nil value");
 		}
 	}
 
@@ -345,7 +325,7 @@ public class CardEffectWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_limitRange(IntPtr L)
+	static int set_limit(IntPtr L)
 	{
 		object o = null;
 
@@ -353,51 +333,13 @@ public class CardEffectWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			CardEffect obj = (CardEffect)o;
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			obj.limitRange = arg0;
+			System.Collections.Generic.List<EffectLimit> arg0 = (System.Collections.Generic.List<EffectLimit>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<EffectLimit>));
+			obj.limit = arg0;
 			return 0;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index limitRange on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_limitType(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			CardEffect obj = (CardEffect)o;
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			obj.limitType = arg0;
-			return 0;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index limitType on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_limitCount(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			CardEffect obj = (CardEffect)o;
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			obj.limitCount = arg0;
-			return 0;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index limitCount on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index limit on a nil value");
 		}
 	}
 }

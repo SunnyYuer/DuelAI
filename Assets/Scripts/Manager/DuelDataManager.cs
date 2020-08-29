@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -160,14 +160,13 @@ public class CardEffect
     public bool condition;
     public bool cost;
     public bool position; // 是否有位置判断，没有就是默认位置
-    public int limitRange;
-    public int limitType;
-    public int limitCount;
+    public List<EffectLimit> limit;
 
     public CardEffect(int effect, int effectType)
     {
         this.effect = effect;
         this.effectType = effectType;
+        limit = new List<EffectLimit>();
     }
 
     public void SetCondition()
@@ -184,6 +183,28 @@ public class CardEffect
     {
         position = true;
     }
+
+    public void SetLimit(int range, int type, int count)
+    {
+        foreach (EffectLimit eLimit in limit)
+        {
+            if (eLimit.type == type) return;
+        }
+        EffectLimit elimit = new EffectLimit
+        {
+            range = range,
+            type = type,
+            count = count
+        };
+        limit.Add(elimit);
+    }
+}
+
+public class EffectLimit
+{
+    public int range;
+    public int type;
+    public int count;
 }
 
 /// <summary>
@@ -258,8 +279,10 @@ public class TargetCard
         }
         else
         {
-            List<object> values = new List<object>();
-            values.Add(value);
+            List<object> values = new List<object>
+            {
+                value
+            };
             target.Add(key, values);
         }
     }
@@ -285,7 +308,7 @@ public class DuelEffect
     public int effectType;
     public int speed;
     public bool cost;
-    public int limitType;
+    public List<int> limitType;
 }
 
 /// <summary>
@@ -294,7 +317,9 @@ public class DuelEffect
 public class Limit
 {
     public int range;
-    public DuelEffect cardEffect;
+    public DuelCard duelcard;
+    public int effect;
+    public List<int> effects;
     public int type;
     public int max;
     public int count;

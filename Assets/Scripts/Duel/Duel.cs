@@ -162,7 +162,6 @@ public class Duel : MonoBehaviour
     private void LuaFucRun(DuelCard duelcard, string affix, int effect)
     {
         if (duelcard.code.Equals("") && !luaCode.testcard.Contains(duelcard.id)) return;
-        duelEvent.SetThisCard(duelcard);
         luaCode.Run("c" + duelcard.id + affix + (effect == 0 ? "" : effect.ToString()));
     }
 
@@ -170,7 +169,6 @@ public class Duel : MonoBehaviour
     {
         T retvalue = default;
         if (duelcard.code.Equals("") && !luaCode.testcard.Contains(duelcard.id)) return retvalue;
-        duelEvent.SetThisCard(duelcard);
         retvalue = luaCode.Run<T>("c" + duelcard.id + affix + (effect == 0 ? "" : effect.ToString()));
         return retvalue;
     }
@@ -181,12 +179,15 @@ public class Duel : MonoBehaviour
         {
             foreach (DuelCard duelcard in duelData.deck[i])
             {
+                duelEvent.SetThisCard(duelcard);
                 LuaFucRun(duelcard, "", 0);
             }
             foreach (DuelCard duelcard in duelData.extra[i])
             {
+                duelEvent.SetThisCard(duelcard);
                 LuaFucRun(duelcard, "", 0);
             }
+            AddPubLimit(-1, i, LimitType.specialsummonself, 1);
         }
     }
 
@@ -601,7 +602,7 @@ public class Duel : MonoBehaviour
         DuelCase duelcase = new DuelCase(way);
         duelcase.card.Add(duelcard);
         duelData.duelcase.Add(duelcase);
-        if (cardEffect.limitType > 0) LimitCount(cardEffect);
+        if (cardEffect.limitType.Count > 0) LimitCount(duelcard, cardEffect.effect, cardEffect.limitType);
         duelData.chainEffect.Insert(0, cardEffect);
         yield return new WaitForSeconds(1);
     }
@@ -610,6 +611,7 @@ public class Duel : MonoBehaviour
     {
         DuelCard duelcard = cardEffect.duelcard;
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 支付代价");
+        duelEvent.SetThisCard(duelcard);
         LuaFucRun(duelcard, "cost", cardEffect.effect);
         yield return WaitGameEvent();
         LastTimePointPass();
@@ -619,6 +621,7 @@ public class Duel : MonoBehaviour
     {
         DuelCard duelcard = cardEffect.duelcard;
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 生效");
+        duelEvent.SetThisCard(duelcard);
         LuaFucRun(duelcard, "effect", cardEffect.effect);
         yield return WaitGameEvent();
     }
@@ -627,6 +630,7 @@ public class Duel : MonoBehaviour
     { // 让buff生效
         DuelCard duelcard = buff.fromcard;
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + buff.effect + " 生效");
+        duelEvent.SetThisCard(duelcard);
         LuaFucRun(duelcard, "effect", buff.effect);
     }
 
@@ -772,9 +776,11 @@ public class Duel : MonoBehaviour
         List<DuelCard> cardList = GetTargetCard(targetcard);
         foreach (DuelCard duelcard in cardList)
         {
+            duelEvent.SetThisCard(duelcard);
             foreach (CardEffect cEffect in duelcard.cardeffect)
             {
                 if (!ActivateCheck(duelcard, cEffect)) continue;
+                duelEvent.SetThisEffect(cEffect.effect);
                 if (!cEffect.condition || (cEffect.condition && LuaFucRun<bool>(duelcard, "condition", cEffect.effect)))
                 {
                     if (cEffect.cost) LuaFucRun(duelcard, "cost", cEffect.effect);
@@ -1517,38 +1523,68 @@ public class Duel : MonoBehaviour
     /* 时点 */
 
     /* 限制 */
-    public void AddLimit(int range, DuelEffect cardEffect, int limitType, int max)
+    public void AddLimit(int range, DuelCard duelcard, int effect, int limitType, int max)
     {
-        cardEffect.limitType = limitType;
         Limit limit;
-        limit = FindLimit(cardEffect);
+        limit = FindLimit(duelcard, effect, limitType);
         if (limit != null) return;
         limit = new Limit
         {
             range = range,
-            cardEffect = cardEffect,
+            duelcard = duelcard,
+            effect = effect,
             type = limitType,
             max = max,
             count = 0,
         };
-        int player = cardEffect.duelcard.controller;
+        int player = duelcard.controller;
         duelData.limit[player].Add(limit);
     }
 
-    private Limit FindLimit(DuelEffect cardEffect)
+    public void AddPubLimit(int range, int player, int limitType, int max)
+    { // 不限卡的限制
+        Limit limit;
+        limit = FindPubLimit(player, limitType);
+        if (limit != null) return;
+        limit = new Limit
+        {
+            range = range,
+            type = limitType,
+            max = max,
+            count = 0,
+        };
+        duelData.limit[player].Add(limit);
+    }
+
+    public void AddUniLimit(int range, DuelCard duelcard, List<int> effects, int limitType)
+    { // 多效果联合限制
+        Limit limit;
+        limit = FindUniLimit(duelcard, limitType);
+        if (limit != null) return;
+        limit = new Limit
+        {
+            range = range,
+            duelcard = duelcard,
+            effects = effects,
+            type = limitType,
+        };
+        int player = duelcard.controller;
+        duelData.limit[player].Add(limit);
+    }
+
+    private Limit FindLimit(DuelCard duelcard, int effect, int limitType)
     {
-        int player = cardEffect.duelcard.controller;
+        int player = duelcard.controller;
         foreach (Limit limit in duelData.limit[player])
         {
-            if (limit.type != cardEffect.limitType) continue;
-            DuelEffect cEffect = limit.cardEffect;
-            if (limit.range == 0)
+            if (limit.type != limitType) continue;
+            if (limit.range == 0 && limit.duelcard.Equals(duelcard))
             { // 这张卡
-                
+                if (limit.effect == effect) return limit;
             }
-            if (limit.range == GameCard.name)
+            if (limit.range == GameCard.name && limit.duelcard.name.Equals(duelcard.name))
             { // 这个卡名
-
+                if (limit.effect == effect) return limit;
             }
             if (limit.range < 0)
             { // 不限卡
@@ -1561,22 +1597,55 @@ public class Duel : MonoBehaviour
         return null;
     }
 
-    private void LimitCount(DuelEffect cardEffect)
+    private Limit FindPubLimit(int player, int limitType)
     {
-        Limit limit = FindLimit(cardEffect);
-        limit.count++;
-    }
-
-    public bool LimitCheck(DuelEffect cardEffect)
-    {
-        int player = cardEffect.duelcard.controller;
         foreach (Limit limit in duelData.limit[player])
         {
-            if (limit.type != cardEffect.limitType) continue;
-            if (limit.type == LimitType.specialsummonself)
-            {
-                if (limit.count == limit.max) return false;
+            if (limit.type != limitType) continue;
+            if (limit.range < 0)
+            { // 不限卡
+                if (limit.type == LimitType.specialsummonself)
+                {
+                    return limit;
+                }
             }
+        }
+        return null;
+    }
+
+    private Limit FindUniLimit(DuelCard duelcard, int limitType)
+    {
+        int player = duelcard.controller;
+        foreach (Limit limit in duelData.limit[player])
+        {
+            if (limit.type != limitType) continue;
+            if (limit.range == 0 && limit.duelcard.Equals(duelcard))
+            { // 这张卡
+                return limit;
+            }
+            if (limit.range == GameCard.name && limit.duelcard.name.Equals(duelcard.name))
+            { // 这个卡名
+                return limit;
+            }
+        }
+        return null;
+    }
+
+    private void LimitCount(DuelCard duelcard, int effect, List<int> limitTypes)
+    {
+        foreach (int limitType in limitTypes)
+        {
+            Limit limit = FindLimit(duelcard, effect, limitType);
+            if (limit != null) limit.count++;
+        }
+    }
+
+    public bool LimitCheck(DuelCard duelcard, int effect, int limitType)
+    {
+        Limit limit = FindLimit(duelcard, effect, limitType);
+        if (limit != null)
+        {
+            if (limit.count == limit.max) return false;
         }
         return true;
     }

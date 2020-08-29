@@ -8,6 +8,7 @@ public class DuelEventWrap
 	{
 		L.BeginClass(typeof(DuelEvent), typeof(UnityEngine.MonoBehaviour));
 		L.RegFunction("SetThisCard", SetThisCard);
+		L.RegFunction("SetThisEffect", SetThisEffect);
 		L.RegFunction("SetDuelEffect", SetDuelEffect);
 		L.RegFunction("SetContinuousEffect", SetContinuousEffect);
 		L.RegFunction("CreateDuelBuff", CreateDuelBuff);
@@ -44,6 +45,23 @@ public class DuelEventWrap
 			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
 			DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
 			obj.SetThisCard(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetThisEffect(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.SetThisEffect(arg0);
 			return 0;
 		}
 		catch (Exception e)
@@ -477,7 +495,7 @@ public class DuelEventWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelEvent obj = (DuelEvent)o;
-			DuelEffect ret = obj.cardEffect;
+			CardEffect ret = obj.cardEffect;
 			ToLua.PushObject(L, ret);
 			return 1;
 		}
@@ -553,7 +571,7 @@ public class DuelEventWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelEvent obj = (DuelEvent)o;
-			DuelEffect arg0 = (DuelEffect)ToLua.CheckObject<DuelEffect>(L, 2);
+			CardEffect arg0 = (CardEffect)ToLua.CheckObject<CardEffect>(L, 2);
 			obj.cardEffect = arg0;
 			return 0;
 		}

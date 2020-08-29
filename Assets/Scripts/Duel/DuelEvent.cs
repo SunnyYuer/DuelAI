@@ -10,7 +10,7 @@ public class DuelEvent : MonoBehaviour
     private Duel duel;
     public DuelDataManager duelData;
     public DuelCard thiscard; // 当前卡
-    public DuelEffect cardEffect; // 当前检查的效果
+    public CardEffect cardEffect; // 当前检查的效果
     public bool precheck; // 发动效果和支付代价前预先检查能否执行
     private bool activatable; // 卡牌能否发动
 
@@ -37,6 +37,15 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
+    /// 设置当前效果
+    /// </summary>
+    /// <param name="effect"></param>
+    public void SetThisEffect(int effect)
+    {
+        cardEffect = thiscard.cardeffect[effect - 1];
+    }
+
+    /// <summary>
     /// 设置决斗时发动的卡牌效果
     /// </summary>
     /// <param name="cardeffect"></param>
@@ -53,6 +62,11 @@ public class DuelEvent : MonoBehaviour
             { // 反击陷阱为3速
                 speed = 3;
             }
+            List<int> limitType = new List<int>();
+            foreach(EffectLimit limit in cardeffect.limit)
+            {
+                limitType.Add(limit.type);
+            }
             DuelEffect dueleffect = new DuelEffect
             {
                 duelcard = thiscard,
@@ -60,6 +74,7 @@ public class DuelEvent : MonoBehaviour
                 effectType = cardeffect.effectType,
                 speed = speed,
                 cost = cardeffect.cost,
+                limitType = limitType,
             };
             duelData.activatableEffect.Add(dueleffect);
         }
@@ -243,8 +258,8 @@ public class DuelEvent : MonoBehaviour
             if (!duel.SpecialSummonCheck()) activatable = false;
             if (duelcard.position == CardPosition.handcard && duelcard.Equals(thiscard) && cardEffect.effectType == EffectType.cantrigger)
             {
-                duel.AddLimit(-1, cardEffect, LimitType.specialsummonself, 1);
-                if (!duel.LimitCheck(cardEffect)) activatable = false;
+                cardEffect.SetLimit(-1, LimitType.specialsummonself, 1);
+                if (!duel.LimitCheck(thiscard, cardEffect.effect, LimitType.specialsummonself)) activatable = false;
             }
             return;
         }

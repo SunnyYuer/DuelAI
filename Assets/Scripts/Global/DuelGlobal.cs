@@ -144,9 +144,8 @@ public class BuffType
 
 public class LimitType
 {
-    public const int normalsummon = 1;
-    public const int turnactivate = 2;
-    public const int turnuse = 3;
-    public const int specialsummonself = 4;
-    public const int chain = 5;
+    public const int turnactivate = 1;
+    public const int turnuse = 2;
+    public const int specialsummonself = 3;
+    public const int chain = 4;
 }
