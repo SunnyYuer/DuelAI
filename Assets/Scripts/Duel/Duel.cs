@@ -1522,13 +1522,13 @@ public class Duel : MonoBehaviour
     }
     /* 时点 */
 
-    /* 限制 */
+    /* 发动限制 */
     public void AddLimit(int range, DuelCard duelcard, int effect, int limitType, int max)
     {
-        Limit limit;
+        ActivateLimit limit;
         limit = FindLimit(duelcard, effect, limitType);
         if (limit != null) return;
-        limit = new Limit
+        limit = new ActivateLimit
         {
             range = range,
             duelcard = duelcard,
@@ -1538,30 +1538,30 @@ public class Duel : MonoBehaviour
             count = 0,
         };
         int player = duelcard.controller;
-        duelData.limit[player].Add(limit);
+        duelData.activatelimit[player].Add(limit);
     }
 
     public void AddPubLimit(int range, int player, int limitType, int max)
     { // 不限卡的限制
-        Limit limit;
+        ActivateLimit limit;
         limit = FindPubLimit(player, limitType);
         if (limit != null) return;
-        limit = new Limit
+        limit = new ActivateLimit
         {
             range = range,
             type = limitType,
             max = max,
             count = 0,
         };
-        duelData.limit[player].Add(limit);
+        duelData.activatelimit[player].Add(limit);
     }
 
     public void AddUniLimit(int range, DuelCard duelcard, List<int> effects, int limitType)
     { // 多效果联合限制
-        Limit limit;
+        ActivateLimit limit;
         limit = FindUniLimit(duelcard, limitType);
         if (limit != null) return;
-        limit = new Limit
+        limit = new ActivateLimit
         {
             range = range,
             duelcard = duelcard,
@@ -1569,13 +1569,13 @@ public class Duel : MonoBehaviour
             type = limitType,
         };
         int player = duelcard.controller;
-        duelData.limit[player].Add(limit);
+        duelData.activatelimit[player].Add(limit);
     }
 
-    private Limit FindLimit(DuelCard duelcard, int effect, int limitType)
+    private ActivateLimit FindLimit(DuelCard duelcard, int effect, int limitType)
     {
         int player = duelcard.controller;
-        foreach (Limit limit in duelData.limit[player])
+        foreach (ActivateLimit limit in duelData.activatelimit[player])
         {
             if (limit.type != limitType) continue;
             if (limit.range == 0 && limit.duelcard.Equals(duelcard))
@@ -1597,9 +1597,9 @@ public class Duel : MonoBehaviour
         return null;
     }
 
-    private Limit FindPubLimit(int player, int limitType)
+    private ActivateLimit FindPubLimit(int player, int limitType)
     {
-        foreach (Limit limit in duelData.limit[player])
+        foreach (ActivateLimit limit in duelData.activatelimit[player])
         {
             if (limit.type != limitType) continue;
             if (limit.range < 0)
@@ -1613,10 +1613,10 @@ public class Duel : MonoBehaviour
         return null;
     }
 
-    private Limit FindUniLimit(DuelCard duelcard, int limitType)
+    private ActivateLimit FindUniLimit(DuelCard duelcard, int limitType)
     {
         int player = duelcard.controller;
-        foreach (Limit limit in duelData.limit[player])
+        foreach (ActivateLimit limit in duelData.activatelimit[player])
         {
             if (limit.type != limitType) continue;
             if (limit.range == 0 && limit.duelcard.Equals(duelcard))
@@ -1635,14 +1635,14 @@ public class Duel : MonoBehaviour
     {
         foreach (int limitType in limitTypes)
         {
-            Limit limit = FindLimit(duelcard, effect, limitType);
+            ActivateLimit limit = FindLimit(duelcard, effect, limitType);
             if (limit != null) limit.count++;
         }
     }
 
     public bool LimitCheck(DuelCard duelcard, int effect, int limitType)
     {
-        Limit limit = FindLimit(duelcard, effect, limitType);
+        ActivateLimit limit = FindLimit(duelcard, effect, limitType);
         if (limit != null)
         {
             if (limit.count == limit.max) return false;
@@ -1654,7 +1654,7 @@ public class Duel : MonoBehaviour
     {
         for (int player = 0; player < duelData.playerNum; player++)
         {
-            foreach (Limit limit in duelData.limit[player])
+            foreach (ActivateLimit limit in duelData.activatelimit[player])
             {
                 if (limit.type == LimitType.specialsummonself && limit.count != 0)
                 {
@@ -1668,7 +1668,7 @@ public class Duel : MonoBehaviour
     {
         for (int player = 0; player < duelData.playerNum; player++)
         {
-            foreach (Limit limit in duelData.limit[player])
+            foreach (ActivateLimit limit in duelData.activatelimit[player])
             {
                 if (limit.type == LimitType.turnactivate && limit.count != 0)
                 {
@@ -1677,7 +1677,7 @@ public class Duel : MonoBehaviour
             }
         }
     }
-    /* 限制 */
+    /* 发动限制 */
 
     /* 决斗行动记录 */
     public List<DuelCard> GetLastBattleCard()

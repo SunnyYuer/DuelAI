@@ -34,7 +34,7 @@ public class DuelDataManagerWrap
 		L.RegVar("fieldcard", get_fieldcard, set_fieldcard);
 		L.RegVar("special", get_special, set_special);
 		L.RegVar("normalsummon", get_normalsummon, set_normalsummon);
-		L.RegVar("limit", get_limit, set_limit);
+		L.RegVar("activatelimit", get_activatelimit, set_activatelimit);
 		L.RegVar("chainEffect", get_chainEffect, set_chainEffect);
 		L.RegVar("waitEffect", get_waitEffect, set_waitEffect);
 		L.RegVar("effectChain", get_effectChain, set_effectChain);
@@ -538,7 +538,7 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_limit(IntPtr L)
+	static int get_activatelimit(IntPtr L)
 	{
 		object o = null;
 
@@ -546,13 +546,13 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<Limit>[] ret = obj.limit;
+			System.Collections.Generic.List<ActivateLimit>[] ret = obj.activatelimit;
 			ToLua.Push(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index limit on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index activatelimit on a nil value");
 		}
 	}
 
@@ -1070,7 +1070,7 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_limit(IntPtr L)
+	static int set_activatelimit(IntPtr L)
 	{
 		object o = null;
 
@@ -1078,13 +1078,13 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<Limit>[] arg0 = ToLua.CheckObjectArray<System.Collections.Generic.List<Limit>>(L, 2);
-			obj.limit = arg0;
+			System.Collections.Generic.List<ActivateLimit>[] arg0 = ToLua.CheckObjectArray<System.Collections.Generic.List<ActivateLimit>>(L, 2);
+			obj.activatelimit = arg0;
 			return 0;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index limit on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index activatelimit on a nil value");
 		}
 	}
 

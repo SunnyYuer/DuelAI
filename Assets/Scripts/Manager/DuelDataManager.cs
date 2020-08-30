@@ -29,7 +29,7 @@ public class DuelDataManager
     public DuelCard[] fieldcard;
     public DuelCard[][] special;
     public int[] normalsummon; // 这回合已通常召唤的次数
-    public List<Limit>[] limit;
+    public List<ActivateLimit>[] activatelimit;
 
     // 效果连锁
     public List<DuelEffect> chainEffect;
@@ -67,7 +67,7 @@ public class DuelDataManager
         monster = new DuelCard[playerNum][];
         magictrap = new DuelCard[playerNum][];
         normalsummon = new int[playerNum];
-        limit = new List<Limit>[playerNum];
+        activatelimit = new List<ActivateLimit>[playerNum];
         for (int i = 0; i < playerNum; i++)
         {
             deck[i] = new List<DuelCard>();
@@ -77,7 +77,7 @@ public class DuelDataManager
             handcard[i] = new List<DuelCard>();
             monster[i] = new DuelCard[areaNum];
             magictrap[i] = new DuelCard[areaNum];
-            limit[i] = new List<Limit>();
+            activatelimit[i] = new List<ActivateLimit>();
         }
         LP = new int[2];
         fieldcard = new DuelCard[2];
@@ -314,7 +314,7 @@ public class DuelEffect
 /// <summary>
 /// 发动与使用限制
 /// </summary>
-public class Limit
+public class ActivateLimit
 {
     public int range;
     public DuelCard duelcard;
