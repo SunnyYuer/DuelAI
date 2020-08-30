@@ -13,8 +13,10 @@ public class CardEffectWrap
 		L.RegFunction("SetLimit", SetLimit);
 		L.RegFunction("New", _CreateCardEffect);
 		L.RegFunction("__tostring", ToLua.op_ToString);
+		L.RegVar("duelcard", get_duelcard, set_duelcard);
 		L.RegVar("effect", get_effect, set_effect);
 		L.RegVar("effectType", get_effectType, set_effectType);
+		L.RegVar("speed", get_speed, set_speed);
 		L.RegVar("condition", get_condition, set_condition);
 		L.RegVar("cost", get_cost, set_cost);
 		L.RegVar("position", get_position, set_position);
@@ -29,11 +31,9 @@ public class CardEffectWrap
 		{
 			int count = LuaDLL.lua_gettop(L);
 
-			if (count == 2)
+			if (count == 0)
 			{
-				int arg0 = (int)LuaDLL.luaL_checknumber(L, 1);
-				int arg1 = (int)LuaDLL.luaL_checknumber(L, 2);
-				CardEffect obj = new CardEffect(arg0, arg1);
+				CardEffect obj = new CardEffect();
 				ToLua.PushObject(L, obj);
 				return 1;
 			}
@@ -116,6 +116,25 @@ public class CardEffectWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_duelcard(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			CardEffect obj = (CardEffect)o;
+			DuelCard ret = obj.duelcard;
+			ToLua.PushObject(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index duelcard on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_effect(IntPtr L)
 	{
 		object o = null;
@@ -150,6 +169,25 @@ public class CardEffectWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index effectType on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_speed(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			CardEffect obj = (CardEffect)o;
+			int ret = obj.speed;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index speed on a nil value");
 		}
 	}
 
@@ -230,6 +268,25 @@ public class CardEffectWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_duelcard(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			CardEffect obj = (CardEffect)o;
+			DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
+			obj.duelcard = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index duelcard on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_effect(IntPtr L)
 	{
 		object o = null;
@@ -264,6 +321,25 @@ public class CardEffectWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index effectType on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_speed(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			CardEffect obj = (CardEffect)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.speed = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index speed on a nil value");
 		}
 	}
 

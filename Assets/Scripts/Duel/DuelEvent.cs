@@ -46,10 +46,27 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// 设置决斗时发动的卡牌效果
+    /// 创建卡牌效果
     /// </summary>
-    /// <param name="cardeffect"></param>
-    public void SetDuelEffect(CardEffect cardeffect)
+    /// <param name="effect"></param>
+    /// <param name="effectType"></param>
+    /// <returns></returns>
+    public CardEffect CreateEffect(int effect, int effectType)
+    {
+        CardEffect cEffect = new CardEffect
+        {
+            duelcard = thiscard,
+            effect = effect,
+            effectType = effectType,
+            limit = new List<EffectLimit>(),
+        };
+        return cEffect;
+    }
+
+    /// <summary>
+    /// 设置决斗时的卡牌效果
+    /// </summary>
+    public void SetDuelEffect()
     {
         if (activatable)
         {
@@ -62,21 +79,8 @@ public class DuelEvent : MonoBehaviour
             { // 反击陷阱为3速
                 speed = 3;
             }
-            List<int> limitType = new List<int>();
-            foreach(EffectLimit limit in cardeffect.limit)
-            {
-                limitType.Add(limit.type);
-            }
-            DuelEffect dueleffect = new DuelEffect
-            {
-                duelcard = thiscard,
-                effect = cardeffect.effect,
-                effectType = cardeffect.effectType,
-                speed = speed,
-                cost = cardeffect.cost,
-                limitType = limitType,
-            };
-            duelData.activatableEffect.Add(dueleffect);
+            cardEffect.speed = speed;
+            duelData.activatableEffect.Add(cardEffect);
         }
         activatable = true; // 一张卡可能有多个效果能发动
     }

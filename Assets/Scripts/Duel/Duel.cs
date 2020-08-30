@@ -577,7 +577,7 @@ public class Duel : MonoBehaviour
         }
     }
 
-    private IEnumerator ActivateEffect(DuelEffect cardEffect)
+    private IEnumerator ActivateEffect(CardEffect cardEffect)
     {
         DuelCard duelcard = cardEffect.duelcard;
         ObserveView(duelcard.controller);
@@ -602,12 +602,12 @@ public class Duel : MonoBehaviour
         DuelCase duelcase = new DuelCase(way);
         duelcase.card.Add(duelcard);
         duelData.duelcase.Add(duelcase);
-        if (cardEffect.limitType.Count > 0) LimitCount(duelcard, cardEffect.effect, cardEffect.limitType);
+        if (cardEffect.limit.Count > 0) LimitCount(duelcard, cardEffect.effect, cardEffect.limit);
         duelData.chainEffect.Insert(0, cardEffect);
         yield return new WaitForSeconds(1);
     }
 
-    private IEnumerator PayCost(DuelEffect cardEffect)
+    private IEnumerator PayCost(CardEffect cardEffect)
     {
         DuelCard duelcard = cardEffect.duelcard;
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 支付代价");
@@ -617,7 +617,7 @@ public class Duel : MonoBehaviour
         LastTimePointPass();
     }
 
-    private IEnumerator EffectApply(DuelEffect cardEffect)
+    private IEnumerator EffectApply(CardEffect cardEffect)
     {
         DuelCard duelcard = cardEffect.duelcard;
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 生效");
@@ -655,7 +655,7 @@ public class Duel : MonoBehaviour
         }
     }
 
-    public IEnumerator CardActivate(DuelEffect activateEffect)
+    public IEnumerator CardActivate(CardEffect activateEffect)
     {
         duelData.effectChain = true;
         duelData.activatableEffect.Clear();
@@ -686,7 +686,7 @@ public class Duel : MonoBehaviour
             SetCardOutLine();
             if (duelData.activatableEffect.Count > 0)
             {
-                DuelEffect activateEffect = null;
+                CardEffect activateEffect = null;
                 yield return WantActivate();
                 if (Tip.select == 1)
                 { // 由玩家选择或者AI选择
@@ -730,7 +730,7 @@ public class Duel : MonoBehaviour
     {
         for (int order = 0; order < 6; order++)
         { // 同一时点发动多个诱发类效果
-            List<DuelEffect> effectList = ScanTriggerEffect(order);
+            List<CardEffect> effectList = ScanTriggerEffect(order);
             if (effectList.Count > 0)
             {
                 Debug.Log("顺序" + (order + 1) + " 诱发类效果");
@@ -785,7 +785,7 @@ public class Duel : MonoBehaviour
                 {
                     if (cEffect.cost) LuaFucRun(duelcard, "cost", cEffect.effect);
                     LuaFucRun(duelcard, "effect", cEffect.effect);
-                    duelEvent.SetDuelEffect(cEffect);
+                    duelEvent.SetDuelEffect();
                 }
             }
         }
@@ -793,18 +793,18 @@ public class Duel : MonoBehaviour
         return duelData.activatableEffect.Count;
     }
 
-    public List<DuelEffect> ScanTriggerEffect(int order)
+    public List<CardEffect> ScanTriggerEffect(int order)
     {
         if (order == 0)
         {
             ScanEffect(duelData.player);
             ScanEffect(GetOppPlayer(duelData.player));
         }
-        List<DuelEffect> effectList = new List<DuelEffect>();
+        List<CardEffect> effectList = new List<CardEffect>();
         int player;
         if (order % 2 == 0) player = duelData.player;
         else player = GetOppPlayer(duelData.player);
-        foreach (DuelEffect cardeffect in duelData.activatableEffect)
+        foreach (CardEffect cardeffect in duelData.activatableEffect)
         { 
             if ((order == 0 || order == 1) && cardeffect.duelcard.controller == player && cardeffect.effectType == EffectType.musttrigger &&
                 cardeffect.speed == 1)
@@ -828,7 +828,7 @@ public class Duel : MonoBehaviour
     public void SetCardOutLine()
     {
         if (!IsPlayerOwn(duelData.opWho)) return;
-        foreach (DuelEffect cardEffect in duelData.activatableEffect)
+        foreach (CardEffect cardEffect in duelData.activatableEffect)
         {
             if (cardEffect.duelcard.position == CardPosition.handcard)
             {
@@ -844,7 +844,7 @@ public class Duel : MonoBehaviour
             duelData.activatableEffect.Clear();
             return;
         }
-        foreach (DuelEffect cardEffect in duelData.activatableEffect)
+        foreach (CardEffect cardEffect in duelData.activatableEffect)
         {
             if (cardEffect.duelcard.position == CardPosition.handcard)
             {
@@ -1372,9 +1372,9 @@ public class Duel : MonoBehaviour
 
     public bool CardActivated(DuelCard duelcard, int effect)
     { // 卡牌的效果是否已经发动
-        foreach (DuelEffect duelEffect in duelData.chainEffect)
+        foreach (CardEffect cardEffect in duelData.chainEffect)
         {
-            if (duelEffect.duelcard.Equals(duelcard) && duelEffect.effect == effect)
+            if (cardEffect.duelcard.Equals(duelcard) && cardEffect.effect == effect)
                 return true;
         }
         return false;
@@ -1631,11 +1631,11 @@ public class Duel : MonoBehaviour
         return null;
     }
 
-    private void LimitCount(DuelCard duelcard, int effect, List<int> limitTypes)
+    private void LimitCount(DuelCard duelcard, int effect, List<EffectLimit> eLimits)
     {
-        foreach (int limitType in limitTypes)
+        foreach (EffectLimit eLimit in eLimits)
         {
-            ActivateLimit limit = FindLimit(duelcard, effect, limitType);
+            ActivateLimit limit = FindLimit(duelcard, effect, eLimit.type);
             if (limit != null) limit.count++;
         }
     }

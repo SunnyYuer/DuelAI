@@ -32,12 +32,12 @@ public class DuelDataManager
     public List<ActivateLimit>[] activatelimit;
 
     // 效果连锁
-    public List<DuelEffect> chainEffect;
-    public List<DuelEffect> waitEffect; // 不入连锁，等待连锁完后要发动的效果
+    public List<CardEffect> chainEffect;
+    public List<CardEffect> waitEffect; // 不入连锁，等待连锁完后要发动的效果
     public bool effectChain; // 是否正在连锁
 
     // 临时保存
-    public List<DuelEffect> activatableEffect;
+    public List<CardEffect> activatableEffect;
     public int placeSelect; // 选择卡牌放置的位置
 
     public DuelDataManager(int peopleNum)
@@ -50,9 +50,9 @@ public class DuelDataManager
         duelbuff = new List<DuelBuff>();
         eventDate = new List<EventData>();
         record = new List<DuelRecord>();
-        chainEffect = new List<DuelEffect>();
-        waitEffect = new List<DuelEffect>();
-        activatableEffect = new List<DuelEffect>();
+        chainEffect = new List<CardEffect>();
+        waitEffect = new List<CardEffect>();
+        activatableEffect = new List<CardEffect>();
         turnNum = 0;
         effectChain = false;
     }
@@ -155,19 +155,14 @@ public class DuelCard : Card
 /// </summary>
 public class CardEffect
 {
+    public DuelCard duelcard;
     public int effect;
     public int effectType;
+    public int speed;
     public bool condition;
     public bool cost;
     public bool position; // 是否有位置判断，没有就是默认位置
     public List<EffectLimit> limit;
-
-    public CardEffect(int effect, int effectType)
-    {
-        this.effect = effect;
-        this.effectType = effectType;
-        limit = new List<EffectLimit>();
-    }
 
     public void SetCondition()
     {
@@ -296,19 +291,6 @@ public class EventData
     public int oplayer;//执行事件的玩家
     public int gameEvent;
     public Dictionary<string, object> data;
-}
-
-/// <summary>
-/// 可发动的卡牌效果
-/// </summary>
-public class DuelEffect
-{
-    public DuelCard duelcard;
-    public int effect;
-    public int effectType;
-    public int speed;
-    public bool cost;
-    public List<int> limitType;
 }
 
 /// <summary>

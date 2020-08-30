@@ -6,7 +6,7 @@ cost = true
 testcard = "71703785"
 
 function c71703785()
-    local effect1 = CardEffect.New(1, EffectType.cantrigger)
+    local effect1 = Duel:CreateEffect(1, EffectType.cantrigger)
     effect1:SetCondition()
     effect1:SetCost()
     Duel.thiscard.cardeffect:Add(effect1)
