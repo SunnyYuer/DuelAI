@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -635,7 +635,7 @@ public class Duel : MonoBehaviour
     }
 
     private IEnumerator ConEffectApply()
-    {
+    { // 永续效果立即生效
         for (int player = 0; player < duelData.playerNum; player++)
         {
             ScanEffect(player, EffectType.continuous);
@@ -969,7 +969,7 @@ public class Duel : MonoBehaviour
             if (IsPlayerOwn(duelData.opWho))
                 return CardMean.facedowndef;
             else
-                return CardMean.facedowndef;
+                return CardMean.faceupatk;
         }
         if (gameEvent == GameEvent.specialsummon)
         {
@@ -1194,10 +1194,11 @@ public class Duel : MonoBehaviour
         List<DuelCard> cardList = GetTargetCard(targetcard);
         foreach (DuelCard duelcard in cardList)
         { // 重置双方场上和手卡的信息
-            duelcard.SetCard(cardDic[duelcard.id]);
+            duelcard.ResetCard(cardDic[duelcard.id]);
         }
         foreach (CardEffect buff in duelData.buffeffect)
         { // 让buff重新生效
+            // 后期加入动作后要注意不要有动作
             BuffApply(buff);
         }
     }

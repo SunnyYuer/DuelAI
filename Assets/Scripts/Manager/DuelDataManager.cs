@@ -150,6 +150,15 @@ public class DuelCard : Card
     {
         return MemberwiseClone() as DuelCard;
     }
+
+    public void ResetCard(Card card)
+    {
+        attribute = card.attribute;
+        level = card.level;
+        race = card.race;
+        atk = card.atk;
+        def = card.def;
+    }
 }
 
 /// <summary>
