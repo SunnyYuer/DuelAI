@@ -6,18 +6,16 @@ cost = true
 testcard = "71703785"
 
 function c71703785()
-    local effect1 = Duel:CreateEffect(1, EffectType.cantrigger)
+    local effect1 = Duel:CreateEffect(EffectType.cantrigger)
     effect1:SetCondition()
     effect1:SetCost()
     Duel.thiscard.cardeffect:Add(effect1)
+
+    local effect2 = Duel:CreateEffect(EffectType.continuous)
+    effect2:SetCondition()
+    effect2:SetConTime(0, GamePhase.damageStepEnd)
+    Duel.thiscard.cardeffect:Add(effect2)
     --[[
-    if(c71703785condition1()) then
-        Duel:SetCanTriggerEffect(1, cost)
-    end
-    if(c71703785condition2()) then
-        local buff = c71703785buff2()
-        Duel:SetContinuousEffect(buff)
-    end
     if(c71703785condition3()) then
         Duel:SetCanTriggerEffect(3)
     end
@@ -37,7 +35,7 @@ function c71703785effect1()
 end
 
 function c71703785condition2()
-    if(duelData.duelPhase == GamePhase.damageStepStart) then
+    if(duelData.duelPhase >= GamePhase.damageStepStart and duelData.duelPhase <= GamePhase.damageStepEnd) then
     if(Duel:ThisCardIsBattle()) then
     if(Duel:GetAntiMonster().attribute == "暗") then
         return true
@@ -48,14 +46,7 @@ function c71703785condition2()
 end
 
 function c71703785effect2()
-    Duel.thiscard.atk = Duel.thiscard.atk * 2
-end
-
-function c71703785buff2()
-    local buff = Duel:CreateDuelBuff(2)
-    buff:SetConTime(duelData.turnNum, GamePhase.damageStepEnd)
-    buff:SetBuff(BuffType.atknew)
-    return buff
+    Duel:AttackNew(Duel.thiscard.atk * 2)
 end
 
 function c71703785condition3()

@@ -10,7 +10,7 @@ public class DuelEvent : MonoBehaviour
     private Duel duel;
     public DuelDataManager duelData;
     public DuelCard thiscard; // 当前卡
-    public CardEffect cardEffect; // 当前检查的效果
+    public CardEffect thiseffect; // 当前检查的效果
     public bool precheck; // 发动效果和支付代价前预先检查能否执行
     private bool activatable; // 卡牌能否发动
 
@@ -42,21 +42,20 @@ public class DuelEvent : MonoBehaviour
     /// <param name="effect"></param>
     public void SetThisEffect(int effect)
     {
-        cardEffect = thiscard.cardeffect[effect - 1];
+        thiseffect = thiscard.cardeffect[effect - 1];
     }
 
     /// <summary>
     /// 创建卡牌效果
     /// </summary>
-    /// <param name="effect"></param>
     /// <param name="effectType"></param>
     /// <returns></returns>
-    public CardEffect CreateEffect(int effect, int effectType)
+    public CardEffect CreateEffect(int effectType)
     {
         CardEffect cEffect = new CardEffect
         {
             duelcard = thiscard,
-            effect = effect,
+            effect = thiscard.cardeffect.Count + 1,
             effectType = effectType,
             limit = new List<EffectLimit>(),
         };
@@ -70,48 +69,34 @@ public class DuelEvent : MonoBehaviour
     {
         if (activatable)
         {
-            int speed = 1;
-            if (thiscard.type.Contains(CardType.monster) && thiscard.position == CardPosition.handcard && !thiscard.infopublic)
-            { // 从手卡发动的怪兽的诱发效果，尽管咒文速度是1，实际处理时当作2速
-                speed = 2;
+            if (thiseffect.effectType < EffectType.activate)
+            {
+                int speed = 1;
+                if (thiscard.type.Contains(CardType.monster) && thiscard.position == CardPosition.handcard && !thiscard.infopublic)
+                { // 从手卡发动的怪兽的诱发效果，尽管咒文速度是1，实际处理时当作2速
+                    speed = 2;
+                }
+                if (thiscard.type.Contains(TrapType.counter))
+                { // 反击陷阱为3速
+                    speed = 3;
+                }
+                thiseffect.speed = speed;
+                duelData.activatableEffect.Add(thiseffect);
             }
-            if (thiscard.type.Contains(TrapType.counter))
-            { // 反击陷阱为3速
-                speed = 3;
+            if (thiseffect.effectType == EffectType.continuous)
+            {
+                duelData.immediateEffect.Add(thiseffect);
+                if (thiseffect.contime != null)
+                {
+                    if (thiseffect.contime.turn >= 0)
+                        thiseffect.contime.toturn = thiseffect.contime.turn + duelData.turnNum;
+                    else
+                        thiseffect.contime.toturn = 999;
+                    duelData.buffeffect.Add(thiseffect);
+                }
             }
-            cardEffect.speed = speed;
-            duelData.activatableEffect.Add(cardEffect);
         }
         activatable = true; // 一张卡可能有多个效果能发动
-    }
-
-    /// <summary>
-    /// 设置永续效果
-    /// </summary>
-    /// <param name="buff"></param>
-    public void SetContinuousEffect(DuelBuff buff)
-    {
-        if (!duelData.duelbuff.Contains(buff))
-        {
-            duelData.duelbuff.Add(buff);
-            duel.BuffEffect(buff);
-        }
-    }
-
-    /// <summary>
-    /// 创建buff
-    /// </summary>
-    /// <returns></returns>
-    public DuelBuff CreateDuelBuff(int effect)
-    {
-        DuelBuff buff = duel.GetDuelBuff(thiscard, effect);
-        if (buff != null) return buff;
-        buff = new DuelBuff
-        {
-            fromcard = thiscard,
-            effect = effect
-        };
-        return buff;
     }
 
     /// <summary>
@@ -260,10 +245,10 @@ public class DuelEvent : MonoBehaviour
         if (precheck)
         {
             if (!duel.SpecialSummonCheck()) activatable = false;
-            if (duelcard.position == CardPosition.handcard && duelcard.Equals(thiscard) && cardEffect.effectType == EffectType.cantrigger)
+            if (duelcard.position == CardPosition.handcard && duelcard.Equals(thiscard) && thiseffect.effectType == EffectType.cantrigger)
             {
-                cardEffect.SetLimit(-1, LimitType.specialsummonself, 1);
-                if (!duel.LimitCheck(thiscard, cardEffect.effect, LimitType.specialsummonself)) activatable = false;
+                thiseffect.SetLimit(-1, LimitType.specialsummonself, 1);
+                if (!duel.LimitCheck(thiscard, thiseffect.effect, LimitType.specialsummonself)) activatable = false;
             }
             return;
         }
@@ -345,6 +330,16 @@ public class DuelEvent : MonoBehaviour
             gameEvent = GameEvent.afterthat,
         };
         duelData.eventDate.Add(eData);
+    }
+
+    /// <summary>
+    /// 攻击力变更
+    /// </summary>
+    /// <param name="atk"></param>
+    public void AttackNew(int atk)
+    {
+        if (precheck) return;
+        thiscard.atk = atk;
     }
 
     /// <summary>

@@ -69,11 +69,12 @@ public class TrapType
 public class EffectType
 {
     public const int startup = 1; // 启动效果
-    public const int continuous = 2; // 永续效果
-    public const int cantrigger = 4; // 选发诱发效果
-    public const int musttrigger = 5; // 必发诱发效果
-    public const int cantriggerinstant = 7; // 选发诱发即时效果
-    public const int musttriggerinstant = 8; // 必发诱发即时效果
+    public const int cantrigger = 2; // 选发诱发效果
+    public const int musttrigger = 3; // 必发诱发效果
+    public const int cantriggerinstant = 4; // 选发诱发即时效果
+    public const int musttriggerinstant = 5; // 必发诱发即时效果
+    public const int activate = 6; // 需要发动
+    public const int continuous = 7; // 永续效果
 }
 
 public class CardMean

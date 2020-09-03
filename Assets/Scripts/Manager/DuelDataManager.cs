@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +13,7 @@ public class DuelDataManager
     public int opWho; // 在效果处理的玩家
     public CardDataManager cardData;
     public List<DuelCase> duelcase;
-    public List<DuelBuff> duelbuff;
+    public List<CardEffect> buffeffect;
     public List<EventData> eventDate;
     public List<DuelRecord> record;
 
@@ -38,6 +38,7 @@ public class DuelDataManager
 
     // 临时保存
     public List<CardEffect> activatableEffect;
+    public List<CardEffect> immediateEffect;
     public int placeSelect; // 选择卡牌放置的位置
 
     public DuelDataManager(int peopleNum)
@@ -47,12 +48,13 @@ public class DuelDataManager
         InitialArray();
         cardData = new CardDataManager();
         duelcase = new List<DuelCase>();
-        duelbuff = new List<DuelBuff>();
+        buffeffect = new List<CardEffect>();
         eventDate = new List<EventData>();
         record = new List<DuelRecord>();
         chainEffect = new List<CardEffect>();
         waitEffect = new List<CardEffect>();
         activatableEffect = new List<CardEffect>();
+        immediateEffect = new List<CardEffect>();
         turnNum = 0;
         effectChain = false;
     }
@@ -158,11 +160,13 @@ public class CardEffect
     public DuelCard duelcard;
     public int effect;
     public int effectType;
-    public int speed;
     public bool condition;
     public bool cost;
     public bool position; // 是否有位置判断，没有就是默认位置
     public List<EffectLimit> limit;
+    public ConTime contime;
+
+    public int speed;
 
     public void SetCondition()
     {
@@ -193,6 +197,15 @@ public class CardEffect
         };
         limit.Add(elimit);
     }
+
+    public void SetConTime(int conturn, int conphase)
+    {
+        contime = new ConTime
+        {
+            turn = conturn,
+            phase = conphase,
+        };
+    }
 }
 
 public class EffectLimit
@@ -200,6 +213,13 @@ public class EffectLimit
     public int range;
     public int type;
     public int count;
+}
+
+public class ConTime
+{
+    public int turn; // buff持续n回合，-1永续
+    public int phase; // buff持续到哪个阶段
+    public int toturn; // buff持续到n回合
 }
 
 /// <summary>
@@ -218,29 +238,6 @@ public class DuelCase
         card = new List<DuelCard>();
         old = new List<DuelCard>();
         this.gameEvent = gameEvent;
-    }
-}
-
-/// <summary>
-/// 决斗时产生的增减益状态
-/// </summary>
-public class DuelBuff
-{
-    public DuelCard fromcard;
-    public int effect;
-    public int conturn; // buff持续到n回合，-1永续
-    public int conphase; // buff持续到哪个阶段
-    public int bufftype;
-
-    public void SetConTime(int conturn, int conphase)
-    {
-        this.conturn = conturn;
-        this.conphase = conphase;
-    }
-
-    public void SetBuff(int bufftype)
-    {
-        this.bufftype = bufftype;
     }
 }
 

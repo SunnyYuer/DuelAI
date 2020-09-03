@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -390,6 +390,7 @@ public class Duel : MonoBehaviour
         // 伤害步骤开始时
         duelData.duelPhase = GamePhase.damageStepStart;
         Debug.Log("伤害步骤开始时");
+        yield return ConEffectApply();
         yield return EffectChain();
         BuffRefresh();
         // 伤害计算前
@@ -626,12 +627,23 @@ public class Duel : MonoBehaviour
         yield return WaitGameEvent();
     }
 
-    public void BuffEffect(DuelBuff buff)
-    { // 让buff生效
-        DuelCard duelcard = buff.fromcard;
-        Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + buff.effect + " 生效");
+    private void BuffApply(CardEffect cardEffect)
+    {
+        DuelCard duelcard = cardEffect.duelcard;
         duelEvent.SetThisCard(duelcard);
-        LuaFucRun(duelcard, "effect", buff.effect);
+        LuaFucRun(duelcard, "effect", cardEffect.effect);
+    }
+
+    private IEnumerator ConEffectApply()
+    {
+        for (int player = 0; player < duelData.playerNum; player++)
+        {
+            ScanEffect(player, EffectType.continuous);
+        }
+        foreach (CardEffect cardEffect in duelData.immediateEffect)
+        {
+            yield return EffectApply(cardEffect);
+        }
     }
 
     private IEnumerator MagicTrapLeave()
@@ -682,7 +694,7 @@ public class Duel : MonoBehaviour
         { // 双方都不发动才不继续扫描
             bool chain = false;
             Debug.Log("扫描效果 玩家" + duelData.opWho);
-            ScanEffect(duelData.opWho);
+            ScanEffect(duelData.opWho, EffectType.activate);
             SetCardOutLine();
             if (duelData.activatableEffect.Count > 0)
             {
@@ -764,7 +776,7 @@ public class Duel : MonoBehaviour
             duelData.opWho = duelData.player;
     }
 
-    public int ScanEffect(int player)
+    public int ScanEffect(int player, int effectType)
     {
         duelData.opWho = player;
         duelEvent.precheck = true;
@@ -779,6 +791,8 @@ public class Duel : MonoBehaviour
             duelEvent.SetThisCard(duelcard);
             foreach (CardEffect cEffect in duelcard.cardeffect)
             {
+                if (effectType == EffectType.activate && cEffect.effectType > EffectType.activate) continue;
+                if (effectType == EffectType.continuous && cEffect.effectType != EffectType.continuous) continue;
                 if (!ActivateCheck(duelcard, cEffect)) continue;
                 duelEvent.SetThisEffect(cEffect.effect);
                 if (!cEffect.condition || (cEffect.condition && LuaFucRun<bool>(duelcard, "condition", cEffect.effect)))
@@ -795,13 +809,15 @@ public class Duel : MonoBehaviour
 
     public List<CardEffect> ScanTriggerEffect(int order)
     {
+        int player;
         if (order == 0)
         {
-            ScanEffect(duelData.player);
-            ScanEffect(GetOppPlayer(duelData.player));
+            for (player = 0; player < duelData.playerNum; player++)
+            {
+                ScanEffect(player, EffectType.activate);
+            }
         }
         List<CardEffect> effectList = new List<CardEffect>();
-        int player;
         if (order % 2 == 0) player = duelData.player;
         else player = GetOppPlayer(duelData.player);
         foreach (CardEffect cardeffect in duelData.activatableEffect)
@@ -1155,6 +1171,37 @@ public class Duel : MonoBehaviour
         duelData.duelcase.Add(duelcase);
     }
 
+    private void BuffRefresh()
+    {
+        List<CardEffect> remove = new List<CardEffect>();
+        foreach (CardEffect buff in duelData.buffeffect)
+        {
+            if ((duelData.turnNum == buff.contime.toturn && duelData.duelPhase >= buff.contime.phase) ||
+                duelData.turnNum > buff.contime.toturn)
+            {
+                remove.Add(buff);
+            }
+        }
+        foreach (CardEffect buff in remove)
+        {
+            duelData.buffeffect.Remove(buff);
+        }
+        TargetCard targetcard = new TargetCard();
+        targetcard.SetSide(PlayerSide.both);
+        targetcard.SetPosition(CardPosition.handcard);
+        targetcard.SetPosition(CardPosition.monster);
+        targetcard.SetPosition(CardPosition.magictrap);
+        List<DuelCard> cardList = GetTargetCard(targetcard);
+        foreach (DuelCard duelcard in cardList)
+        { // 重置双方场上和手卡的信息
+            duelcard.SetCard(cardDic[duelcard.id]);
+        }
+        foreach (CardEffect buff in duelData.buffeffect)
+        { // 让buff重新生效
+            BuffApply(buff);
+        }
+    }
+
     private void TurnEndReset()
     {
         int player = duelData.player;
@@ -1333,6 +1380,10 @@ public class Duel : MonoBehaviour
         {
             if (CardActivated(duelcard, cardEffect.effect)) return false;
         }
+        if (cardEffect.effectType == EffectType.continuous)
+        {
+            if (BuffApplied(duelcard, cardEffect.effect)) return false;
+        }
         // 检查发动位置是否正确
         if (!cardEffect.position)
         {
@@ -1366,6 +1417,11 @@ public class Duel : MonoBehaviour
                     if (duelcard.position < CardPosition.area) return false;
                 }
             }
+            if (cardEffect.effectType == EffectType.continuous)
+            { // 必须在场上表侧表示存在
+                if (duelcard.position < CardPosition.area) return false;
+                if (duelcard.mean > CardMean.faceup) return false;
+            }
         }
         return true;
     }
@@ -1379,63 +1435,17 @@ public class Duel : MonoBehaviour
         }
         return false;
     }
+    
+    public bool BuffApplied(DuelCard duelcard, int effect)
+    { // buff是否已经生效
+        foreach (CardEffect buff in duelData.buffeffect)
+        {
+            if (buff.duelcard.Equals(duelcard) && buff.effect == effect)
+                return true;
+        }
+        return false;
+    }
     /* 对决斗的判断 */
-
-    /* 决斗buff */
-    public DuelBuff GetDuelBuff(DuelCard duelcard, int effect)
-    { // 获取已存在的buff
-        foreach (DuelBuff buff in duelData.duelbuff)
-        {
-            if (buff.fromcard.Equals(duelcard) && buff.effect == effect)
-                return buff;
-        }
-        return null;
-    }
-
-    private void BuffRefresh()
-    {
-        List<DuelBuff> remove = new List<DuelBuff>();
-        foreach (DuelBuff buff in duelData.duelbuff)
-        {
-            if ((duelData.turnNum == buff.conturn && duelData.duelPhase >= buff.conphase) ||
-                duelData.turnNum > buff.conturn)
-            {
-                remove.Add(buff);
-            }
-        }
-        foreach (DuelBuff buff in remove)
-        {
-            duelData.duelbuff.Remove(buff);
-        }
-        foreach (DuelBuff rmbuff in remove)
-        {
-            // buff失效后，同类型的buff让其重新生效
-            List<DuelBuff> affected = new List<DuelBuff>();
-            foreach (DuelBuff buff in duelData.duelbuff)
-            {
-                if (buff.bufftype == rmbuff.bufftype)
-                    affected.Add(buff);
-            }
-            if (rmbuff.bufftype == BuffType.atknew)
-            { // 重置所有怪兽的攻击
-                for (int p = 0; p < duelData.playerNum; p++)
-                {
-                    foreach (DuelCard duelcard in duelData.monster[p])
-                    {
-                        if (duelcard != null)
-                        {
-                            duelcard.atk = cardDic[duelcard.id].atk;
-                        }
-                    }
-                }
-            }
-            foreach (DuelBuff buff in affected)
-            {
-                BuffEffect(buff);
-            }
-        }
-    }
-    /* 决斗buff */
 
     /* 目标卡 */
     public List<DuelCard> GetTargetCard(TargetCard targetcard)

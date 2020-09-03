@@ -20,7 +20,7 @@ public class DuelDataManagerWrap
 		L.RegVar("opWho", get_opWho, set_opWho);
 		L.RegVar("cardData", get_cardData, set_cardData);
 		L.RegVar("duelcase", get_duelcase, set_duelcase);
-		L.RegVar("duelbuff", get_duelbuff, set_duelbuff);
+		L.RegVar("buffeffect", get_buffeffect, set_buffeffect);
 		L.RegVar("eventDate", get_eventDate, set_eventDate);
 		L.RegVar("record", get_record, set_record);
 		L.RegVar("LP", get_LP, set_LP);
@@ -39,6 +39,7 @@ public class DuelDataManagerWrap
 		L.RegVar("waitEffect", get_waitEffect, set_waitEffect);
 		L.RegVar("effectChain", get_effectChain, set_effectChain);
 		L.RegVar("activatableEffect", get_activatableEffect, set_activatableEffect);
+		L.RegVar("immediateEffect", get_immediateEffect, set_immediateEffect);
 		L.RegVar("placeSelect", get_placeSelect, set_placeSelect);
 		L.EndClass();
 	}
@@ -272,7 +273,7 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_duelbuff(IntPtr L)
+	static int get_buffeffect(IntPtr L)
 	{
 		object o = null;
 
@@ -280,13 +281,13 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<DuelBuff> ret = obj.duelbuff;
+			System.Collections.Generic.List<CardEffect> ret = obj.buffeffect;
 			ToLua.PushSealed(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index duelbuff on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index buffeffect on a nil value");
 		}
 	}
 
@@ -633,6 +634,25 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_immediateEffect(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			System.Collections.Generic.List<CardEffect> ret = obj.immediateEffect;
+			ToLua.PushSealed(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index immediateEffect on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_placeSelect(IntPtr L)
 	{
 		object o = null;
@@ -804,7 +824,7 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_duelbuff(IntPtr L)
+	static int set_buffeffect(IntPtr L)
 	{
 		object o = null;
 
@@ -812,13 +832,13 @@ public class DuelDataManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			DuelDataManager obj = (DuelDataManager)o;
-			System.Collections.Generic.List<DuelBuff> arg0 = (System.Collections.Generic.List<DuelBuff>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<DuelBuff>));
-			obj.duelbuff = arg0;
+			System.Collections.Generic.List<CardEffect> arg0 = (System.Collections.Generic.List<CardEffect>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<CardEffect>));
+			obj.buffeffect = arg0;
 			return 0;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index duelbuff on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index buffeffect on a nil value");
 		}
 	}
 
@@ -1161,6 +1181,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index activatableEffect on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_immediateEffect(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			System.Collections.Generic.List<CardEffect> arg0 = (System.Collections.Generic.List<CardEffect>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<CardEffect>));
+			obj.immediateEffect = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index immediateEffect on a nil value");
 		}
 	}
 
