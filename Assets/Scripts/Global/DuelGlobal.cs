@@ -104,6 +104,7 @@ public class GamePhase
     public const int damageCalculate = 44;
     public const int damageCalAfter = 45;
     public const int damageStepEnd = 46;
+    public const int battleEnd = 47;
     public const int main2 = 50;
     public const int end = 60;
 }

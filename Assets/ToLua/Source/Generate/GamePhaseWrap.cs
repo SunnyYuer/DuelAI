@@ -20,6 +20,7 @@ public class GamePhaseWrap
 		L.RegConstant("damageCalculate", 44);
 		L.RegConstant("damageCalAfter", 45);
 		L.RegConstant("damageStepEnd", 46);
+		L.RegConstant("battleEnd", 47);
 		L.RegConstant("main2", 50);
 		L.RegConstant("end", 60);
 		L.EndClass();

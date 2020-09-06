@@ -364,7 +364,10 @@ public class Duel : MonoBehaviour
     public void OnBattleButtonClick()
     {
         if (duelData.duelPhase == GamePhase.battle)
+        {
+            duelData.duelPhase = GamePhase.battleEnd;
             StartCoroutine(EndPhase(GamePhase.main2));
+        }
         if (duelData.duelPhase == GamePhase.main1)
             StartCoroutine(EndPhase(GamePhase.battle));
     }
@@ -644,6 +647,7 @@ public class Duel : MonoBehaviour
         {
             yield return EffectApply(cardEffect);
         }
+        duelData.immediateEffect.Clear();
     }
 
     private IEnumerator MagicTrapLeave()
@@ -687,8 +691,11 @@ public class Duel : MonoBehaviour
     {
         duelData.effectChain = true;
         yield return null;
-        if (duelData.chainEffect.Count == 0)
+        if (duelData.chainEffect.Count == 0 && 
+            duelData.duelPhase != GamePhase.battle && duelData.duelPhase != GamePhase.battleEnd)
+        { // 战斗阶段开始和战斗阶段结束时，发动的诱发效果不会组成连锁，而是1个1个的另开连锁发动
             yield return TriggerChain();
+        }
         int noactivate = 0;
         while (noactivate < 2)
         { // 双方都不发动才不继续扫描
@@ -820,22 +827,22 @@ public class Duel : MonoBehaviour
         List<CardEffect> effectList = new List<CardEffect>();
         if (order % 2 == 0) player = duelData.player;
         else player = GetOppPlayer(duelData.player);
-        foreach (CardEffect cardeffect in duelData.activatableEffect)
+        foreach (CardEffect cardEffect in duelData.activatableEffect)
         { 
-            if ((order == 0 || order == 1) && cardeffect.duelcard.controller == player && cardeffect.effectType == EffectType.musttrigger &&
-                cardeffect.speed == 1)
+            if ((order == 0 || order == 1) && cardEffect.duelcard.controller == player && cardEffect.effectType == EffectType.musttrigger &&
+                cardEffect.speed == 1)
             { // 回合玩家的1速必发的诱发类效果  非回合玩家的1速必发的诱发类效果
-                effectList.Add(cardeffect);
+                effectList.Add(cardEffect);
             }
-            if ((order == 2 || order == 3) && cardeffect.duelcard.controller == player && cardeffect.effectType == EffectType.cantrigger &&
-                cardeffect.speed == 1)
+            if ((order == 2 || order == 3) && cardEffect.duelcard.controller == player && cardEffect.effectType == EffectType.cantrigger &&
+                cardEffect.speed == 1)
             { // 回合玩家的公开情报的1速选发的诱发类效果  非回合玩家的公开情报的1速选发的诱发类效果
-                effectList.Add(cardeffect);
+                effectList.Add(cardEffect);
             }
-            if ((order == 4 || order == 5) && cardeffect.duelcard.controller == player && cardeffect.effectType == EffectType.musttriggerinstant &&
-                cardeffect.speed == 2)
+            if ((order == 4 || order == 5) && cardEffect.duelcard.controller == player && cardEffect.effectType == EffectType.musttriggerinstant &&
+                cardEffect.speed == 2)
             { // 回合玩家的2速必发的诱发即时类效果  非回合玩家的2速必发的诱发即时类效果
-                effectList.Add(cardeffect);
+                effectList.Add(cardEffect);
             }
         }
         return effectList;
