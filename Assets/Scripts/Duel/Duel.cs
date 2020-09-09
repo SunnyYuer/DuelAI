@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -604,6 +604,7 @@ public class Duel : MonoBehaviour
         if (cardEffect.cost) yield return PayCost(cardEffect);
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 发动");
         DuelCase duelcase = new DuelCase(way);
+        duelcase.type = "activate";
         duelcase.card.Add(duelcard);
         duelData.duelcase.Add(duelcase);
         if (cardEffect.limit.Count > 0) LimitCount(duelcard, cardEffect.effect, cardEffect.limit);
@@ -618,7 +619,7 @@ public class Duel : MonoBehaviour
         duelEvent.SetThisCard(duelcard);
         LuaFucRun(duelcard, "cost", cardEffect.effect);
         yield return WaitGameEvent();
-        LastTimePointPass();
+        CostTimePointPass();
     }
 
     private IEnumerator EffectApply(CardEffect cardEffect)
@@ -628,6 +629,7 @@ public class Duel : MonoBehaviour
         duelEvent.SetThisCard(duelcard);
         LuaFucRun(duelcard, "effect", cardEffect.effect);
         yield return WaitGameEvent();
+        SetLastCaseType("effect");
     }
 
     private void BuffApply(CardEffect cardEffect)
@@ -691,6 +693,7 @@ public class Duel : MonoBehaviour
     {
         duelData.effectChain = true;
         yield return null;
+        ClearPassCase();
         if (duelData.chainEffect.Count == 0 && 
             duelData.duelPhase != GamePhase.battle && duelData.duelPhase != GamePhase.battleEnd)
         { // 战斗阶段开始和战斗阶段结束时，发动的诱发效果不会组成连锁，而是1个1个的另开连锁发动
@@ -1009,6 +1012,7 @@ public class Duel : MonoBehaviour
             num--;
         }
         duelData.duelcase.Add(duelcase);
+        if (!duelData.effectChain) SetLastCaseType("event");
     }
 
     private void ShowCard(DuelCard duelcard)
@@ -1176,6 +1180,7 @@ public class Duel : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         duelData.duelcase.Add(duelcase);
+        if (!duelData.effectChain) SetLastCaseType("event");
     }
 
     private void BuffRefresh()
@@ -1384,7 +1389,7 @@ public class Duel : MonoBehaviour
             if (duelData.effectChain) return false;
         }
         // 检查效果是否已经发动
-        if (cardEffect.effectType == EffectType.cantrigger || cardEffect.effectType == EffectType.musttrigger)
+        if (cardEffect.effectType < EffectType.activate)
         {
             if (CardActivated(duelcard, cardEffect.effect)) return false;
         }
@@ -1404,21 +1409,6 @@ public class Duel : MonoBehaviour
                 if (duelcard.type.Contains(CardType.magic))
                 { // 魔法卡必须在场上或者手卡
                     if (duelcard.position < CardPosition.handcard) return false;
-                }
-                if (duelcard.type.Contains(CardType.trap))
-                { // 陷阱卡必须在场上
-                    if (duelcard.position < CardPosition.area) return false;
-                }
-            }
-            if (cardEffect.effectType == EffectType.cantrigger || cardEffect.effectType == EffectType.musttrigger)
-            {
-                if (duelcard.type.Contains(CardType.monster))
-                { // 怪兽卡必须在场上或者手卡
-                    if (duelcard.position < CardPosition.handcard) return false;
-                }
-                if (duelcard.type.Contains(CardType.magic))
-                { // 魔法卡必须在场上
-                    if (duelcard.position < CardPosition.area) return false;
                 }
                 if (duelcard.type.Contains(CardType.trap))
                 { // 陷阱卡必须在场上
@@ -1511,11 +1501,32 @@ public class Duel : MonoBehaviour
     /* 目标卡 */
 
     /* 时点 */
+    private void ShowTimePoint()
+    {
+        foreach (DuelCase duelcase in duelData.duelcase)
+        {
+            Debug.Log("事件" + duelcase.gameEvent + " " + duelcase.type + " 时点" + duelcase.timepoint);
+        }
+        Debug.Log("");
+    }
+
+    private void SetLastCaseType(string type)
+    {
+        List<DuelCase> duelcase = duelData.duelcase;
+        for (int i = duelcase.Count - 1; i >= 0; i--)
+        {
+            if (duelcase[i].type == null)
+            {
+                duelcase[i].type = type;
+            }
+            else break;
+        }
+    }
+
     private void ActivateTimePointPass()
     { // 上一个发动时点过时
         List<DuelCase> duelcase = duelData.duelcase;
-        int count = duelcase.Count;
-        for (int i = count - 1; i >= 0; i--)
+        for (int i = duelcase.Count - 1; i >= 0; i--)
         {
             if (duelcase[i].gameEvent == GameEvent.activateeffect || duelcase[i].gameEvent == GameEvent.activatecard)
             {
@@ -1525,10 +1536,18 @@ public class Duel : MonoBehaviour
         }
     }
 
-    private void LastTimePointPass()
+    private void CostTimePointPass()
     {
-        int count = duelData.duelcase.Count;
-        duelData.duelcase[count - 1].timepoint = 1;
+        List<DuelCase> duelcase = duelData.duelcase;
+        for (int i = duelcase.Count - 1; i >= 0; i--)
+        {
+            if (duelcase[i].type == null)
+            {
+                duelcase[i].type = "cost";
+                duelcase[i].timepoint = 1;
+            }
+            else break;
+        }
     }
 
     private void AllTimePointPass()
@@ -1537,6 +1556,24 @@ public class Duel : MonoBehaviour
         {
             duelcase.timepoint = 1;
         }
+    }
+
+    private void ClearPassCase()
+    { // 清理过期的场合
+        DuelCase duelcase = new DuelCase(GameEvent.newchain);
+        duelcase.type = "chain";
+        duelData.duelcase.Add(duelcase);
+        List<DuelCase> caseList = duelData.duelcase;
+        int i = 0;
+        for (; i < caseList.Count; i++)
+        {
+            if (caseList[i].gameEvent == GameEvent.newchain)
+            {
+                if (caseList[i].timepoint == 1) break;
+                else return;
+            }
+        }
+        duelData.duelcase.RemoveRange(0, i + 1);
     }
     /* 时点 */
 

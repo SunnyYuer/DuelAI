@@ -15,11 +15,10 @@ function c71703785()
     effect2:SetCondition()
     effect2:SetConTime(0, GamePhase.damageStepEnd)
     Duel.thiscard.cardeffect:Add(effect2)
-    --[[
-    if(c71703785condition3()) then
-        Duel:SetCanTriggerEffect(3)
-    end
-    ]]
+
+    local effect3 = Duel:CreateEffect(EffectType.cantrigger)
+    effect3:SetCondition()
+    Duel.thiscard.cardeffect:Add(effect3)
 end
 
 function c71703785condition1()

@@ -237,6 +237,7 @@ public class ConTime
 public class DuelCase
 {
     public int gameEvent;
+    public string type;
     public int timepoint; // 0 当前时点 1 过去时点
     public int player;
     public List<DuelCard> card;

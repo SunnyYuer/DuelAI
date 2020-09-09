@@ -126,6 +126,7 @@ public class GameEvent
     public const int battledestroy = 13;
     public const int effectdestroy = 14;
     public const int afterthat = 15;
+    public const int newchain = 16;
 }
 
 public class PlayerAction : GameEvent
