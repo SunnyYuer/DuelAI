@@ -193,7 +193,11 @@ public class Duel : MonoBehaviour
 
     private void MainView()
     {
-        if (!duelAI.done && duelData.eventDate.Count == 0) return;
+        if (!duelAI.done && duelData.eventDate.Count == 0 &&
+            (duelData.duelPhase <= GamePhase.battle || duelData.duelPhase >= GamePhase.battleEnd))
+        {
+            return;
+        }
         mainCamera.transform.position = new Vector3(3f, 2.5f, -1f);
         mainCamera.transform.eulerAngles = new Vector3(35f, 0f, 0f);
         cardLayoutOwn.GetComponent<CanvasGroup>().alpha = 1;
@@ -507,6 +511,7 @@ public class Duel : MonoBehaviour
                     intdata2 = (int)eData.data["gameEvent"];
                     MainView();
                     yield return SelectCard(cardlistdata, intdata1);
+                    yield return new WaitForSeconds(1);
                     if (intdata2 == GameEvent.discard)
                     {
                         duelEvent.DisCard(cardlistdata);
@@ -560,7 +565,8 @@ public class Duel : MonoBehaviour
             duelData.eventDate.RemoveAt(0);
             if (duelData.eventDate.Count == 0 && !duelData.effectChain)
             {
-                NewChain();
+                duelData.opWho = duelData.player;
+                StartCoroutine(EffectChain());
             }
         }
     }
@@ -682,67 +688,58 @@ public class Duel : MonoBehaviour
         yield return EffectChain();
     }
 
-    public void NewChain()
-    {
-        Debug.Log("效果处理完后新开连锁");
-        duelData.opWho = duelData.player;
-        StartCoroutine(EffectChain());
-    }
-
     private IEnumerator EffectChain()
     {
         duelData.effectChain = true;
         yield return null;
-        ClearPassCase();
-        if (duelData.chainEffect.Count == 0 && 
-            duelData.duelPhase != GamePhase.battle && duelData.duelPhase != GamePhase.battleEnd)
-        { // 战斗阶段开始和战斗阶段结束时，发动的诱发效果不会组成连锁，而是1个1个的另开连锁发动
-            yield return TriggerChain();
-        }
-        int noactivate = 0;
-        while (noactivate < 2)
-        { // 双方都不发动才不继续扫描
-            bool chain = false;
-            Debug.Log("扫描效果 玩家" + duelData.opWho);
-            ScanEffect(duelData.opWho, EffectType.activate);
-            SetCardOutLine();
-            if (duelData.activatableEffect.Count > 0)
-            {
-                CardEffect activateEffect = null;
-                yield return WantActivate();
-                if (Tip.select == 1)
-                { // 由玩家选择或者AI选择
-                    int select = 0;
-                    activateEffect = duelData.activatableEffect[select];
-                    chain = true;
-                }
-                CutCardOutLine();
-                if (chain)
-                {
-                    yield return ActivateEffect(activateEffect);
-                }
+        bool newchain = true;
+        while (newchain)
+        {
+            ClearPassCase();
+            if (duelData.chainEffect.Count == 0 &&
+                duelData.duelPhase != GamePhase.battle && duelData.duelPhase != GamePhase.battleEnd)
+            { // 战斗阶段开始和战斗阶段结束时，发动的诱发效果不会组成连锁，而是1个1个的另开连锁发动
+                yield return TriggerChain();
             }
-            if (chain) noactivate = 0;
-            else noactivate++;
-            duelData.opWho = GetOppPlayer(duelData.opWho);
+            int noactivate = 0;
+            while (noactivate < 2)
+            { // 双方都不发动才不继续扫描
+                bool chain = false;
+                Debug.Log("扫描效果 玩家" + duelData.opWho);
+                ScanEffect(duelData.opWho, EffectType.activate);
+                SetCardOutLine();
+                if (duelData.activatableEffect.Count > 0)
+                {
+                    CardEffect activateEffect = null;
+                    yield return WantActivate();
+                    if (Tip.select == 1)
+                    { // 由玩家选择或者AI选择
+                        int select = 0;
+                        activateEffect = duelData.activatableEffect[select];
+                        chain = true;
+                    }
+                    CutCardOutLine();
+                    if (chain)
+                    {
+                        yield return ActivateEffect(activateEffect);
+                    }
+                }
+                if (chain) noactivate = 0;
+                else noactivate++;
+                duelData.opWho = GetOppPlayer(duelData.opWho);
+            }
+            if (duelData.chainEffect.Count == 0) newchain = false;
+            while (duelData.chainEffect.Count > 0)
+            {
+                AllTimePointPass();
+                duelData.opWho = duelData.chainEffect[0].duelcard.controller;
+                yield return EffectApply(duelData.chainEffect[0]);
+                duelData.chainEffect.RemoveAt(0);
+            }
+            ChainLimitReset();
+            yield return MagicTrapLeave();
+            duelData.opWho = duelData.player;
         }
-        bool newchain = false;
-        if (duelData.chainEffect.Count > 0) newchain = true;
-        while (duelData.chainEffect.Count > 0)
-        {
-            AllTimePointPass();
-            duelData.opWho = duelData.chainEffect[0].duelcard.controller;
-            yield return EffectApply(duelData.chainEffect[0]);
-            duelData.chainEffect.RemoveAt(0);
-        }
-        ChainLimitReset();
-        yield return MagicTrapLeave();
-        if (newchain)
-        {
-            NewChain();
-            yield break;
-        }
-        duelData.opWho = duelData.player;
         duelData.duelcase.Clear();
         duelData.effectChain = false;
         MainView();
