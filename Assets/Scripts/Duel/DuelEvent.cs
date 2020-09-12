@@ -52,14 +52,15 @@ public class DuelEvent : MonoBehaviour
     /// <returns></returns>
     public CardEffect CreateEffect(int effectType)
     {
-        CardEffect cEffect = new CardEffect
+        CardEffect cardEffect = new CardEffect
         {
             duelcard = thiscard,
             effect = thiscard.cardeffect.Count + 1,
             effectType = effectType,
             limit = new List<EffectLimit>(),
         };
-        return cEffect;
+        thiscard.cardeffect.Add(cardEffect);
+        return cardEffect;
     }
 
     /// <summary>

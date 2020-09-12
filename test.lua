@@ -3,22 +3,19 @@ Duel = DuelLayout:GetComponent("DuelEvent")
 duelData = Duel.duelData
 cost = true
 
-testcard = "71703785"
+testcard = "71703785,72892473"
 
 function c71703785()
     local effect1 = Duel:CreateEffect(EffectType.cantrigger)
     effect1:SetCondition()
     effect1:SetCost()
-    Duel.thiscard.cardeffect:Add(effect1)
 
     local effect2 = Duel:CreateEffect(EffectType.continuous)
     effect2:SetCondition()
     effect2:SetConTime(0, GamePhase.damageStepEnd)
-    Duel.thiscard.cardeffect:Add(effect2)
 
     local effect3 = Duel:CreateEffect(EffectType.cantrigger)
     effect3:SetCondition()
-    Duel.thiscard.cardeffect:Add(effect3)
 end
 
 function c71703785condition1()
