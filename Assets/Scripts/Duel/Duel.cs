@@ -1418,6 +1418,12 @@ public class Duel : MonoBehaviour
                 if (duelcard.mean > CardMean.faceup) return false;
             }
         }
+        // 检查效果速度
+        if (duelData.chainEffect.Count != 0)
+        {
+            if (duelData.chainEffect[0].speed == 1 && cardEffect.speed == 1) return false;
+            if (duelData.chainEffect[0].speed >= 2 && cardEffect.speed < duelData.chainEffect[0].speed) return false;
+        }
         return true;
     }
 
