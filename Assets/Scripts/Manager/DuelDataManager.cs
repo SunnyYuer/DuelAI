@@ -169,13 +169,12 @@ public class CardEffect
     public DuelCard duelcard;
     public int effect;
     public int effectType;
+    public int speed;
     public bool condition;
     public bool cost;
     public bool position; // 是否有位置判断，没有就是默认位置
     public List<EffectLimit> limit;
     public ConTime contime;
-
-    public int speed;
 
     public void SetCondition()
     {

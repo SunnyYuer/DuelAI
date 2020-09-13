@@ -28,11 +28,11 @@ public class Duel : MonoBehaviour
     public DuelHint duelhint;
     public static SpriteManager spriteManager;
     public static Sprite UIMask;
-    private DuelEvent duelEvent;
     public static DuelDataManager duelData;
     public static Dictionary<string, Card> cardDic;
-    public LuaCode luaCode;
-    public DuelAI duelAI;
+    private DuelEvent duelEvent;
+    private LuaCode luaCode;
+    private DuelAI duelAI;
 
     // Start is called before the first frame update
     IEnumerator Start()
@@ -41,6 +41,7 @@ public class Duel : MonoBehaviour
         luaCode = new LuaCode();
         spriteManager = new SpriteManager();
         duelEvent = gameObject.GetComponent<DuelEvent>();
+        duelEvent.Initialize(this);
         duelAI = new DuelAI(this, duelEvent);
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
@@ -54,7 +55,6 @@ public class Duel : MonoBehaviour
         magictrapOps.SetCover();
         //加载卡组数据
         ReadDeckFile();
-        duelEvent.duelData = duelData;
         luaCode.SetCode(duelData.cardData.allcode);
         luaCode.SetTestCard();
         ReadCardEffect();
@@ -1271,6 +1271,46 @@ public class Duel : MonoBehaviour
         return order;
     }
 
+    public int GetCardSpeed(CardEffect cardEffect)
+    {
+        int speed = 0;
+        DuelCard duelcard = cardEffect.duelcard;
+        if (duelcard.type.Contains(CardType.monster))
+        {
+            if (cardEffect.effectType == EffectType.cantriggerinstant || cardEffect.effectType == EffectType.musttriggerinstant)
+            { // 怪兽的诱发即时效果为2速
+                speed = 2;
+            }
+            else
+            { // 其他怪兽效果为1速
+                speed = 1;
+            }
+        }
+        if (duelcard.type.Contains(CardType.magic))
+        {
+            if (duelcard.type.Contains(MagicType.quick))
+            { // 速攻魔法为2速
+                speed = 2;
+            }
+            else
+            { // 其他魔法为1速
+                speed = 1;
+            }
+        }
+        if (duelcard.type.Contains(CardType.trap))
+        {
+            if (duelcard.type.Contains(TrapType.counter))
+            { // 反击陷阱为3速
+                speed = 3;
+            }
+            else
+            { // 其他陷阱为2速
+                speed = 2;
+            }
+        }
+        return speed;
+    }
+
     public List<int> GetMonsterPlace()
     { // 获取怪兽可放置的位置
         List<int> place = new List<int>();
@@ -1370,6 +1410,26 @@ public class Duel : MonoBehaviour
         return true;
     }
 
+    public bool CardActivated(DuelCard duelcard, int effect)
+    { // 卡牌的效果是否已经发动
+        foreach (CardEffect cardEffect in duelData.chainEffect)
+        {
+            if (cardEffect.duelcard.Equals(duelcard) && cardEffect.effect == effect)
+                return true;
+        }
+        return false;
+    }
+
+    public bool BuffApplied(DuelCard duelcard, int effect)
+    { // buff是否已经生效
+        foreach (CardEffect buff in duelData.buffeffect)
+        {
+            if (buff.duelcard.Equals(duelcard) && buff.effect == effect)
+                return true;
+        }
+        return false;
+    }
+
     public bool ActivateCheck(DuelCard duelcard, CardEffect cardEffect)
     {  // 检查能否发动
         // 检查场上是否有足够的位置
@@ -1403,6 +1463,9 @@ public class Duel : MonoBehaviour
                 { // 怪兽卡必须在场上
                     if (duelcard.position < CardPosition.area) return false;
                 }
+            }
+            if (cardEffect.effectType < EffectType.activate)
+            {
                 if (duelcard.type.Contains(CardType.magic))
                 { // 魔法卡必须在场上或者手卡
                     if (duelcard.position < CardPosition.handcard) return false;
@@ -1418,33 +1481,25 @@ public class Duel : MonoBehaviour
                 if (duelcard.mean > CardMean.faceup) return false;
             }
         }
+        return true;
+    }
+
+    public bool ChainCheck(CardEffect cardEffect)
+    {
+        DuelCard duelcard = cardEffect.duelcard;
+        if (duelcard.type.Contains(CardType.monster) &&
+                (cardEffect.effectType == EffectType.cantrigger || cardEffect.effectType == EffectType.musttrigger))
+        { // 从手卡发动的怪兽的诱发效果，尽管咒文速度是1，实际处理时当作2速
+            if (duelcard.position == CardPosition.handcard && !duelcard.infopublic) cardEffect.speed = 2;
+            else cardEffect.speed = 1;
+        }
         // 检查效果速度
-        if (duelData.chainEffect.Count != 0)
+        if (cardEffect.effectType < EffectType.activate && duelData.chainEffect.Count != 0)
         {
             if (duelData.chainEffect[0].speed == 1 && cardEffect.speed == 1) return false;
             if (duelData.chainEffect[0].speed >= 2 && cardEffect.speed < duelData.chainEffect[0].speed) return false;
         }
         return true;
-    }
-
-    public bool CardActivated(DuelCard duelcard, int effect)
-    { // 卡牌的效果是否已经发动
-        foreach (CardEffect cardEffect in duelData.chainEffect)
-        {
-            if (cardEffect.duelcard.Equals(duelcard) && cardEffect.effect == effect)
-                return true;
-        }
-        return false;
-    }
-    
-    public bool BuffApplied(DuelCard duelcard, int effect)
-    { // buff是否已经生效
-        foreach (CardEffect buff in duelData.buffeffect)
-        {
-            if (buff.duelcard.Equals(duelcard) && buff.effect == effect)
-                return true;
-        }
-        return false;
     }
     /* 对决斗的判断 */
 

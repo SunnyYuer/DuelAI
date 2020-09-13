@@ -14,16 +14,10 @@ public class DuelEvent : MonoBehaviour
     public bool precheck; // 发动效果和支付代价前预先检查能否执行
     private bool activatable; // 卡牌能否发动
 
-    // Start is called before the first frame update
-    void Start()
+    public void Initialize(Duel duel)
     {
-        duel = gameObject.GetComponent<Duel>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        this.duel = duel;
+        duelData = Duel.duelData;
     }
 
     /// <summary>
@@ -59,6 +53,7 @@ public class DuelEvent : MonoBehaviour
             effectType = effectType,
             limit = new List<EffectLimit>(),
         };
+        cardEffect.speed = duel.GetCardSpeed(cardEffect);
         thiscard.cardeffect.Add(cardEffect);
         return cardEffect;
     }
@@ -72,17 +67,8 @@ public class DuelEvent : MonoBehaviour
         {
             if (thiseffect.effectType < EffectType.activate)
             {
-                int speed = 1;
-                if (thiscard.type.Contains(CardType.monster) && thiscard.position == CardPosition.handcard && !thiscard.infopublic)
-                { // 从手卡发动的怪兽的诱发效果，尽管咒文速度是1，实际处理时当作2速
-                    speed = 2;
-                }
-                if (thiscard.type.Contains(TrapType.counter))
-                { // 反击陷阱为3速
-                    speed = 3;
-                }
-                thiseffect.speed = speed;
-                duelData.activatableEffect.Add(thiseffect);
+                if (duel.ChainCheck(thiseffect))
+                    duelData.activatableEffect.Add(thiseffect);
             }
             if (thiseffect.effectType == EffectType.continuous)
             {

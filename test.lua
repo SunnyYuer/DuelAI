@@ -3,7 +3,7 @@ Duel = DuelLayout:GetComponent("DuelEvent")
 duelData = Duel.duelData
 cost = true
 
-testcard = "71703785,72892473"
+testcard = "71703785,72892473,77538567"
 
 function c71703785()
     local effect1 = Duel:CreateEffect(EffectType.cantrigger)
@@ -65,7 +65,7 @@ function c71703785effect3()
 end
 
 function c72892473()
-    --Duel:SetStartupEffect(1)
+    local effect1 = Duel:CreateEffect(EffectType.startup)
 end
  
 function c72892473effect1()
@@ -81,12 +81,8 @@ function c72892473effect1()
 end
 
 function c77538567()
-    --[[
-    if(c77538567condition1()) then
-        print("1111111111111判断正确")
-        Duel:SetCanTriggerEffect(1)
-    end
-    ]]
+    local effect1 = Duel:CreateEffect(EffectType.cantrigger)
+    effect1:SetCondition()
 end
 
 function c77538567condition1()
