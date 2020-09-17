@@ -330,6 +330,21 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
+    /// 那个发动无效
+    /// </summary>
+    public DuelCard ActivateInvalid()
+    {
+        if (precheck) return duelData.chainEffect[0].duelcard;
+        EventData eData = new EventData
+        {
+            oplayer = duelData.opWho,
+            gameEvent = GameEvent.activateinvalid,
+        };
+        duelData.eventDate.Add(eData);
+        return duelData.chainEffect[1].duelcard;
+    }
+
+    /// <summary>
     /// 场合的判断
     /// </summary>
     /// <param name="targetcard"></param>

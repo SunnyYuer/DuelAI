@@ -7,6 +7,7 @@ public class DuelEventWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(DuelEvent), typeof(UnityEngine.MonoBehaviour));
+		L.RegFunction("Initialize", Initialize);
 		L.RegFunction("SetThisCard", SetThisCard);
 		L.RegFunction("SetThisEffect", SetThisEffect);
 		L.RegFunction("CreateEffect", CreateEffect);
@@ -22,6 +23,7 @@ public class DuelEventWrap
 		L.RegFunction("ChangeMean", ChangeMean);
 		L.RegFunction("AfterThat", AfterThat);
 		L.RegFunction("AttackNew", AttackNew);
+		L.RegFunction("ActivateInvalid", ActivateInvalid);
 		L.RegFunction("InCase", InCase);
 		L.RegFunction("InTimePoint", InTimePoint);
 		L.RegFunction("ThisCardIsBattle", ThisCardIsBattle);
@@ -34,6 +36,23 @@ public class DuelEventWrap
 		L.RegVar("thiseffect", get_thiseffect, set_thiseffect);
 		L.RegVar("precheck", get_precheck, set_precheck);
 		L.EndClass();
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int Initialize(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			Duel arg0 = (Duel)ToLua.CheckObject<Duel>(L, 2);
+			obj.Initialize(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -333,6 +352,23 @@ public class DuelEventWrap
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
 			obj.AttackNew(arg0);
 			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ActivateInvalid(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			DuelCard o = obj.ActivateInvalid();
+			ToLua.PushObject(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{

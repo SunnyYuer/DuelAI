@@ -97,5 +97,5 @@ function c77538567condition1()
 end
 
 function c77538567effect1()
-    print("1111111111111发动效果")
+    Duel:ActivateInvalid()
 end

@@ -124,6 +124,7 @@ public class DuelCard : Card
     public int controller; // 控制者
     public int position;
     public int index;
+    public int validtype; // 是否发动无效、效果无效
     public int mean; // 在场上的表示形式
     public bool infopublic; // 情报是否已公开
     public int appearturn; // 出现在场上的回合

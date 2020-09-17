@@ -122,11 +122,13 @@ public class GameEvent
     public const int activatecard = 9;
     public const int activateeffect = 10;
     public const int activateover = 11;
-    public const int battle = 12;
-    public const int battledestroy = 13;
-    public const int effectdestroy = 14;
-    public const int afterthat = 15;
-    public const int newchain = 16;
+    public const int afterthat = 12;
+    public const int newchain = 13;
+    public const int battle = 14;
+    public const int battledestroy = 15;
+    public const int effectdestroy = 16;
+    public const int activateinvalid = 17;
+    public const int effectinvalid = 18;
 }
 
 public class PlayerAction : GameEvent

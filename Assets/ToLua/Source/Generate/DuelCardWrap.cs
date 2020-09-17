@@ -17,6 +17,7 @@ public class DuelCardWrap
 		L.RegVar("controller", get_controller, set_controller);
 		L.RegVar("position", get_position, set_position);
 		L.RegVar("index", get_index, set_index);
+		L.RegVar("validtype", get_validtype, set_validtype);
 		L.RegVar("mean", get_mean, set_mean);
 		L.RegVar("infopublic", get_infopublic, set_infopublic);
 		L.RegVar("appearturn", get_appearturn, set_appearturn);
@@ -192,6 +193,25 @@ public class DuelCardWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index index on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_validtype(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelCard obj = (DuelCard)o;
+			int ret = obj.validtype;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index validtype on a nil value");
 		}
 	}
 
@@ -382,6 +402,25 @@ public class DuelCardWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index index on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_validtype(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelCard obj = (DuelCard)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.validtype = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index validtype on a nil value");
 		}
 	}
 

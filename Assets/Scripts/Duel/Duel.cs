@@ -559,6 +559,11 @@ public class Duel : MonoBehaviour
                 case GameEvent.afterthat:
                     AllTimePointPass();
                     break;
+                case GameEvent.activateinvalid:
+                    duelcarddata = duelData.chainEffect[1].duelcard;
+                    duelcarddata.validtype = GameEvent.activateinvalid;
+                    Debug.Log("玩家" + duelcarddata.controller + " " + duelcarddata.name+" 被无效");
+                    break;
                 default:
                     break;
             }
@@ -667,12 +672,18 @@ public class Duel : MonoBehaviour
                 if (duelcard == null) continue;
                 if (!duelcard.type.Contains(CardType.monster))
                 {
+                    if (duelcard.validtype == GameEvent.activateinvalid)
+                    {
+                        yield return CardLeave(duelcard, GameEvent.activateinvalid);
+                        continue;
+                    }
                     if (!duelcard.type.Contains(MagicType.continuous) &&
                         !duelcard.type.Contains(MagicType.equip) &&
                         !duelcard.type.Contains(MagicType.field) &&
                         duelcard.mean == CardMean.faceupmgt)
                     {
                         yield return CardLeave(duelcard, GameEvent.activateover);
+                        continue;
                     }
                 }
             }
@@ -731,9 +742,12 @@ public class Duel : MonoBehaviour
             if (duelData.chainEffect.Count == 0) newchain = false;
             while (duelData.chainEffect.Count > 0)
             {
-                AllTimePointPass();
-                duelData.opWho = duelData.chainEffect[0].duelcard.controller;
-                yield return EffectApply(duelData.chainEffect[0]);
+                if (duelData.chainEffect[0].duelcard.validtype != GameEvent.activateinvalid)
+                {
+                    AllTimePointPass();
+                    duelData.opWho = duelData.chainEffect[0].duelcard.controller;
+                    yield return EffectApply(duelData.chainEffect[0]);
+                }
                 duelData.chainEffect.RemoveAt(0);
             }
             ChainLimitReset();
@@ -1168,6 +1182,7 @@ public class Duel : MonoBehaviour
             }
             duelcard.position = CardPosition.grave;
             duelcard.index = 0;
+            duelcard.validtype = 0;
             duelcard.infopublic = true;
             duelData.grave[duelcard.owner].Insert(0, duelcard);
             duelData.SortCard(duelData.grave[duelcard.owner]);

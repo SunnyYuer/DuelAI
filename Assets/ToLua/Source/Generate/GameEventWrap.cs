@@ -20,11 +20,13 @@ public class GameEventWrap
 		L.RegConstant("activatecard", 9);
 		L.RegConstant("activateeffect", 10);
 		L.RegConstant("activateover", 11);
-		L.RegConstant("battle", 12);
-		L.RegConstant("battledestroy", 13);
-		L.RegConstant("effectdestroy", 14);
-		L.RegConstant("afterthat", 15);
-		L.RegConstant("newchain", 16);
+		L.RegConstant("afterthat", 12);
+		L.RegConstant("newchain", 13);
+		L.RegConstant("battle", 14);
+		L.RegConstant("battledestroy", 15);
+		L.RegConstant("effectdestroy", 16);
+		L.RegConstant("activateinvalid", 17);
+		L.RegConstant("effectinvalid", 18);
 		L.EndClass();
 	}
 
