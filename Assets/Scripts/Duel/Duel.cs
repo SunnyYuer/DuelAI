@@ -1486,8 +1486,9 @@ public class Duel : MonoBehaviour
                     if (duelcard.position < CardPosition.handcard) return false;
                 }
                 if (duelcard.type.Contains(CardType.trap))
-                { // 陷阱卡必须在场上
+                { // 陷阱卡必须在场上，且过了1回合
                     if (duelcard.position < CardPosition.area) return false;
+                    if (!ActivateTrapCheck(duelcard)) return false;
                 }
             }
             if (cardEffect.effectType == EffectType.continuous)
