@@ -559,8 +559,14 @@ public class Duel : MonoBehaviour
                 case GameEvent.afterthat:
                     AllTimePointPass();
                     break;
+                case GameEvent.effectdestroy:
+                    duelcarddata = eData.data["card"] as DuelCard;
+                    ObserveView(duelcarddata.controller);
+                    yield return CardLeave(duelcarddata, GameEvent.effectdestroy);
+                    break;
                 case GameEvent.activateinvalid:
                     duelcarddata = duelData.chainEffect[1].duelcard;
+                    ObserveView(duelcarddata.controller);
                     duelcarddata.validtype = GameEvent.activateinvalid;
                     Debug.Log("玩家" + duelcarddata.controller + " " + duelcarddata.name+" 被无效");
                     break;
@@ -1182,7 +1188,6 @@ public class Duel : MonoBehaviour
             }
             duelcard.position = CardPosition.grave;
             duelcard.index = 0;
-            duelcard.validtype = 0;
             duelcard.infopublic = true;
             duelData.grave[duelcard.owner].Insert(0, duelcard);
             duelData.SortCard(duelData.grave[duelcard.owner]);

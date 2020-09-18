@@ -24,6 +24,7 @@ public class DuelEventWrap
 		L.RegFunction("AfterThat", AfterThat);
 		L.RegFunction("AttackNew", AttackNew);
 		L.RegFunction("ActivateInvalid", ActivateInvalid);
+		L.RegFunction("DestroyCard", DestroyCard);
 		L.RegFunction("InCase", InCase);
 		L.RegFunction("InTimePoint", InTimePoint);
 		L.RegFunction("ThisCardIsBattle", ThisCardIsBattle);
@@ -369,6 +370,23 @@ public class DuelEventWrap
 			DuelCard o = obj.ActivateInvalid();
 			ToLua.PushObject(L, o);
 			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DestroyCard(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
+			DuelCard arg0 = (DuelCard)ToLua.CheckObject<DuelCard>(L, 2);
+			obj.DestroyCard(arg0);
+			return 0;
 		}
 		catch (Exception e)
 		{

@@ -345,6 +345,25 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
+    /// 破坏卡
+    /// </summary>
+    /// <param name="duelcard"></param>
+    public void DestroyCard(DuelCard duelcard)
+    {
+        if (precheck) return;
+        EventData eData = new EventData
+        {
+            oplayer = duelData.opWho,
+            gameEvent = GameEvent.effectdestroy,
+            data = new Dictionary<string, object>
+            {
+                { "card", duelcard },
+            }
+        };
+        duelData.eventDate.Add(eData);
+    }
+
+    /// <summary>
     /// 场合的判断
     /// </summary>
     /// <param name="targetcard"></param>

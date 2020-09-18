@@ -97,5 +97,6 @@ function c77538567condition1()
 end
 
 function c77538567effect1()
-    Duel:ActivateInvalid()
+    local card = Duel:ActivateInvalid()
+    Duel:DestroyCard(card)
 end
