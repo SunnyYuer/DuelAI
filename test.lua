@@ -99,4 +99,5 @@ end
 function c77538567effect1()
     local card = Duel:ActivateInvalid()
     Duel:DestroyCard(card)
+    Duel:DrawCard(1, PlayerSide.ops)
 end

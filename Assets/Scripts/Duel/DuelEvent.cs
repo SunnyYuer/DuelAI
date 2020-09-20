@@ -90,13 +90,13 @@ public class DuelEvent : MonoBehaviour
     /// 抽卡
     /// </summary>
     /// <param name="num"></param>
-    /// <param name="oplayer"></param>
-    public void DrawCard(int num, int oplayer)
+    /// <param name="side"></param>
+    public void DrawCard(int num, int side)
     {
         if (precheck) return;
         EventData eData = new EventData
         {
-            oplayer = oplayer,
+            oplayer = duel.GetSidePlayer(side),
             gameEvent = GameEvent.drawcard,
             data = new Dictionary<string, object>
             {
@@ -108,7 +108,7 @@ public class DuelEvent : MonoBehaviour
 
     public void DrawCard(int num)
     {
-        DrawCard(num, duelData.opWho);
+        DrawCard(num, PlayerSide.own);
     }
 
     /// <summary>
