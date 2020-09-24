@@ -21,12 +21,20 @@ public class MonsterOwn : MonoBehaviour
     public void SetCover()
     {
         Sprite sprite = Duel.spriteManager.GetTextureSprite("cover");
-        foreach (Transform child in transform)
+        foreach (Transform child in monsterArea)
         {
             if (sprite == null)
                 child.GetComponent<Renderer>().materials[2].mainTexture = null;
             else
                 child.GetComponent<Renderer>().materials[2].mainTexture = sprite.texture;
+        }
+    }
+
+    public void ReSetAll()
+    {
+        for (int index = 0; index < monsterArea.childCount; index++)
+        {
+            HideMonsterCard(index);
         }
     }
 
@@ -53,9 +61,9 @@ public class MonsterOwn : MonoBehaviour
         montrans.gameObject.SetActive(true);
     }
 
-    public void HideMonsterCard(DuelCard duelcard)
+    public void HideMonsterCard(int index)
     {
-        Transform montrans = monsterArea.GetChild(duelcard.index);
+        Transform montrans = monsterArea.GetChild(index);
         montrans.gameObject.SetActive(false);
     }
 

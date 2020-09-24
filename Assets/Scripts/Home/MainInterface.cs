@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainInterface : MonoBehaviour {
-
+public class MainInterface : MonoBehaviour
+{
     public GameObject Duel;
     public GameObject DeckEditor;
     public GameObject CardMaker;

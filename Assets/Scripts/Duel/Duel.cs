@@ -87,8 +87,15 @@ public class Duel : MonoBehaviour
 
     public void OnQuitClick()
     {
-        StopAllCoroutines();
+        InitialView();
         luaCode.Close();
+        StopAllCoroutines();
+        duelData = null;
+        cardDic = null;
+        monserOwn.ReSetAll();
+        monserOps.ReSetAll();
+        magictrapOwn.ReSetAll();
+        magictrapOps.ReSetAll();
         Destroy(gameObject);
         Instantiate(mainLayout, GameObject.Find("Canvas").transform);
     }
@@ -189,6 +196,12 @@ public class Duel : MonoBehaviour
             }
             AddPubLimit(-1, i, LimitType.specialsummonself, 1);
         }
+    }
+
+    private void InitialView()
+    {
+        mainCamera.transform.position = new Vector3(8f, 2.5f, 3f);
+        mainCamera.transform.eulerAngles = new Vector3(19f, -90f, 0f);
     }
 
     private void MainView()
@@ -1176,14 +1189,14 @@ public class Duel : MonoBehaviour
             }
             if (duelcard.position == CardPosition.monster)
             {
-                if (IsPlayerOwn(duelcard.controller)) monserOwn.HideMonsterCard(duelcard);
-                else monserOps.HideMonsterCard(duelcard);
+                if (IsPlayerOwn(duelcard.controller)) monserOwn.HideMonsterCard(duelcard.index);
+                else monserOps.HideMonsterCard(duelcard.index);
                 duelData.monster[duelcard.controller][duelcard.index] = null;
             }
             if (duelcard.position == CardPosition.magictrap)
             {
-                if (IsPlayerOwn(duelcard.controller)) magictrapOwn.HideMagicTrapCard(duelcard);
-                else magictrapOps.HideMagicTrapCard(duelcard);
+                if (IsPlayerOwn(duelcard.controller)) magictrapOwn.HideMagicTrapCard(duelcard.index);
+                else magictrapOps.HideMagicTrapCard(duelcard.index);
                 duelData.magictrap[duelcard.controller][duelcard.index] = null;
             }
             duelcard.position = CardPosition.grave;
