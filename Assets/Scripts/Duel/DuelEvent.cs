@@ -7,16 +7,15 @@ using UnityEngine;
 /// </summary>
 public class DuelEvent : MonoBehaviour
 {
-    private Duel duel;
+    public Duel duel;
     public DuelDataManager duelData;
     public DuelCard thiscard; // 当前卡
     public CardEffect thiseffect; // 当前检查的效果
     public bool precheck; // 发动效果和支付代价前预先检查能否执行
     private bool activatable; // 卡牌能否发动
 
-    public void Initialize(Duel duel)
+    void Start()
     {
-        this.duel = duel;
         duelData = Duel.duelData;
     }
 

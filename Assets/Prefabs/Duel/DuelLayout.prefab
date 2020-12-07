@@ -2220,8 +2220,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2275735592109331000}
-  - component: {fileID: 6791702181697270016}
   - component: {fileID: 4929204863127703183}
+  - component: {fileID: 9184153460685539722}
+  - component: {fileID: 6791702181697270016}
   m_Layer: 5
   m_Name: DuelLayout
   m_TagString: Untagged
@@ -2253,6 +2254,35 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4929204863127703183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6791702181697270018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a9098d9d5bb65c49a88dca28aea9e69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duel: {fileID: 6791702181697270016}
+  precheck: 0
+--- !u!114 &9184153460685539722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6791702181697270018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 524331c3435c97340afc17b52c350ef2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duel: {fileID: 6791702181697270016}
+  LPOwn: {fileID: 6791702180096512850}
+  LPOps: {fileID: 6791702179941635201}
 --- !u!114 &6791702181697270016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2267,10 +2297,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainLayout: {fileID: 8344503884013952710, guid: a78711cb244002d46b00664ad0ae8398,
     type: 3}
+  duelUI: {fileID: 9184153460685539722}
   cardLayoutOwn: {fileID: 6791702181814629270}
   cardLayoutOps: {fileID: 6791702179750288360}
-  LPOwn: {fileID: 6791702180096512850}
-  LPOps: {fileID: 6791702179941635201}
   deckOwn: {fileID: 1236780718351047031}
   deckOps: {fileID: 6430187799037395263}
   graveOwn: {fileID: 465669882450082892}
@@ -2281,19 +2310,7 @@ MonoBehaviour:
   phaseText: {fileID: 3364749515243193860}
   battleButton: {fileID: 6959245512858716636}
   duelhint: {fileID: 9202764877113799619}
---- !u!114 &4929204863127703183
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6791702181697270018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a9098d9d5bb65c49a88dca28aea9e69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  precheck: 0
+  duelEvent: {fileID: 4929204863127703183}
 --- !u!1 &6791702181814629270
 GameObject:
   m_ObjectHideFlags: 0

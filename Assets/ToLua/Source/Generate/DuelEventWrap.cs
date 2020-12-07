@@ -7,7 +7,6 @@ public class DuelEventWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(DuelEvent), typeof(UnityEngine.MonoBehaviour));
-		L.RegFunction("Initialize", Initialize);
 		L.RegFunction("SetThisCard", SetThisCard);
 		L.RegFunction("SetThisEffect", SetThisEffect);
 		L.RegFunction("CreateEffect", CreateEffect);
@@ -32,28 +31,12 @@ public class DuelEventWrap
 		L.RegFunction("GetPlayerOrder", GetPlayerOrder);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
+		L.RegVar("duel", get_duel, set_duel);
 		L.RegVar("duelData", get_duelData, set_duelData);
 		L.RegVar("thiscard", get_thiscard, set_thiscard);
 		L.RegVar("thiseffect", get_thiseffect, set_thiseffect);
 		L.RegVar("precheck", get_precheck, set_precheck);
 		L.EndClass();
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Initialize(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 2);
-			DuelEvent obj = (DuelEvent)ToLua.CheckObject<DuelEvent>(L, 1);
-			Duel arg0 = (Duel)ToLua.CheckObject<Duel>(L, 2);
-			obj.Initialize(arg0);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -502,6 +485,25 @@ public class DuelEventWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_duel(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelEvent obj = (DuelEvent)o;
+			Duel ret = obj.duel;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index duel on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_duelData(IntPtr L)
 	{
 		object o = null;
@@ -574,6 +576,25 @@ public class DuelEventWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index precheck on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_duel(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelEvent obj = (DuelEvent)o;
+			Duel arg0 = (Duel)ToLua.CheckObject<Duel>(L, 2);
+			obj.duel = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index duel on a nil value");
 		}
 	}
 

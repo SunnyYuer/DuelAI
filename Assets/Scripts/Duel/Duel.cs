@@ -7,11 +7,11 @@ using UnityEngine.UI;
 public class Duel : MonoBehaviour
 {
     public GameObject mainLayout;
+    public DuelUI duelUI;
+    public DuelEvent duelEvent;
     public GameObject cardLayoutOwn;
     public GameObject cardLayoutOps;
     private Camera mainCamera;
-    public Text LPOwn;
-    public Text LPOps;
     public DeckOwn deckOwn;
     public DeckOps deckOps;
     public GraveOwn graveOwn;
@@ -30,18 +30,14 @@ public class Duel : MonoBehaviour
     public static Sprite UIMask;
     public static DuelDataManager duelData;
     public static Dictionary<string, Card> cardDic;
-    private DuelEvent duelEvent;
     private LuaCode luaCode;
     private DuelAI duelAI;
 
-    // Start is called before the first frame update
-    IEnumerator Start()
+    void Awake()
     {
         duelData = new DuelDataManager(2);
         luaCode = new LuaCode();
         spriteManager = new SpriteManager();
-        duelEvent = gameObject.GetComponent<DuelEvent>();
-        duelEvent.Initialize(this);
         duelAI = new DuelAI(this, duelEvent);
         UIMask = GameObject.Find("DeckImageOwn").GetComponent<Image>().sprite;//保存UIMask
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
@@ -49,6 +45,11 @@ public class Duel : MonoBehaviour
         monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
         magictrapOwn = GameObject.Find("MagicTrapAreaOwn").GetComponent<MagicTrapOwn>();
         magictrapOps = GameObject.Find("MagicTrapAreaOps").GetComponent<MagicTrapOps>();
+    }
+
+    // Start is called before the first frame update
+    IEnumerator Start()
+    {
         monserOwn.SetCover();
         monserOps.SetCover();
         magictrapOwn.SetCover();
@@ -66,8 +67,8 @@ public class Duel : MonoBehaviour
         duelData.player = 0;
         duelData.opWho = 0;
         duelData.duelPhase = 0;
-        LPUpdate(0, 8000);
-        LPUpdate(1, 8000);
+        duelUI.LPUpdate(0, 8000);
+        duelUI.LPUpdate(1, 8000);
         yield return new WaitForSeconds(1);
         //各自起手5张卡
         MainView();
@@ -255,16 +256,6 @@ public class Duel : MonoBehaviour
         */
     }
 
-    public void LPUpdate(int player, int change)
-    {
-        player %= 2;
-        duelData.LP[player] += change;
-        if (player == 0)
-            LPOwn.text = "LP  " + duelData.LP[player];
-        else
-            LPOps.text = "LP  " + duelData.LP[player];
-    }
-
     private IEnumerator DuelPhase(int phase)
     {
         duelData.duelPhase = phase;
@@ -426,7 +417,7 @@ public class Duel : MonoBehaviour
         if (target == -1)
         { // 直接攻击对方
             int atk = atkmonster.atk;
-            LPUpdate(antiplayer, -atk);
+            duelUI.LPUpdate(antiplayer, -atk);
         }
         else
         { // 攻击选定的目标
@@ -436,7 +427,7 @@ public class Duel : MonoBehaviour
                 int atk2 = antimonster.atk;
                 if (atk1 > atk2)
                 {
-                    LPUpdate(antiplayer, -(atk1 - atk2));
+                    duelUI.LPUpdate(antiplayer, -(atk1 - atk2));
                     destroycard = 2;
                 }
                 if (atk1 == atk2)
@@ -448,7 +439,7 @@ public class Duel : MonoBehaviour
                 }
                 if (atk1 < atk2)
                 {
-                    LPUpdate(atkplayer, -(atk2 - atk1));
+                    duelUI.LPUpdate(atkplayer, -(atk2 - atk1));
                     destroycard = 1;
                 }
             }
@@ -462,7 +453,7 @@ public class Duel : MonoBehaviour
                 }
                 if (atk1 <= def2)
                 {
-                    LPUpdate(atkplayer, -(def2 - atk1));
+                    duelUI.LPUpdate(atkplayer, -(def2 - atk1));
                 }
             }
         }
