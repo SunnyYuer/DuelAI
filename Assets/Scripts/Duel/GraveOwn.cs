@@ -7,6 +7,7 @@ public class GraveOwn : MonoBehaviour
 {
     public Image image;
     public Text gravenum;
+    public Sprite UIMask;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +27,7 @@ public class GraveOwn : MonoBehaviour
         if (grave.Count > 0)
             image.sprite = Duel.spriteManager.GetCardSprite(grave[0].id, false);
         else
-            image.sprite = Duel.UIMask;
+            image.sprite = UIMask;
         gravenum.text = grave.Count.ToString();
     }
 }

@@ -1306,6 +1306,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 6791702180043783971}
   decknum: {fileID: 6738026749112085564}
+  UIMask: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!1 &6791702180096512852
 GameObject:
   m_ObjectHideFlags: 0
@@ -1550,6 +1551,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 6791702180420478460}
   gravenum: {fileID: 8538202934511831296}
+  UIMask: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!1 &6791702180713398990
 GameObject:
   m_ObjectHideFlags: 0
@@ -1715,6 +1717,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 6791702180735255597}
   gravenum: {fileID: 20939172423128392}
+  UIMask: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!1 &6791702180797271488
 GameObject:
   m_ObjectHideFlags: 0
@@ -2161,6 +2164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 6791702181477992707}
   decknum: {fileID: 7115989852224492860}
+  UIMask: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!1 &6791702181556102378
 GameObject:
   m_ObjectHideFlags: 0
@@ -2281,8 +2285,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duel: {fileID: 6791702181697270016}
+  cardLayoutOwn: {fileID: 6791702181814629270}
+  cardLayoutOps: {fileID: 6791702179750288360}
   LPOwn: {fileID: 6791702180096512850}
   LPOps: {fileID: 6791702179941635201}
+  deckOwn: {fileID: 1236780718351047031}
+  deckOps: {fileID: 6430187799037395263}
+  graveOwn: {fileID: 465669882450082892}
+  graveOps: {fileID: 5321595397359002823}
+  handOwn: {fileID: 8371625762274328373}
+  handOps: {fileID: 7961374815630919330}
+  endTurnButton: {fileID: 8406949217961765362}
+  battleButton: {fileID: 6959245512858716636}
+  phaseText: {fileID: 3364749515243193860}
+  duelhint: {fileID: 9202764877113799619}
 --- !u!114 &6791702181697270016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2297,20 +2313,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainLayout: {fileID: 8344503884013952710, guid: a78711cb244002d46b00664ad0ae8398,
     type: 3}
-  duelUI: {fileID: 9184153460685539722}
+  uiData: {fileID: 9184153460685539722}
+  duelEvent: {fileID: 4929204863127703183}
   cardLayoutOwn: {fileID: 6791702181814629270}
   cardLayoutOps: {fileID: 6791702179750288360}
-  deckOwn: {fileID: 1236780718351047031}
-  deckOps: {fileID: 6430187799037395263}
-  graveOwn: {fileID: 465669882450082892}
-  graveOps: {fileID: 5321595397359002823}
-  handOwn: {fileID: 8371625762274328373}
-  handOps: {fileID: 7961374815630919330}
-  endTurnButton: {fileID: 8406949217961765362}
-  phaseText: {fileID: 3364749515243193860}
-  battleButton: {fileID: 6959245512858716636}
-  duelhint: {fileID: 9202764877113799619}
-  duelEvent: {fileID: 4929204863127703183}
 --- !u!1 &6791702181814629270
 GameObject:
   m_ObjectHideFlags: 0

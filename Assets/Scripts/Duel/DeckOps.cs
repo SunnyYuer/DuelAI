@@ -8,6 +8,7 @@ public class DeckOps : MonoBehaviour, IPointerClickHandler
 {
     public Image image;
     public Text decknum;
+    public Sprite UIMask;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +28,7 @@ public class DeckOps : MonoBehaviour, IPointerClickHandler
         if (deck.Count > 0)
             image.sprite = Duel.spriteManager.GetCardSprite(deck[0].id, false);
         else
-            image.sprite = Duel.UIMask;
+            image.sprite = UIMask;
         decknum.text = deck.Count.ToString();
     }
 
