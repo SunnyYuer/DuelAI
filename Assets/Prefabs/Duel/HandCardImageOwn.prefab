@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5133651692496425060}
   - component: {fileID: 5133651692496425063}
   - component: {fileID: 390451863723649828}
+  - component: {fileID: 5861865613452112357}
   m_Layer: 5
   m_Name: HandCardImageOwn
   m_TagString: Untagged
@@ -90,3 +91,15 @@ MonoBehaviour:
   m_EffectColor: {r: 1, g: 1, b: 1, a: 1}
   m_EffectDistance: {x: 5, y: 5}
   m_UseGraphicAlpha: 1
+--- !u!114 &5861865613452112357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5133651692496425065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c298edb9c8ba890418bdb19ed74a249a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

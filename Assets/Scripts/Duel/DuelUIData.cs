@@ -21,6 +21,7 @@ public class DuelUIData : MonoBehaviour
     public GameObject battleButton;
     public Text phaseText;
     public DuelHint duelhint;
+    public CardInfoShow cardinfo;
 
     // Start is called before the first frame update
     void Start()
@@ -143,5 +144,29 @@ public class DuelUIData : MonoBehaviour
         duelData.SortCard(duelData.handcard[player]);
         if (duel.IsPlayerOwn(player)) handOwn.RemoveHandCard(duelcard.index);
         else handOps.RemoveHandCard(duelcard.index);
+    }
+
+    public void ShowHandCardOwn(Transform cardtrans)
+    {
+        int index;
+        for (index = 0; index < handOwn.transform.childCount; index++)
+        {
+            if (cardtrans == handOwn.transform.GetChild(index))
+                break;
+        }
+        cardinfo.gameObject.SetActive(true);
+        cardinfo.ShowCard(Duel.spriteManager.GetCardSprite(duelData.handcard[0][index].id, false));
+        Debug.Log(index);
+    }
+
+    public void ShowHandCardOps(Transform cardtrans)
+    {
+        int index;
+        for (index = 0; index < handOps.transform.childCount; index++)
+        {
+            if (cardtrans == handOps.transform.GetChild(index))
+                break;
+        }
+        
     }
 }

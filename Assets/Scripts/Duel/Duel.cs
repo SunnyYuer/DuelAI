@@ -266,7 +266,7 @@ public class Duel : MonoBehaviour
                 uiData.ChangeBattleButtonText("开始战斗");
                 Debug.Log("主一阶段");
                 yield return new WaitForSeconds(1);
-                yield return DuelAI();
+                if (!IsPlayerOwn(duelData.player)) yield return DuelAI();
                 break;
             case GamePhase.battle:
                 uiData.SetPhaseText("战斗阶段");
@@ -274,13 +274,13 @@ public class Duel : MonoBehaviour
                 Debug.Log("战斗阶段");
                 yield return new WaitForSeconds(1);
                 yield return EffectChain();
-                yield return DuelAI();
+                if(!IsPlayerOwn(duelData.player)) yield return DuelAI();
                 break;
             case GamePhase.main2:
                 uiData.SetPhaseText("主二阶段");
                 Debug.Log("主二阶段");
                 yield return new WaitForSeconds(1);
-                yield return DuelAI();
+                if (!IsPlayerOwn(duelData.player)) yield return DuelAI();
                 break;
             case GamePhase.end:
                 uiData.SetPhaseText("结束阶段");
