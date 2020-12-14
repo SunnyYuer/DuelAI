@@ -27,7 +27,7 @@ public class CardClick : MonoBehaviour, IPointerClickHandler
         }
         if (transform.parent.name.Equals("HandCardsLayoutOps"))
         {
-
+            uiData.ShowHandCardOps(transform);
         }
     }
 }

@@ -148,25 +148,17 @@ public class DuelUIData : MonoBehaviour
 
     public void ShowHandCardOwn(Transform cardtrans)
     {
-        int index;
-        for (index = 0; index < handOwn.transform.childCount; index++)
-        {
-            if (cardtrans == handOwn.transform.GetChild(index))
-                break;
-        }
+        int index = handOwn.GetChildIndex(cardtrans);
+        DuelCard duelcard = duelData.handcard[0][index];
+        cardinfo.SetCardInfo(duelcard, Duel.spriteManager.GetCardSprite(duelcard.id, false));
         cardinfo.gameObject.SetActive(true);
-        cardinfo.ShowCard(Duel.spriteManager.GetCardSprite(duelData.handcard[0][index].id, false));
-        Debug.Log(index);
     }
 
     public void ShowHandCardOps(Transform cardtrans)
     {
-        int index;
-        for (index = 0; index < handOps.transform.childCount; index++)
-        {
-            if (cardtrans == handOps.transform.GetChild(index))
-                break;
-        }
-        
+        int index = handOps.GetChildIndex(cardtrans);
+        DuelCard duelcard = duelData.handcard[1][index];
+        cardinfo.SetCardInfo(duelcard, Duel.spriteManager.GetCardSprite(duelcard.id, false));
+        cardinfo.gameObject.SetActive(true);
     }
 }

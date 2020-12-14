@@ -25,6 +25,17 @@ public class HandCardOwn : MonoBehaviour
 
     }
 
+    public int GetChildIndex(Transform cardtrans)
+    {
+        int index;
+        for (index = 0; index < handcardlist.childCount; index++)
+        {
+            if (cardtrans == handcardlist.GetChild(index))
+                break;
+        }
+        return index;
+    }
+
     public void AddHandCard(DuelCard duelcard)
     {
         GameObject handcard = Instantiate(card, handcardlist);
