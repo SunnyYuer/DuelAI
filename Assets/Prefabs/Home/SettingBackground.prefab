@@ -526,7 +526,7 @@ GameObject:
   - component: {fileID: 2953823449279774397}
   - component: {fileID: 1687023851550643817}
   m_Layer: 5
-  m_Name: SettingBackgroud
+  m_Name: SettingBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
