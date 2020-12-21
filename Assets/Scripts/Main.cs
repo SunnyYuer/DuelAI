@@ -14,16 +14,19 @@ Windows:
 Application.dataPath                   =DuelAI/Duel_Data
 Application.streamingAssetsPath =DuelAI/Duel_Data/StreamingAssets
 Application.persistentDataPath    =C:/Users/yuer/AppData/LocalLow/yuer/DuelAI
+当前目录./                                    =DuelAI
 
 Android:
 Application.dataPath                   =/data/app/com.yuer.DuelAI-2/base.apk
 Application.streamingAssetsPath =jar:file:///data/app/com.yuer.DuelAI-2/base.apk!/assets
 Application.persistentDataPath    =/storage/emulated/0/Android/data/com.yuer.DuelAI/files
+当前目录./                                    =/
 
 Linux:
 Application.dataPath                   =DuelAI/Duel_Data
 Application.streamingAssetsPath =DuelAI/Duel_Data/StreamingAssets
 Application.persistentDataPath    =/home/yuer/.config/unity3d/yuer/DuelAI
+当前目录./                                    =DuelAI
 */
 
 public class Main : MonoBehaviour
