@@ -6,7 +6,10 @@ using UnityEngine.UI;
 
 public class CardInfoShow : MonoBehaviour, IPointerClickHandler
 {
-    public Transform paneltrans;
+    public Image cardImage;
+    public Text cardName;
+    public Text cardAtt;
+    public Text cardDes;
 
     // Start is called before the first frame update
     void Start()
@@ -22,12 +25,12 @@ public class CardInfoShow : MonoBehaviour, IPointerClickHandler
 
     public void SetCardInfo(DuelCard duelcard, Sprite sprite)
     {
-        paneltrans.Find("CardImage").GetComponent<Image>().sprite = sprite;
-        paneltrans.Find("CardNameText").GetComponent<Text>().text = duelcard.name + " " + duelcard.id + " " + duelcard.series;
-        paneltrans.Find("CardAttText").GetComponent<Text>().text = duelcard.type;
+        cardImage.sprite = sprite;
+        cardName.text = duelcard.name + " " + duelcard.id + " " + duelcard.series;
+        cardAtt.text = duelcard.type;
         if (duelcard.type.Contains(CardType.monster))
-            paneltrans.Find("CardAttText").GetComponent<Text>().text += " " + duelcard.race + " " + duelcard.attribute + " 星" + duelcard.level + " " + duelcard.atk + "/" + duelcard.def;
-        paneltrans.Find("CardDesText").GetComponent<Text>().text = duelcard.describe;
+            cardAtt.text += " " + duelcard.race + " " + duelcard.attribute + " 星" + duelcard.level + " " + duelcard.atk + "/" + duelcard.def;
+        cardDes.text = duelcard.describe;
     }
 
     public void OnPointerClick(PointerEventData eventData)
