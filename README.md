@@ -2,15 +2,19 @@
 
 ##编译Windows、Linux
 
-1、直接生成
+1、点击菜单Lua/Copy Lua files to Resources
+
+2、直接生成
 
 ##编译Android
 
-1、导出为安卓工程
+1、点击菜单Lua/Copy Lua files to Resources
 
-2、使用Android Studio打开工程
+2、导出为安卓工程
 
-3、生成APK
+3、使用Android Studio打开工程
+
+4、生成APK
 
 ##项目升级注意事项
 
