@@ -151,6 +151,7 @@ public class DuelUIData : MonoBehaviour
         int index = handOwn.GetChildIndex(cardtrans);
         DuelCard duelcard = duelData.handcard[0][index];
         cardinfo.SetCardInfo(duelcard, Duel.spriteManager.GetCardSprite(duelcard.id, false));
+        if (duel.NormalSummonCheck(duelcard)) cardinfo.SetCardButton("召唤", null);
         cardinfo.gameObject.SetActive(true);
     }
 

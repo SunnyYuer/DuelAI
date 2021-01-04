@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -10,6 +11,8 @@ public class CardInfoShow : MonoBehaviour, IPointerClickHandler
     public Text cardName;
     public Text cardAtt;
     public Text cardDes;
+    public Transform cardButtonLayout;
+    public Button cardButton;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +34,13 @@ public class CardInfoShow : MonoBehaviour, IPointerClickHandler
         if (duelcard.type.Contains(CardType.monster))
             cardAtt.text += " " + duelcard.race + " " + duelcard.attribute + " 星" + duelcard.level + " " + duelcard.atk + "/" + duelcard.def;
         cardDes.text = duelcard.describe;
+    }
+
+    public void SetCardButton(string text, UnityAction call)
+    {
+        Button cardUseButton = Instantiate(cardButton, cardButtonLayout);
+        cardUseButton.GetComponentInChildren<Text>().text = text;
+        cardUseButton.onClick.AddListener(call);
     }
 
     public void OnPointerClick(PointerEventData eventData)
