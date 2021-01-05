@@ -151,7 +151,7 @@ public class DuelUIData : MonoBehaviour
         int index = handOwn.GetChildIndex(cardtrans);
         DuelCard duelcard = duelData.handcard[0][index];
         cardinfo.SetCardInfo(duelcard, Duel.spriteManager.GetCardSprite(duelcard.id, false));
-        if (duel.NormalSummonCheck(duelcard)) cardinfo.SetCardButton("召唤", null);
+        if (duel.NormalSummonCheck(duelcard)) cardinfo.SetCardButton("召唤");
         cardinfo.gameObject.SetActive(true);
     }
 
@@ -161,5 +161,11 @@ public class DuelUIData : MonoBehaviour
         DuelCard duelcard = duelData.handcard[1][index];
         cardinfo.SetCardInfo(duelcard, Duel.spriteManager.GetCardSprite(duelcard.id, false));
         cardinfo.gameObject.SetActive(true);
+    }
+
+    public void CardButtonOnClick(Text buttonText)
+    {
+        if (buttonText.text.Equals("召唤")) duel.duelEvent.NormalSummon(cardinfo.duelcard);
+        cardinfo.HideCardInfo();
     }
 }
