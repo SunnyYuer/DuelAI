@@ -29,6 +29,7 @@ public class DuelDataManager
     public DuelCard[] fieldcard;
     public DuelCard[][] special;
     public int[] normalsummon; // 这回合已通常召唤的次数
+    public bool[] setmonster; // 能否盖放怪兽
     public List<ActivateLimit>[] activatelimit;
 
     // 效果连锁
@@ -83,6 +84,12 @@ public class DuelDataManager
         }
         LP = new int[2];
         fieldcard = new DuelCard[2];
+        setmonster = new bool[2];
+        for (int i = 0; i < 2; i++)
+        {
+            LP[i] = 0;
+            setmonster[i] = true;
+        }
     }
 
     public void SortCard(List<DuelCard> cardlist)

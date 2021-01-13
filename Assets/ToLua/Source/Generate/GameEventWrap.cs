@@ -15,18 +15,19 @@ public class GameEventWrap
 		L.RegConstant("showcard", 4);
 		L.RegConstant("normalsummon", 5);
 		L.RegConstant("specialsummon", 6);
-		L.RegConstant("setmagictrap", 7);
-		L.RegConstant("changemean", 8);
-		L.RegConstant("activatecard", 9);
-		L.RegConstant("activateeffect", 10);
-		L.RegConstant("activateover", 11);
-		L.RegConstant("afterthat", 12);
-		L.RegConstant("newchain", 13);
-		L.RegConstant("battle", 14);
-		L.RegConstant("battledestroy", 15);
-		L.RegConstant("effectdestroy", 16);
-		L.RegConstant("activateinvalid", 17);
-		L.RegConstant("effectinvalid", 18);
+		L.RegConstant("setmonster", 7);
+		L.RegConstant("setmagictrap", 8);
+		L.RegConstant("changemean", 9);
+		L.RegConstant("activatecard", 10);
+		L.RegConstant("activateeffect", 11);
+		L.RegConstant("activateover", 12);
+		L.RegConstant("afterthat", 13);
+		L.RegConstant("newchain", 14);
+		L.RegConstant("battle", 15);
+		L.RegConstant("battledestroy", 16);
+		L.RegConstant("effectdestroy", 17);
+		L.RegConstant("activateinvalid", 18);
+		L.RegConstant("effectinvalid", 19);
 		L.EndClass();
 	}
 

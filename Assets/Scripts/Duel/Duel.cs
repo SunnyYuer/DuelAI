@@ -488,7 +488,9 @@ public class Duel : MonoBehaviour
                 case GameEvent.normalsummon:
                     duelcarddata = eData.data["handcard"] as DuelCard;
                     yield return SelectMonsterPlace();
-                    intdata1 = SelectMonsterMean(eData.gameEvent);
+                    intdata1 = CardMean.faceupatk;
+                    if (!duelData.setmonster[player%2])
+                        intdata1 = SelectMonsterMean(eData.gameEvent);
                     ObserveView(player);
                     NormalSummon(duelcarddata, duelData.placeSelect, intdata1);
                     yield return new WaitForSeconds(1);
@@ -501,12 +503,18 @@ public class Duel : MonoBehaviour
                     SpecialSummon(duelcarddata, duelData.placeSelect, intdata1);
                     yield return new WaitForSeconds(1);
                     break;
+                case GameEvent.setmonster:
+                    duelcarddata = eData.data["monstercard"] as DuelCard;
+                    yield return SelectMonsterPlace();
+                    ObserveView(player);
+                    NormalSummon(duelcarddata, duelData.placeSelect, CardMean.facedowndef);
+                    yield return new WaitForSeconds(1);
+                    break;
                 case GameEvent.setmagictrap:
                     duelcarddata = eData.data["magictrapcard"] as DuelCard;
-                    intdata1 = (int)eData.data["mean"];
                     yield return SelectMagicTrapPlace();
                     ObserveView(player);
-                    yield return UseMagicTrap(duelcarddata, duelData.placeSelect, intdata1, GameEvent.setmagictrap);
+                    yield return UseMagicTrap(duelcarddata, duelData.placeSelect, CardMean.facedownmgt, GameEvent.setmagictrap);
                     yield return new WaitForSeconds(1);
                     break;
                 case GameEvent.changemean:
@@ -954,7 +962,7 @@ public class Duel : MonoBehaviour
         if (gameEvent == GameEvent.normalsummon)
         {
             if (IsPlayerOwn(duelData.opWho))
-                return CardMean.facedowndef;
+                return CardMean.faceupdef;
             else
                 return CardMean.faceupatk;
         }
@@ -1284,9 +1292,9 @@ public class Duel : MonoBehaviour
 
     public bool NormalSummonCheck(DuelCard duelcard)
     { // 检查能否通常召唤
+        if (!duelcard.type.Contains(CardType.monster)) return false;
         if (duelData.normalsummon[duelcard.controller] > 0) return false;
         if (!MonsterPlaceCheck()) return false;
-        if (!duelcard.type.Contains(CardType.monster)) return false;
         if (duelcard.level > 4) return false;
         return true;
     }
@@ -1308,6 +1316,16 @@ public class Duel : MonoBehaviour
                 monster.Add(i);
         }
         return monster;
+    }
+
+    public bool SetMonsterCheck(DuelCard duelcard)
+    { // 检查能否盖放怪兽
+        if (!duelcard.type.Contains(CardType.monster)) return false;
+        if (!duelData.setmonster[duelcard.controller]) return false;
+        if (duelData.normalsummon[duelcard.controller] > 0) return false;
+        if (!MonsterPlaceCheck()) return false;
+        if (duelcard.level > 4) return false;
+        return true;
     }
 
     public bool ChangeMeanCheck(DuelCard duelcard)

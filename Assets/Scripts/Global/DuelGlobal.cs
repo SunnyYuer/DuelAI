@@ -117,18 +117,19 @@ public class GameEvent
     public const int showcard = 4;
     public const int normalsummon = 5;
     public const int specialsummon = 6;
-    public const int setmagictrap = 7;
-    public const int changemean = 8;
-    public const int activatecard = 9;
-    public const int activateeffect = 10;
-    public const int activateover = 11;
-    public const int afterthat = 12;
-    public const int newchain = 13;
-    public const int battle = 14;
-    public const int battledestroy = 15;
-    public const int effectdestroy = 16;
-    public const int activateinvalid = 17;
-    public const int effectinvalid = 18;
+    public const int setmonster = 7;
+    public const int setmagictrap = 8;
+    public const int changemean = 9;
+    public const int activatecard = 10;
+    public const int activateeffect = 11;
+    public const int activateover = 12;
+    public const int afterthat = 13;
+    public const int newchain = 14;
+    public const int battle = 15;
+    public const int battledestroy = 16;
+    public const int effectdestroy = 17;
+    public const int activateinvalid = 18;
+    public const int effectinvalid = 19;
 }
 
 public class PlayerAction : GameEvent

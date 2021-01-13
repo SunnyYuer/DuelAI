@@ -34,6 +34,7 @@ public class DuelDataManagerWrap
 		L.RegVar("fieldcard", get_fieldcard, set_fieldcard);
 		L.RegVar("special", get_special, set_special);
 		L.RegVar("normalsummon", get_normalsummon, set_normalsummon);
+		L.RegVar("setmonster", get_setmonster, set_setmonster);
 		L.RegVar("activatelimit", get_activatelimit, set_activatelimit);
 		L.RegVar("chainEffect", get_chainEffect, set_chainEffect);
 		L.RegVar("waitEffect", get_waitEffect, set_waitEffect);
@@ -535,6 +536,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index normalsummon on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_setmonster(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			bool[] ret = obj.setmonster;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index setmonster on a nil value");
 		}
 	}
 
@@ -1086,6 +1106,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index normalsummon on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_setmonster(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			bool[] arg0 = ToLua.CheckBoolArray(L, 2);
+			obj.setmonster = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index setmonster on a nil value");
 		}
 	}
 
