@@ -5,15 +5,14 @@ using UnityEngine.UI;
 
 public class Tip : MonoBehaviour
 {
-    public static string title = "提示";
-    public static string content;
-    public static int select;//玩家的选择
+    public Text title;
+    public Text content;
+    public int select; // 玩家的选择
 
     // Use this for initialization
     void Start ()
     {
-        GameObject.Find("MessageTitle").GetComponent<Text>().text = title;
-        GameObject.Find("MessageContent").GetComponent<Text>().text = content;
+        
     }
 	
 	// Update is called once per frame
@@ -22,19 +21,26 @@ public class Tip : MonoBehaviour
 		
 	}
 
+    public void ShowTip(string titleText, string contentText)
+    {
+        title.text = titleText;
+        content.text = contentText;
+        gameObject.SetActive(true);
+    }
+
     public void OnConfirmButtonClick()
     {
         select = 1;
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     public void OnCancelButtonClick()
     {
         select = 0;
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
-    public IEnumerator WaitForSelect()
+    public IEnumerator WaitForTipChoose()
     {
         select = -1;
         while (select == -1)

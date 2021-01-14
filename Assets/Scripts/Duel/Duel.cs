@@ -696,8 +696,8 @@ public class Duel : MonoBehaviour
                 if (duelData.activatableEffect.Count > 0)
                 {
                     CardEffect activateEffect = null;
-                    yield return WantActivate();
-                    if (Tip.select == 1)
+                    yield return uiData.WantActivate();
+                    if (duelData.optionChoose == 1)
                     { // 由玩家选择或者AI选择
                         int select = 0;
                         activateEffect = duelData.activatableEffect[select];
@@ -754,8 +754,8 @@ public class Duel : MonoBehaviour
                 {
                     while (effectList.Count > 0)
                     {
-                        yield return WantActivate();
-                        if (Tip.select == 1)
+                        yield return uiData.WantActivate();
+                        if (duelData.optionChoose == 1)
                         {
                             yield return ActivateEffect(effectList[0]);
                         }
@@ -863,33 +863,6 @@ public class Duel : MonoBehaviour
             }
         }
         duelData.activatableEffect.Clear();
-    }
-
-    private IEnumerator WantActivate()
-    {
-        //由玩家选择或者AI选择
-        /*
-        if (IsPlayerOwn(duelData.opWho))
-        {
-            Tip.content = "是否发动？";
-            GameObject tipObject = Instantiate(Resources.Load("Prefabs/TipBackground"), transform) as GameObject;
-            Tip tip = tipObject.GetComponent<Tip>();
-            yield return tip.WaitForSelect();
-        }
-        else
-        {
-            Tip.select = 1;
-        }
-        */
-        if (IsPlayerOwn(duelData.opWho))
-        {
-            Tip.select = 1;
-        }
-        else
-        {
-            Tip.select = 1;
-        }
-        yield return null;
     }
 
     private IEnumerator DuelAI()

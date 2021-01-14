@@ -41,6 +41,7 @@ public class DuelDataManager
     public List<CardEffect> activatableEffect;
     public List<CardEffect> immediateEffect;
     public int placeSelect; // 选择卡牌放置的位置
+    public int optionChoose; // 选项的选择
 
     public DuelDataManager(int peopleNum)
     {

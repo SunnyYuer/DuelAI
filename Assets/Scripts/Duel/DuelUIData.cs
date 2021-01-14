@@ -22,6 +22,7 @@ public class DuelUIData : MonoBehaviour
     public Text phaseText;
     public DuelHint duelhint;
     public CardInfoShow cardinfo;
+    public Tip tip;
 
     // Start is called before the first frame update
     void Start()
@@ -169,5 +170,21 @@ public class DuelUIData : MonoBehaviour
         if (buttonText.text.Equals("召唤")) duel.duelEvent.NormalSummon(cardinfo.duelcard);
         if (buttonText.text.Equals("盖放")) duel.duelEvent.SetMonster(cardinfo.duelcard);
         cardinfo.HideCardInfo();
+    }
+
+    public IEnumerator WantActivate()
+    {
+        //由玩家选择或者AI选择
+        if (duel.IsPlayerOwn(duelData.opWho))
+        {
+            tip.ShowTip("提示", "是否发动？");
+            yield return tip.WaitForTipChoose();
+            duelData.optionChoose = tip.select;
+        }
+        else
+        {
+            duelData.optionChoose = 1;
+        }
+        yield return null;
     }
 }
