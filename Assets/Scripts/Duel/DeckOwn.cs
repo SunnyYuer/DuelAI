@@ -34,6 +34,6 @@ public class DeckOwn : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //GameObject.Find("HandCardsLayoutOwn").GetComponent<HandCardOwn>().DrawCard();
+        //GameObject.Find("DuelLayout(Clone)").GetComponent<DuelEvent>().DrawCard(1, PlayerSide.own);
     }
 }

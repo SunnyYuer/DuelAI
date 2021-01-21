@@ -54,11 +54,11 @@ public class HandCardOwn : MonoBehaviour
         if (wait) yield return new WaitForSeconds(0.1f);
         Vector3 vector = new Vector3(0, listheight / 2, 0);
         int cardnum = handcardlist.childCount;
-        if (cardnum <= 10)
+        if (cardnum <= 6)
         {
             for (int i = 0; i < cardnum; i++)
             {
-                vector.x = (-cardnum + 1 + 2 * i) * ((cardwidth / 2f) + 3);
+                vector.x = (-cardnum + 1 + 2 * i) * ((cardwidth / 2f) + 5);
                 handcardlist.GetChild(i).localPosition = vector;
             }
         }

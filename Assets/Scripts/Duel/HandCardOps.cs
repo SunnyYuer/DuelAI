@@ -54,7 +54,7 @@ public class HandCardOps : MonoBehaviour
         if (wait) yield return new WaitForSeconds(0.1f);
         Vector3 vector = new Vector3(0, -listheight / 2, 0);
         int cardnum = handcardlist.childCount;
-        if (cardnum <= 7)
+        if (cardnum <= 6)
         {
             for (int i = 0; i < cardnum; i++)
             {
