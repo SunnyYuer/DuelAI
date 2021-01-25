@@ -623,6 +623,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5529045119751091573}
   - component: {fileID: 4233783602306438143}
+  - component: {fileID: 5707390843352280887}
+  - component: {fileID: 6562030017259741889}
   m_Layer: 5
   m_Name: DecksLayout
   m_TagString: Untagged
@@ -676,6 +678,43 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
+--- !u!222 &5707390843352280887
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 666809403721713726}
+  m_CullTransparentMesh: 0
+--- !u!114 &6562030017259741889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 666809403721713726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
 --- !u!1 &807277260457009466
 GameObject:
   m_ObjectHideFlags: 0
@@ -4214,6 +4253,7 @@ GameObject:
   - component: {fileID: 6791702180797271359}
   - component: {fileID: 6791702180797271357}
   - component: {fileID: 6791702180797271358}
+  - component: {fileID: 7323986046543151891}
   m_Layer: 5
   m_Name: InfoPanel
   m_TagString: Untagged
@@ -4279,6 +4319,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &7323986046543151891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6791702180797271488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7619bf43ffd9e5b43bb6f3290ccc1605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deckLayout: {fileID: 666809403721713726}
 --- !u!1 &6791702180877158220
 GameObject:
   m_ObjectHideFlags: 0
@@ -4495,6 +4548,7 @@ GameObject:
   - component: {fileID: 6791702181174821475}
   - component: {fileID: 6791702181174821473}
   - component: {fileID: 6791702181174821474}
+  - component: {fileID: 57149313770541319}
   m_Layer: 5
   m_Name: InfoPanel
   m_TagString: Untagged
@@ -4560,6 +4614,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &57149313770541319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6791702181174821476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a451317b74143041bce9d0b16611f87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deckLayout: {fileID: 8701217799094996553}
 --- !u!1 &6791702181477992710
 GameObject:
   m_ObjectHideFlags: 0
@@ -4776,6 +4843,8 @@ MonoBehaviour:
   duel: {fileID: 6791702181697270016}
   cardLayoutOwn: {fileID: 6791702181814629270}
   cardLayoutOps: {fileID: 6791702179750288360}
+  infoOwn: {fileID: 7323986046543151891}
+  infoOps: {fileID: 57149313770541319}
   LPOwn: {fileID: 6791702180096512850}
   LPOps: {fileID: 6791702179941635201}
   deckOwn: {fileID: 1236780718351047031}
@@ -5775,6 +5844,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4410494052524846661}
   - component: {fileID: 4249251478738197032}
+  - component: {fileID: 7183853963461773078}
+  - component: {fileID: 7661938470304118831}
   m_Layer: 5
   m_Name: DecksLayout
   m_TagString: Untagged
@@ -5828,6 +5899,43 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
+--- !u!222 &7183853963461773078
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8701217799094996553}
+  m_CullTransparentMesh: 0
+--- !u!114 &7661938470304118831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8701217799094996553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
 --- !u!1 &8783231812993684740
 GameObject:
   m_ObjectHideFlags: 0

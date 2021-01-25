@@ -47,31 +47,8 @@ public class CardInfoShow : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        /*
-#if UNITY_ANDROID || UNITY_IOS
-        if (IsPointerOverGameObject(Input.GetTouch(0).position))
-#else
-        if (IsPointerOverGameObject(Input.mousePosition))
-#endif
-        */
         if (eventData.pointerCurrentRaycast.gameObject == gameObject)
             HideCardInfo();
-    }
-
-    private bool IsPointerOverGameObject(Vector2 mousePosition)
-    {
-        //创建一个点击事件
-        PointerEventData eventData = new PointerEventData(EventSystem.current);
-        eventData.position = mousePosition;
-        List<RaycastResult> raycastResults = new List<RaycastResult>();
-        //向点击位置发射一条射线，检测是否点击UI
-        EventSystem.current.RaycastAll(eventData, raycastResults);
-        if (raycastResults.Count > 0)
-        { // 只有当点击到的第一个ui为CardInfoBackground时，才隐藏ui
-            if (raycastResults[0].gameObject == gameObject)
-                return true;
-        }
-        return false;
     }
 
     public void HideCardInfo()
