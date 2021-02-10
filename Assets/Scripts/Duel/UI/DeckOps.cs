@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class DeckOps : MonoBehaviour, IPointerClickHandler
 {
     public Image image;
-    public Text decknum;
+    public Text deckTip;
     public Sprite UIMask;
 
     // Start is called before the first frame update
@@ -29,7 +29,7 @@ public class DeckOps : MonoBehaviour, IPointerClickHandler
             image.sprite = Duel.spriteManager.GetCardSprite(deck[0].id, false);
         else
             image.sprite = UIMask;
-        decknum.text = deck.Count.ToString();
+        deckTip.text = "卡组" + deck.Count;
     }
 
     public void OnPointerClick(PointerEventData eventData)

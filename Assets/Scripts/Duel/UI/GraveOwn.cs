@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class GraveOwn : MonoBehaviour
 {
     public Image image;
-    public Text gravenum;
+    public Text graveTip;
     public Sprite UIMask;
 
     // Start is called before the first frame update
@@ -28,6 +28,6 @@ public class GraveOwn : MonoBehaviour
             image.sprite = Duel.spriteManager.GetCardSprite(grave[0].id, false);
         else
             image.sprite = UIMask;
-        gravenum.text = grave.Count.ToString();
+        graveTip.text = "墓地" + grave.Count;
     }
 }
