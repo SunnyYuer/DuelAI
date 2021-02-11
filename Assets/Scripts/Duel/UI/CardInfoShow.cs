@@ -1,10 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CardInfoShow : MonoBehaviour, IPointerClickHandler
+public class CardInfoShow : MonoBehaviour
 {
     public DuelCard duelcard;
     public Image cardImage;
@@ -13,6 +12,7 @@ public class CardInfoShow : MonoBehaviour, IPointerClickHandler
     public Text cardDes;
     public Transform cardButtonLayout;
     private int buttonIndex;
+    private bool showcard;
 
     // Start is called before the first frame update
     void Start()
@@ -23,7 +23,17 @@ public class CardInfoShow : MonoBehaviour, IPointerClickHandler
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetMouseButtonUp(0) && !showcard)
+        {
+            if (gameObject.activeSelf)
+            {
+                if (!UIHelper.RaycastUICheck(gameObject))
+                {
+                    gameObject.SetActive(false);
+                }
+            }
+        }
+        showcard = false;
     }
 
     public void SetCardInfo(DuelCard card, Sprite sprite)
@@ -35,6 +45,8 @@ public class CardInfoShow : MonoBehaviour, IPointerClickHandler
         if (duelcard.type.Contains(CardType.monster))
             cardAtt.text += " " + duelcard.race + " " + duelcard.attribute + " 星" + duelcard.level + " " + duelcard.atk + "/" + duelcard.def;
         cardDes.text = duelcard.describe;
+        ClearCardButton();
+        showcard = true;
     }
 
     public void SetCardButton(string text)
@@ -45,19 +57,12 @@ public class CardInfoShow : MonoBehaviour, IPointerClickHandler
         buttonIndex++;
     }
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (eventData.pointerCurrentRaycast.gameObject == gameObject)
-            HideCardInfo();
-    }
-
-    public void HideCardInfo()
+    public void ClearCardButton()
     {
         foreach (Transform cardButton in cardButtonLayout)
         {
             cardButton.gameObject.SetActive(false);
         }
         buttonIndex = 0;
-        gameObject.SetActive(false);
     }
 }

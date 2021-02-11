@@ -169,7 +169,7 @@ public class DuelUIData : MonoBehaviour
     {
         if (buttonText.text.Equals("召唤")) duel.duelEvent.NormalSummon(cardinfo.duelcard);
         if (buttonText.text.Equals("盖放")) duel.duelEvent.SetMonster(cardinfo.duelcard);
-        cardinfo.HideCardInfo();
+        cardinfo.gameObject.SetActive(false);
     }
 
     public IEnumerator WantActivate()
