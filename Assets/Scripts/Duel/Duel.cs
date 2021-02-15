@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -867,7 +867,7 @@ public class Duel : MonoBehaviour
 
     private IEnumerator DuelAI()
     {
-        if (duelAI.done) duelAI.done = false;
+        duelAI.done = false;
         while (!duelAI.done)
         {
             duelAI.Run();
@@ -1158,7 +1158,7 @@ public class Duel : MonoBehaviour
         TurnLimitReset();
     }
 
-    /* 对决斗的判断 */
+    #region 对决斗的判断
     public bool IsPlayerOwn(int who)
     {
         if (who == 0 || who == 2)
@@ -1443,9 +1443,9 @@ public class Duel : MonoBehaviour
         }
         return true;
     }
-    /* 对决斗的判断 */
+    #endregion 对决斗的判断
 
-    /* 目标卡 */
+    #region 目标卡
     public List<DuelCard> GetTargetCard(TargetCard targetcard)
     {
         List<DuelCard> targetlist = new List<DuelCard>();
@@ -1498,9 +1498,9 @@ public class Duel : MonoBehaviour
 
         return targetlist;
     }
-    /* 目标卡 */
+    #endregion 目标卡
 
-    /* 时点 */
+    #region 时点
     private void ShowTimePoint()
     {
         foreach (DuelCase duelcase in duelData.duelcase)
@@ -1575,9 +1575,9 @@ public class Duel : MonoBehaviour
         }
         duelData.duelcase.RemoveRange(0, i + 1);
     }
-    /* 时点 */
+    #endregion 时点
 
-    /* 发动限制 */
+    #region 发动限制
     public void AddLimit(int range, DuelCard duelcard, int effect, int limitType, int max)
     {
         ActivateLimit limit;
@@ -1732,9 +1732,9 @@ public class Duel : MonoBehaviour
             }
         }
     }
-    /* 发动限制 */
+    #endregion 发动限制
 
-    /* 决斗行动记录 */
+    #region 决斗行动记录
     public List<DuelCard> GetLastBattleCard()
     {
         List<DuelCard> duelcard = new List<DuelCard>();
@@ -1752,5 +1752,5 @@ public class Duel : MonoBehaviour
         }
         return duelcard;
     }
-    /* 决斗行动记录 */
+    #endregion 决斗行动记录
 }

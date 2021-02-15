@@ -23,11 +23,11 @@ public class CardClick : MonoBehaviour, IPointerClickHandler
     {
         if (transform.parent.name.Equals("HandCardsLayoutOwn"))
         {
-            uiData.ShowHandCardOwn(transform);
+            uiData.ShowHandCardInfoOwn(transform);
         }
         if (transform.parent.name.Equals("HandCardsLayoutOps"))
         {
-            uiData.ShowHandCardOps(transform);
+            uiData.ShowHandCardInfoOps(transform);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -147,7 +147,7 @@ public class DuelUIData : MonoBehaviour
         else handOps.RemoveHandCard(duelcard.index);
     }
 
-    public void ShowHandCardOwn(Transform cardtrans)
+    public void ShowHandCardInfoOwn(Transform cardtrans)
     {
         int index = handOwn.GetChildIndex(cardtrans);
         DuelCard duelcard = duelData.handcard[0][index];
@@ -157,7 +157,7 @@ public class DuelUIData : MonoBehaviour
         cardinfo.gameObject.SetActive(true);
     }
 
-    public void ShowHandCardOps(Transform cardtrans)
+    public void ShowHandCardInfoOps(Transform cardtrans)
     {
         int index = handOps.GetChildIndex(cardtrans);
         DuelCard duelcard = duelData.handcard[1][index];
