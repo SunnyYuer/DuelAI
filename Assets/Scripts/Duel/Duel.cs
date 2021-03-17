@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -542,7 +542,7 @@ public class Duel : MonoBehaviour
                     break;
             }
             duelData.eventDate.RemoveAt(0);
-            if (duelData.eventDate.Count == 0 && !duelData.effectChain)
+            if (!IsInEventChain())
             {
                 duelData.opWho = duelData.player;
                 StartCoroutine(EffectChain());
@@ -560,7 +560,7 @@ public class Duel : MonoBehaviour
 
     private IEnumerator WaitEventChain()
     {
-        while (duelData.eventDate.Count > 0 || duelData.effectChain)
+        while (IsInEventChain())
         {
             yield return null;
         }
@@ -696,11 +696,10 @@ public class Duel : MonoBehaviour
                 if (duelData.activatableEffect.Count > 0)
                 {
                     CardEffect activateEffect = null;
-                    yield return uiData.WantActivate();
-                    if (duelData.optionChoose == 1)
+                    yield return uiData.WaitChooseActivate();
+                    if (duelData.optionChoose >= 0)
                     { // 由玩家选择或者AI选择
-                        int select = 0;
-                        activateEffect = duelData.activatableEffect[select];
+                        activateEffect = duelData.activatableEffect[duelData.optionChoose];
                         chain = true;
                     }
                     CutCardOutLine();
@@ -952,6 +951,7 @@ public class Duel : MonoBehaviour
     private IEnumerator DrawCard(int player, int num)
     {
         if (duelData.deck[player].Count == 0) yield break;
+        duelData.eventText = uiData.activateTip.DrawCardText(player, num);
         DuelCase duelcase = new DuelCase(GameEvent.drawcard);
         while (num > 0)
         {
@@ -1200,6 +1200,27 @@ public class Duel : MonoBehaviour
             player = GetOppPlayer(player);
         }
         return order;
+    }
+
+    public bool IsInEventChain()
+    { // 判断是否处于事件或者效果连锁之中
+        if (duelData.eventDate.Count > 0) return true;
+        if (duelData.effectChain) return true;
+        return false;
+    }
+
+    public bool IsMainFree()
+    { // 判断是否是玩家主要阶段的自由操作时间
+        if (duelData.duelPhase != GamePhase.main1 && duelData.duelPhase != GamePhase.main2) return false;
+        if (IsInEventChain()) return false;
+        return true;
+    }
+
+    public bool IsBattleTime()
+    { // 判断是否是玩家战斗阶段的选择怪兽战斗时间
+        if (duelData.duelPhase != GamePhase.battle) return false;
+        if (IsInEventChain()) return false;
+        return true;
     }
 
     public int GetCardSpeed(CardEffect cardEffect)

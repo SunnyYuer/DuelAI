@@ -11,6 +11,7 @@ public class DuelDataManager
     public int duelPhase;
     public int player; // 当前回合的玩家，0或2为友方，1或3为敌方
     public int opWho; // 在效果处理的玩家
+    public string eventText; // 当前事件的记录文本
     public CardDataManager cardData;
     public List<DuelCase> duelcase;
     public List<CardEffect> buffeffect;

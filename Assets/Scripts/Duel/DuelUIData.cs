@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +22,7 @@ public class DuelUIData : MonoBehaviour
     public Text phaseText;
     public DuelHint duelhint;
     public CardInfoShow cardinfo;
+    public ActivateTip activateTip;
     public Tip tip;
 
     // Start is called before the first frame update
@@ -152,8 +153,18 @@ public class DuelUIData : MonoBehaviour
         int index = handOwn.GetChildIndex(cardtrans);
         DuelCard duelcard = duelData.handcard[0][index];
         cardinfo.SetCardInfo(duelcard, Duel.spriteManager.GetCardSprite(duelcard.id, false));
-        if (duel.NormalSummonCheck(duelcard)) cardinfo.SetCardButton("召唤");
-        if (duel.SetMonsterCheck(duelcard)) cardinfo.SetCardButton("盖放");
+        if (duel.IsMainFree())
+        {
+            if (duel.NormalSummonCheck(duelcard)) cardinfo.SetCardButton("召唤");
+            if (duel.SetMonsterCheck(duelcard)) cardinfo.SetCardButton("盖放");
+        }
+        else
+        {
+            foreach (CardEffect cardEffect in duelData.activatableEffect)
+            {
+                if (duelcard == cardEffect.duelcard) cardinfo.SetCardButton("发动效果"+ cardEffect.effect);
+            }
+        }
         cardinfo.gameObject.SetActive(true);
     }
 
@@ -169,7 +180,37 @@ public class DuelUIData : MonoBehaviour
     {
         if (buttonText.text.Equals("召唤")) duel.duelEvent.NormalSummon(cardinfo.duelcard);
         if (buttonText.text.Equals("盖放")) duel.duelEvent.SetMonster(cardinfo.duelcard);
+        if (buttonText.text.StartsWith("发动效果"))
+        {
+            int effect = int.Parse(buttonText.text.Substring(4));
+            for (int i = 0; i < duelData.activatableEffect.Count; i++)
+            {
+                CardEffect cardEffect = duelData.activatableEffect[i];
+                if (cardinfo.duelcard == cardEffect.duelcard && effect == cardEffect.effect)
+                {
+                    duelData.optionChoose = i;
+                    break;
+                }
+            }
+        }
         cardinfo.gameObject.SetActive(false);
+    }
+
+    public IEnumerator WaitChooseActivate()
+    {
+        activateTip.SetActivateTip(duelData.eventText);
+        activateTip.gameObject.SetActive(true);
+        duelData.optionChoose = -2;
+        while (duelData.optionChoose == -2)
+        {
+            yield return null;
+        }
+        activateTip.gameObject.SetActive(false);
+    }
+
+    public void CancelActivateOnClick()
+    {
+        duelData.optionChoose = -1;
     }
 
     public IEnumerator WantActivate()
