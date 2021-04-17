@@ -692,7 +692,7 @@ public class Duel : MonoBehaviour
                 bool chain = false;
                 Debug.Log("扫描效果 玩家" + duelData.opWho);
                 ScanEffect(duelData.opWho, EffectType.activate);
-                SetCardOutLine();
+                uiData.SetCardOutline();
                 if (duelData.activatableEffect.Count > 0)
                 {
                     CardEffect activateEffect = null;
@@ -702,7 +702,7 @@ public class Duel : MonoBehaviour
                         activateEffect = duelData.activatableEffect[duelData.optionChoose];
                         chain = true;
                     }
-                    CutCardOutLine();
+                    uiData.CutCardOutline();
                     if (chain)
                     {
                         yield return ActivateEffect(activateEffect);
@@ -833,35 +833,6 @@ public class Duel : MonoBehaviour
             }
         }
         return effectList;
-    }
-
-    public void SetCardOutLine()
-    {
-        if (!IsPlayerOwn(duelData.opWho)) return;
-        foreach (CardEffect cardEffect in duelData.activatableEffect)
-        {
-            if (cardEffect.duelcard.position == CardPosition.handcard)
-            {
-                //handOwn.SetOutLine(cardEffect.duelcard.index);
-            }
-        }
-    }
-
-    public void CutCardOutLine()
-    {
-        if (!IsPlayerOwn(duelData.opWho))
-        {
-            duelData.activatableEffect.Clear();
-            return;
-        }
-        foreach (CardEffect cardEffect in duelData.activatableEffect)
-        {
-            if (cardEffect.duelcard.position == CardPosition.handcard)
-            {
-                //handOwn.CutOutLine(cardEffect.duelcard.index);
-            }
-        }
-        duelData.activatableEffect.Clear();
     }
 
     private IEnumerator DuelAI()

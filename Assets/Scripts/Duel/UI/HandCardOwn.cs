@@ -74,13 +74,13 @@ public class HandCardOwn : MonoBehaviour
         }
     }
 
-    public void SetOutLine(int index)
+    public void SetOutline(int index)
     {
-        handcardlist.GetChild(index).GetComponent<Outline>().enabled = true ;
+        handcardlist.GetChild(index).GetChild(0).gameObject.SetActive(true);
     }
 
-    public void CutOutLine(int index)
+    public void CutOutline(int index)
     {
-        handcardlist.GetChild(index).GetComponent<Outline>().enabled = false;
+        handcardlist.GetChild(index).GetChild(0).gameObject.SetActive(false);
     }
 }

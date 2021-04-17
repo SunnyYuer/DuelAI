@@ -148,6 +148,35 @@ public class DuelUIData : MonoBehaviour
         else handOps.RemoveHandCard(duelcard.index);
     }
 
+    public void SetCardOutline()
+    {
+        if (!duel.IsPlayerOwn(duelData.opWho)) return;
+        foreach (CardEffect cardEffect in duelData.activatableEffect)
+        {
+            if (cardEffect.duelcard.position == CardPosition.handcard)
+            {
+                handOwn.SetOutline(cardEffect.duelcard.index);
+            }
+        }
+    }
+
+    public void CutCardOutline()
+    {
+        if (!duel.IsPlayerOwn(duelData.opWho))
+        {
+            duelData.activatableEffect.Clear();
+            return;
+        }
+        foreach (CardEffect cardEffect in duelData.activatableEffect)
+        {
+            if (cardEffect.duelcard.position == CardPosition.handcard)
+            {
+                handOwn.CutOutline(cardEffect.duelcard.index);
+            }
+        }
+        duelData.activatableEffect.Clear();
+    }
+
     public void ShowHandCardInfoOwn(Transform cardtrans)
     {
         int index = handOwn.GetChildIndex(cardtrans);
