@@ -86,16 +86,16 @@ public class DuelEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// 抽卡
+    /// 各自抽卡
     /// </summary>
     /// <param name="num"></param>
-    /// <param name="side"></param>
-    public void DrawCard(int num, int side)
+    /// <param name="who"></param>
+    public void DrawCardAlone(int num, int who)
     {
         if (precheck) return;
         EventData eData = new EventData
         {
-            oplayer = duel.GetSidePlayer(side),
+            oplayer = who,
             gameEvent = GameEvent.drawcard,
             data = new Dictionary<string, object>
             {
@@ -103,6 +103,21 @@ public class DuelEvent : MonoBehaviour
             }
         };
         duelData.eventDate.Add(eData);
+    }
+
+    /// <summary>
+    /// 对应方抽卡
+    /// </summary>
+    /// <param name="num"></param>
+    /// <param name="side"></param>
+    public void DrawCard(int num, int side)
+    {
+        if (precheck) return;
+        List<int> players = duel.GetSidePlayer(side);
+        foreach (int oplayer in players)
+        {
+            DrawCardAlone(num, oplayer);
+        }
     }
 
     public void DrawCard(int num)

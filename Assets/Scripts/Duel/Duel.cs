@@ -1146,14 +1146,6 @@ public class Duel : MonoBehaviour
         return oppPlayer;
     }
 
-    public int GetSidePlayer(int side)
-    { // 获取对应方的玩家
-        int player = duelData.opWho;
-        if (side == PlayerSide.ops)
-            player = GetOppPlayer(player);
-        return player;
-    }
-
     public void ChangeNextPlayer()
     {
         duelData.player++;
@@ -1171,6 +1163,23 @@ public class Duel : MonoBehaviour
             player = GetOppPlayer(player);
         }
         return order;
+    }
+
+    public List<int> GetSidePlayer(int side)
+    { // 获取对应方的玩家
+        List<int> players = new List<int>();
+        int player = duelData.opWho;
+        if (side == PlayerSide.own)
+            players.Add(player);
+        if (side == PlayerSide.ops)
+        { // 双人对战时获取对方需要有选择对方的哪一方
+            players.Add(GetOppPlayer(player));
+        }
+        if (side == PlayerSide.both)
+        { // 双方同时处理时，回合玩家先处理
+            players = GetPlayerOrder();
+        }
+        return players;
     }
 
     public bool IsInEventChain()

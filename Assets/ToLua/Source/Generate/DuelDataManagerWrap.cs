@@ -18,6 +18,7 @@ public class DuelDataManagerWrap
 		L.RegVar("duelPhase", get_duelPhase, set_duelPhase);
 		L.RegVar("player", get_player, set_player);
 		L.RegVar("opWho", get_opWho, set_opWho);
+		L.RegVar("eventText", get_eventText, set_eventText);
 		L.RegVar("cardData", get_cardData, set_cardData);
 		L.RegVar("duelcase", get_duelcase, set_duelcase);
 		L.RegVar("buffeffect", get_buffeffect, set_buffeffect);
@@ -42,6 +43,7 @@ public class DuelDataManagerWrap
 		L.RegVar("activatableEffect", get_activatableEffect, set_activatableEffect);
 		L.RegVar("immediateEffect", get_immediateEffect, set_immediateEffect);
 		L.RegVar("placeSelect", get_placeSelect, set_placeSelect);
+		L.RegVar("optionChoose", get_optionChoose, set_optionChoose);
 		L.EndClass();
 	}
 
@@ -232,6 +234,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index opWho on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_eventText(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			string ret = obj.eventText;
+			LuaDLL.lua_pushstring(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index eventText on a nil value");
 		}
 	}
 
@@ -692,6 +713,25 @@ public class DuelDataManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_optionChoose(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			int ret = obj.optionChoose;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index optionChoose on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_playerNum(IntPtr L)
 	{
 		object o = null;
@@ -802,6 +842,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index opWho on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_eventText(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			string arg0 = ToLua.CheckString(L, 2);
+			obj.eventText = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index eventText on a nil value");
 		}
 	}
 
@@ -1258,6 +1317,25 @@ public class DuelDataManagerWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index placeSelect on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_optionChoose(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DuelDataManager obj = (DuelDataManager)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.optionChoose = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index optionChoose on a nil value");
 		}
 	}
 }

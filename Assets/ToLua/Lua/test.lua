@@ -76,7 +76,7 @@ function c72892473effect1()
     end
     Duel:AfterThat()
     for i = 0, player.Count-1 do
-        Duel:DrawCard(num[i], player[i])
+        Duel:DrawCardAlone(num[i], player[i])
     end
 end
 
