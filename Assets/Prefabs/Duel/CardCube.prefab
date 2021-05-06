@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7676288050408803287}
   - component: {fileID: 7676288050407672087}
   m_Layer: 0
-  m_Name: Card
+  m_Name: CardCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +58,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 7b361105d5ba4b243b32401a3b41f462, type: 2}
-  - {fileID: 2100002, guid: dd2e46c125cc0c24dac943253c2c53b8, type: 3}
+  - {fileID: 2100000, guid: 5569e6fd29dc97548a4832101b9fd2ed, type: 2}
   - {fileID: 2100000, guid: 7204e7f72b3e0214d8b54058768bd096, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
