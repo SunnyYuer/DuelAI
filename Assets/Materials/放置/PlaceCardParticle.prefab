@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7449011261744818147}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2, y: 0.01, z: 0}
+  m_LocalPosition: {x: 0.5, y: 0.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7449011262198363168}
@@ -249,7 +249,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.4
+      scalar: 0.1
       minScalar: 0.4
       maxCurve:
         serializedVersion: 2
@@ -1423,7 +1423,7 @@ ParticleSystem:
           outWeight: 0
         - serializedVersion: 3
           time: 0.25
-          value: -1
+          value: -0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1432,7 +1432,7 @@ ParticleSystem:
           outWeight: 0
         - serializedVersion: 3
           time: 0.5
-          value: -1
+          value: -0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1441,7 +1441,7 @@ ParticleSystem:
           outWeight: 0
         - serializedVersion: 3
           time: 0.74
-          value: -1
+          value: -0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1547,7 +1547,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: -1
+          value: -0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1556,7 +1556,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 0.24
-          value: -1
+          value: -0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1592,7 +1592,7 @@ ParticleSystem:
           outWeight: 0
         - serializedVersion: 3
           time: 0.75
-          value: 1
+          value: 0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1601,7 +1601,7 @@ ParticleSystem:
           outWeight: 0
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -9274,7 +9274,7 @@ GameObject:
   - component: {fileID: 4558753518410188186}
   - component: {fileID: 8621569520618674553}
   m_Layer: 0
-  m_Name: PlaceCard
+  m_Name: PlaceCardParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9288,7 +9288,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7449011262213301130}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7449011262751903664}
@@ -13988,7 +13988,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7449011262751903665}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2, y: 0.01, z: 0}
+  m_LocalPosition: {x: -0.5, y: 0.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7449011262991789689}
@@ -14211,7 +14211,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.4
+      scalar: 0.1
       minScalar: 0.4
       maxCurve:
         serializedVersion: 2
@@ -15385,7 +15385,7 @@ ParticleSystem:
           outWeight: 0
         - serializedVersion: 3
           time: 0.25
-          value: 1
+          value: 0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -15394,7 +15394,7 @@ ParticleSystem:
           outWeight: 0
         - serializedVersion: 3
           time: 0.5
-          value: 1
+          value: 0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -15403,7 +15403,7 @@ ParticleSystem:
           outWeight: 0
         - serializedVersion: 3
           time: 0.74
-          value: 1
+          value: 0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -15509,7 +15509,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -15518,7 +15518,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 0.24
-          value: 1
+          value: 0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -15554,7 +15554,7 @@ ParticleSystem:
           outWeight: 0
         - serializedVersion: 3
           time: 0.75
-          value: -1
+          value: -0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -15563,7 +15563,7 @@ ParticleSystem:
           outWeight: 0
         - serializedVersion: 3
           time: 1
-          value: -1
+          value: -0.25
           inSlope: 0
           outSlope: 0
           tangentMode: 0
