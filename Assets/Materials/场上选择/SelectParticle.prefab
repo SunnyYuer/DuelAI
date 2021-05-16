@@ -9274,7 +9274,7 @@ GameObject:
   - component: {fileID: 4558753518410188186}
   - component: {fileID: 8621569520618674553}
   m_Layer: 0
-  m_Name: PlaceCardParticle
+  m_Name: SelectParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

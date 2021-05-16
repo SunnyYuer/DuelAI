@@ -18,15 +18,20 @@ public class MagicTrapOwn : MonoBehaviour
         
     }
 
+    public Transform GetChildCard(int index)
+    {
+        return magictrapArea.GetChild(index).GetChild(0);
+    }
+
     public void SetCover()
     {
         Sprite sprite = Duel.spriteManager.GetTextureSprite("cover");
-        foreach (Transform child in magictrapArea)
+        for (int index = 0; index < magictrapArea.childCount; index++)
         {
             if (sprite == null)
-                child.GetComponent<Renderer>().materials[2].mainTexture = null;
+                GetChildCard(index).GetComponent<Renderer>().materials[2].mainTexture = null;
             else
-                child.GetComponent<Renderer>().materials[2].mainTexture = sprite.texture;
+                GetChildCard(index).GetComponent<Renderer>().materials[2].mainTexture = sprite.texture;
         }
     }
 
@@ -40,7 +45,7 @@ public class MagicTrapOwn : MonoBehaviour
 
     public IEnumerator ShowMagicTrapCard(DuelCard duelcard)
     {
-        Transform mgttrans = magictrapArea.GetChild(duelcard.index);
+        Transform mgttrans = GetChildCard(duelcard.index);
         Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.id, false);
         if (duelcard.mean == CardMean.faceupmgt)
         {//表侧表示
@@ -61,7 +66,7 @@ public class MagicTrapOwn : MonoBehaviour
 
     public IEnumerator ShowCoverCard(DuelCard duelcard)
     {
-        Transform mgttrans = magictrapArea.GetChild(duelcard.index);
+        Transform mgttrans = GetChildCard(duelcard.index);
         float deltaTime = 0;
         Vector3 position = mgttrans.position;
         position.z -= 0.43f;
@@ -78,7 +83,7 @@ public class MagicTrapOwn : MonoBehaviour
 
     public void HideMagicTrapCard(int index)
     {
-        Transform mgttrans = magictrapArea.GetChild(index);
+        Transform mgttrans = GetChildCard(index);
         mgttrans.gameObject.SetActive(false);
         mgttrans.localPosition = new Vector3(index, 0, 0);
         mgttrans.rotation = Quaternion.Euler(270, 0, 0);

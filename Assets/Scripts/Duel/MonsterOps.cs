@@ -18,15 +18,20 @@ public class MonsterOps : MonoBehaviour
         
     }
 
+    public Transform GetChildCard(int index)
+    {
+        return monsterArea.GetChild(index).GetChild(0);
+    }
+
     public void SetCover()
     {
         Sprite sprite = Duel.spriteManager.GetTextureSprite("cover");
-        foreach (Transform child in monsterArea)
+        for (int index = 0; index < monsterArea.childCount; index++)
         {
             if (sprite == null)
-                child.GetComponent<Renderer>().materials[2].mainTexture = null;
+                GetChildCard(index).GetComponent<Renderer>().materials[2].mainTexture = null;
             else
-                child.GetComponent<Renderer>().materials[2].mainTexture = sprite.texture;
+                GetChildCard(index).GetComponent<Renderer>().materials[2].mainTexture = sprite.texture;
         }
     }
 
@@ -40,7 +45,7 @@ public class MonsterOps : MonoBehaviour
 
     public void ShowMonsterCard(DuelCard duelcard)
     {
-        Transform montrans = monsterArea.GetChild(duelcard.index);
+        Transform montrans = GetChildCard(duelcard.index);
         Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.id, false);
         if (duelcard.mean == CardMean.faceupatk)
         {//表侧攻击表示
@@ -63,7 +68,7 @@ public class MonsterOps : MonoBehaviour
 
     public void HideMonsterCard(int index)
     {
-        Transform montrans = monsterArea.GetChild(index);
+        Transform montrans = GetChildCard(index);
         montrans.gameObject.SetActive(false);
     }
 }
