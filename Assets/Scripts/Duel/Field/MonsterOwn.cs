@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterOps : MonoBehaviour
+public class MonsterOwn : MonoBehaviour
 {
     public Transform monsterArea;
 
@@ -15,12 +15,17 @@ public class MonsterOps : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public Transform GetChildCard(int index)
     {
         return monsterArea.GetChild(index).GetChild(0);
+    }
+
+    public Transform GetSelectParticle(int index)
+    {
+        return monsterArea.GetChild(index).GetChild(1);
     }
 
     public void SetCover()
@@ -40,6 +45,7 @@ public class MonsterOps : MonoBehaviour
         for (int index = 0; index < monsterArea.childCount; index++)
         {
             HideMonsterCard(index);
+            HideSelectParticle(index);
         }
     }
 
@@ -49,15 +55,15 @@ public class MonsterOps : MonoBehaviour
         Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.id, false);
         if (duelcard.mean == CardMean.faceupatk)
         {//表侧攻击表示
-            montrans.rotation = Quaternion.Euler(270, 180, 0);
+            montrans.rotation = Quaternion.Euler(270, 0, 0);
         }
         if (duelcard.mean == CardMean.faceupdef)
         {//表侧守备表示
-            montrans.rotation = Quaternion.Euler(270, 90, 0);
+            montrans.rotation = Quaternion.Euler(270, -90, 0);
         }
         if (duelcard.mean == CardMean.facedowndef)
         {//里侧守备表示
-            montrans.rotation = Quaternion.Euler(90, 270, 0);
+            montrans.rotation = Quaternion.Euler(90, 90, 0);
         }
         if (sprite == null)
             montrans.GetComponent<Renderer>().material.mainTexture = null;
@@ -70,5 +76,11 @@ public class MonsterOps : MonoBehaviour
     {
         Transform montrans = GetChildCard(index);
         montrans.gameObject.SetActive(false);
+    }
+
+    public void HideSelectParticle(int index)
+    {
+        Transform particle = GetSelectParticle(index);
+        particle.gameObject.SetActive(false);
     }
 }

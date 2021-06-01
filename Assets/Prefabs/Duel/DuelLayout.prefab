@@ -3732,6 +3732,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a068fa875de3a4441904ce3115fe6705, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  duel: {fileID: 6791702181697270016}
   image: {fileID: 6791702180043783971}
   deckTip: {fileID: 2050093408896216341}
   UIMask: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
@@ -3977,6 +3978,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d3859b8a97d9f40b9b71833226d2aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  duel: {fileID: 6791702181697270016}
   image: {fileID: 6791702180420478460}
   graveTip: {fileID: 5802095807746001167}
   UIMask: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
@@ -4143,6 +4145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e389cae461a362459d709844a2bc828, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  duel: {fileID: 6791702181697270016}
   image: {fileID: 6791702180735255597}
   graveTip: {fileID: 6761870986030956887}
   UIMask: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
@@ -4618,6 +4621,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8069248881c26664184bb9be4dbb0a0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  duel: {fileID: 6791702181697270016}
   image: {fileID: 6791702181477992707}
   deckTip: {fileID: 6849003602635103139}
   UIMask: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
@@ -4682,6 +4686,7 @@ GameObject:
   - component: {fileID: 2275735592109331000}
   - component: {fileID: 4929204863127703183}
   - component: {fileID: 9184153460685539722}
+  - component: {fileID: 2110602247762175802}
   - component: {fileID: 6791702181697270016}
   m_Layer: 5
   m_Name: DuelLayout
@@ -4760,6 +4765,19 @@ MonoBehaviour:
   cardinfo: {fileID: 1047788722245536157}
   activateTip: {fileID: 8936118832687637914}
   tip: {fileID: 7813016997705217863}
+--- !u!114 &2110602247762175802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6791702181697270018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e783cb1710199a34bbbe3f6bc674fc02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duel: {fileID: 6791702181697270016}
 --- !u!114 &6791702181697270016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4775,6 +4793,7 @@ MonoBehaviour:
   mainLayout: {fileID: 8344503884013952710, guid: a78711cb244002d46b00664ad0ae8398,
     type: 3}
   uiData: {fileID: 9184153460685539722}
+  fieldData: {fileID: 2110602247762175802}
   duelEvent: {fileID: 4929204863127703183}
 --- !u!1 &6791702181814629270
 GameObject:

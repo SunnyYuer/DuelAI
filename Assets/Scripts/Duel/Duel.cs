@@ -7,14 +7,11 @@ public class Duel : MonoBehaviour
 {
     public GameObject mainLayout;
     public DuelUIData uiData;
+    public DuelFieldData fieldData;
     public DuelEvent duelEvent;
     private Camera mainCamera;
-    private MonsterOwn monserOwn;
-    private MonsterOps monserOps;
-    private MagicTrapOwn magictrapOwn;
-    private MagicTrapOps magictrapOps;
     public static SpriteManager spriteManager;
-    public static DuelDataManager duelData;
+    public DuelDataManager duelData;
     public static Dictionary<string, Card> cardDic;
     private LuaCode luaCode;
     private DuelAI duelAI;
@@ -26,19 +23,12 @@ public class Duel : MonoBehaviour
         spriteManager = new SpriteManager();
         duelAI = new DuelAI(this, duelEvent);
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
-        monserOwn = GameObject.Find("MonsterAreaOwn").GetComponent<MonsterOwn>();
-        monserOps = GameObject.Find("MonsterAreaOps").GetComponent<MonsterOps>();
-        magictrapOwn = GameObject.Find("MagicTrapAreaOwn").GetComponent<MagicTrapOwn>();
-        magictrapOps = GameObject.Find("MagicTrapAreaOps").GetComponent<MagicTrapOps>();
     }
 
     // Start is called before the first frame update
     IEnumerator Start()
     {
-        monserOwn.SetCover();
-        monserOps.SetCover();
-        magictrapOwn.SetCover();
-        magictrapOps.SetCover();
+        fieldData.SetCover();
         //加载卡组数据
         ReadDeckFile();
         luaCode.SetCode(duelData.cardData.allcode);
@@ -77,10 +67,7 @@ public class Duel : MonoBehaviour
         StopAllCoroutines();
         duelData = null;
         cardDic = null;
-        monserOwn.ReSetAll();
-        monserOps.ReSetAll();
-        magictrapOwn.ReSetAll();
-        magictrapOps.ReSetAll();
+        fieldData.ReSetAll();
         Destroy(gameObject);
         Instantiate(mainLayout, GameObject.Find("Canvas").transform);
     }
@@ -872,8 +859,7 @@ public class Duel : MonoBehaviour
         int select = 0;
         if (IsPlayerOwn(duelData.opWho))
         {
-            // yield return monserOwn.MonsterPlace(place);
-            duelData.placeSelect = place[select];
+            yield return fieldData.WaitMonsterPlace(place);
         }
         else
         {
@@ -961,8 +947,7 @@ public class Duel : MonoBehaviour
         duelcard.appearturn = duelData.turnNum;
         duelcard.battledeclare = 0;
         duelData.monster[player][place] = duelcard;
-        if (IsPlayerOwn(player)) monserOwn.ShowMonsterCard(duelcard);
-        else monserOps.ShowMonsterCard(duelcard);
+        fieldData.MonsterShow(duelcard);
         // 通常召唤次数+1
         duelData.normalsummon[player]++;
     }
@@ -991,8 +976,7 @@ public class Duel : MonoBehaviour
         duelcard.appearturn = duelData.turnNum;
         duelcard.battledeclare = 0;
         duelData.monster[player][place] = duelcard;
-        if (IsPlayerOwn(player)) monserOwn.ShowMonsterCard(duelcard);
-        else monserOps.ShowMonsterCard(duelcard);
+        fieldData.MonsterShow(duelcard);
     }
 
     private void ChangeMean(DuelCard duelcard, int mean)
@@ -1006,8 +990,7 @@ public class Duel : MonoBehaviour
                 duelcard.mean = CardMean.faceupatk;
         }
         duelcard.meanchange++;
-        if (IsPlayerOwn(duelcard.controller)) monserOwn.ShowMonsterCard(duelcard);
-        else monserOps.ShowMonsterCard(duelcard);
+        fieldData.MonsterShow(duelcard);
     }
 
     private IEnumerator UseMagicTrap(DuelCard duelcard, int place, int mean, int way)
@@ -1026,8 +1009,7 @@ public class Duel : MonoBehaviour
         duelcard.mean = mean;
         duelcard.appearturn = duelData.turnNum;
         duelData.magictrap[player][place] = duelcard;
-        if (IsPlayerOwn(player)) yield return magictrapOwn.ShowMagicTrapCard(duelcard);
-        else yield return magictrapOps.ShowMagicTrapCard(duelcard);
+        yield return fieldData.MagicTrapShow(duelcard, false);
         duelcase.card.Add(duelcard);
         if (way != GameEvent.activatecard)
             duelData.duelcase.Add(duelcase);
@@ -1035,10 +1017,8 @@ public class Duel : MonoBehaviour
 
     private IEnumerator ActivateCoverCard(DuelCard duelcard)
     {
-        int player = duelcard.controller;
         duelcard.mean = CardMean.faceupmgt;
-        if (IsPlayerOwn(player)) yield return magictrapOwn.ShowCoverCard(duelcard);
-        else yield return magictrapOps.ShowCoverCard(duelcard);
+        yield return fieldData.MagicTrapShow(duelcard, true);
     }
 
     private IEnumerator CardLeave(DuelCard duelcard, int way)
@@ -1063,15 +1043,11 @@ public class Duel : MonoBehaviour
             }
             if (duelcard.position == CardPosition.monster)
             {
-                if (IsPlayerOwn(duelcard.controller)) monserOwn.HideMonsterCard(duelcard.index);
-                else monserOps.HideMonsterCard(duelcard.index);
-                duelData.monster[duelcard.controller][duelcard.index] = null;
+                fieldData.MonsterRemove(duelcard);
             }
             if (duelcard.position == CardPosition.magictrap)
             {
-                if (IsPlayerOwn(duelcard.controller)) magictrapOwn.HideMagicTrapCard(duelcard.index);
-                else magictrapOps.HideMagicTrapCard(duelcard.index);
-                duelData.magictrap[duelcard.controller][duelcard.index] = null;
+                fieldData.MagicTrapRemove(duelcard);
             }
             duelcard.infopublic = true;
             uiData.GraveInsert(duelcard.owner, 0, duelcard);

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class DeckOwn : MonoBehaviour, IPointerClickHandler
 {
+    public Duel duel;
     public Image image;
     public Text deckTip;
     public Sprite UIMask;
@@ -24,7 +25,7 @@ public class DeckOwn : MonoBehaviour, IPointerClickHandler
 
     public void DeckUpdate(int playerOwn)
     {
-        List<DuelCard> deck = Duel.duelData.deck[playerOwn];
+        List<DuelCard> deck = duel.duelData.deck[playerOwn];
         if (deck.Count > 0)
             image.sprite = Duel.spriteManager.GetCardSprite(deck[0].id, false);
         else

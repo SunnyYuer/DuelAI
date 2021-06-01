@@ -28,7 +28,7 @@ public class DuelUIData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        duelData = Duel.duelData;
+        duelData = duel.duelData;
     }
 
     // Update is called once per frame

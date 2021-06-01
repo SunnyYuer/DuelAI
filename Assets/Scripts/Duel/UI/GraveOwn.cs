@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class GraveOwn : MonoBehaviour
 {
+    public Duel duel;
     public Image image;
     public Text graveTip;
     public Sprite UIMask;
@@ -23,7 +24,7 @@ public class GraveOwn : MonoBehaviour
 
     public void GraveUpdate(int playerOwn)
     {
-        List<DuelCard> grave = Duel.duelData.grave[playerOwn];
+        List<DuelCard> grave = duel.duelData.grave[playerOwn];
         if (grave.Count > 0)
             image.sprite = Duel.spriteManager.GetCardSprite(grave[0].id, false);
         else

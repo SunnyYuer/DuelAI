@@ -16,7 +16,7 @@ public class DuelEvent : MonoBehaviour
 
     void Start()
     {
-        duelData = Duel.duelData;
+        duelData = duel.duelData;
     }
 
     /// <summary>

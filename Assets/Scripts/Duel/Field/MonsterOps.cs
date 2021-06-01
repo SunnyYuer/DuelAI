@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterOwn : MonoBehaviour
+public class MonsterOps : MonoBehaviour
 {
     public Transform monsterArea;
 
@@ -15,12 +15,17 @@ public class MonsterOwn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public Transform GetChildCard(int index)
     {
         return monsterArea.GetChild(index).GetChild(0);
+    }
+
+    public Transform GetSelectParticle(int index)
+    {
+        return monsterArea.GetChild(index).GetChild(1);
     }
 
     public void SetCover()
@@ -40,6 +45,7 @@ public class MonsterOwn : MonoBehaviour
         for (int index = 0; index < monsterArea.childCount; index++)
         {
             HideMonsterCard(index);
+            HideSelectParticle(index);
         }
     }
 
@@ -49,15 +55,15 @@ public class MonsterOwn : MonoBehaviour
         Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.id, false);
         if (duelcard.mean == CardMean.faceupatk)
         {//表侧攻击表示
-            montrans.rotation = Quaternion.Euler(270, 0, 0);
+            montrans.rotation = Quaternion.Euler(270, 180, 0);
         }
         if (duelcard.mean == CardMean.faceupdef)
         {//表侧守备表示
-            montrans.rotation = Quaternion.Euler(270, -90, 0);
+            montrans.rotation = Quaternion.Euler(270, 90, 0);
         }
         if (duelcard.mean == CardMean.facedowndef)
         {//里侧守备表示
-            montrans.rotation = Quaternion.Euler(90, 90, 0);
+            montrans.rotation = Quaternion.Euler(90, 270, 0);
         }
         if (sprite == null)
             montrans.GetComponent<Renderer>().material.mainTexture = null;
@@ -72,19 +78,9 @@ public class MonsterOwn : MonoBehaviour
         montrans.gameObject.SetActive(false);
     }
 
-    public IEnumerator MonsterPlace(List<int> place)
+    public void HideSelectParticle(int index)
     {
-        /*
-        foreach (int index in place)
-        {
-            monsterArea.GetChild(index).GetComponent<Renderer>().material = Resources.Load("Materials/place") as Material;
-            monsterArea.GetChild(index).gameObject.SetActive(true);
-        }
-        */
-        Duel.duelData.placeSelect = -1;
-        while (Duel.duelData.placeSelect == -1)
-        {
-            yield return null;
-        }
+        Transform particle = GetSelectParticle(index);
+        particle.gameObject.SetActive(false);
     }
 }
