@@ -78,6 +78,14 @@ public class MonsterOps : MonoBehaviour
         montrans.gameObject.SetActive(false);
     }
 
+    public void ShowSelectParticle(List<int> place)
+    {
+        foreach (int index in place)
+        {
+            GetSelectParticle(index).gameObject.SetActive(true);
+        }
+    }
+
     public void HideSelectParticle(int index)
     {
         Transform particle = GetSelectParticle(index);

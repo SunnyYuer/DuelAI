@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -78,9 +79,34 @@ public class MonsterOwn : MonoBehaviour
         montrans.gameObject.SetActive(false);
     }
 
+    public void ShowSelectParticle(List<int> place)
+    {
+        foreach (int index in place)
+        {
+            GetSelectParticle(index).gameObject.SetActive(true);
+        }
+    }
+
     public void HideSelectParticle(int index)
     {
         Transform particle = GetSelectParticle(index);
         particle.gameObject.SetActive(false);
+    }
+
+    public int GetClickArea(List<int> place, Vector3 clickposition)
+    {
+        int placeSelect = -1;
+        if (Math.Abs(monsterArea.position.z - clickposition.z) < 0.45)
+        {
+            if (clickposition.x > 0.5 && clickposition.x < 0.5 + monsterArea.childCount)
+            {
+                if (Math.Abs(clickposition.x - (int)(clickposition.x+0.5)) < 0.45)
+                {
+                    placeSelect = (int)(clickposition.x - 0.5);
+                    if (!place.Contains(placeSelect)) placeSelect = -1;
+                }
+            }
+        }
+        return placeSelect;
     }
 }

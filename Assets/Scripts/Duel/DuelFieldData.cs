@@ -62,13 +62,15 @@ public class DuelFieldData : MonoBehaviour
 
     public IEnumerator WaitMonsterPlace(List<int> place)
     {
-        foreach (int index in place)
-        {
-            monserOwn.GetSelectParticle(index).gameObject.SetActive(true);
-        }
+        monserOwn.ShowSelectParticle(place);
         duelData.placeSelect = -1;
         while (duelData.placeSelect == -1)
         {
+            if (Input.GetMouseButtonUp(0))
+            {
+                Vector3 clickposition = FieldHelper.GetClickInWorldPosition();
+                duelData.placeSelect = monserOwn.GetClickArea(place, clickposition);
+            }
             yield return null;
         }
     }

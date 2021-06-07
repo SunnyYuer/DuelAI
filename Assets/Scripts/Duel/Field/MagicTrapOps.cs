@@ -95,6 +95,14 @@ public class MagicTrapOps : MonoBehaviour
         mgttrans.rotation = Quaternion.Euler(270, 180, 0);
     }
 
+    public void ShowSelectParticle(List<int> place)
+    {
+        foreach (int index in place)
+        {
+            GetSelectParticle(index).gameObject.SetActive(true);
+        }
+    }
+
     public void HideSelectParticle(int index)
     {
         Transform particle = GetSelectParticle(index);
