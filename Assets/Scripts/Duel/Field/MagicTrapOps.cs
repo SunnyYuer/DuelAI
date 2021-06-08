@@ -55,7 +55,7 @@ public class MagicTrapOps : MonoBehaviour
         Sprite sprite = Duel.spriteManager.GetCardSprite(duelcard.id, false);
         if (duelcard.mean == CardMean.faceupmgt)
         {//表侧表示
-            mgttrans.localPosition = new Vector3(4 - duelcard.index, 0.43f, 4.43f);
+            mgttrans.localPosition = new Vector3(0, 0.53f, 0.43f);
             mgttrans.rotation = Quaternion.Euler(0, 180, 180);
         }
         if (duelcard.mean == CardMean.facedownmgt)
@@ -91,7 +91,7 @@ public class MagicTrapOps : MonoBehaviour
     {
         Transform mgttrans = GetChildCard(index);
         mgttrans.gameObject.SetActive(false);
-        mgttrans.localPosition = new Vector3(4 - index, 0, 4);
+        mgttrans.localPosition = new Vector3(0, 0.1f, 0);
         mgttrans.rotation = Quaternion.Euler(270, 180, 0);
     }
 
