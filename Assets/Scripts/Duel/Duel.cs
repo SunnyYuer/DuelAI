@@ -178,11 +178,6 @@ public class Duel : MonoBehaviour
 
     private void MainView()
     {
-        if (!duelAI.done && duelData.eventDate.Count == 0 &&
-            (duelData.duelPhase <= GamePhase.battle || duelData.duelPhase >= GamePhase.battleEnd))
-        {
-            return;
-        }
         mainCamera.transform.position = new Vector3(3f, 2.5f, -1f);
         mainCamera.transform.eulerAngles = new Vector3(35f, 0f, 0f);
         uiData.ShowCardLayout();
@@ -556,7 +551,7 @@ public class Duel : MonoBehaviour
     private IEnumerator ActivateEffect(CardEffect cardEffect)
     {
         DuelCard duelcard = cardEffect.duelcard;
-        ObserveView(duelcard.controller);
+        ObserveView(duelcard.controller); // 发动卡时，角色出示卡牌，给角色特写
         ActivateTimePointPass();
         int way = GameEvent.activateeffect;
         if (!duelcard.type.Contains(CardType.monster))
@@ -682,10 +677,16 @@ public class Duel : MonoBehaviour
                 uiData.SetCardOutline();
                 if (duelData.activatableEffect.Count > 0)
                 {
+                    // 由玩家选择或者AI选择
+                    if (IsPlayerOwn(duelData.opWho))
+                    {
+                        MainView();
+                        yield return uiData.WaitChooseActivate();
+                    }
+                    else duelData.optionChoose = 0;
                     CardEffect activateEffect = null;
-                    yield return uiData.WaitChooseActivate();
                     if (duelData.optionChoose >= 0)
-                    { // 由玩家选择或者AI选择
+                    {
                         activateEffect = duelData.activatableEffect[duelData.optionChoose];
                         chain = true;
                     }
@@ -716,7 +717,8 @@ public class Duel : MonoBehaviour
         }
         duelData.duelcase.Clear();
         duelData.effectChain = false;
-        MainView();
+        // 自己的操作和事件完成后，要回到主视角
+        if (IsPlayerOwn(duelData.opWho) && duelAI.done) MainView();
     }
 
     private IEnumerator TriggerChain()
@@ -859,6 +861,7 @@ public class Duel : MonoBehaviour
         int select = 0;
         if (IsPlayerOwn(duelData.opWho))
         {
+            MainView();
             yield return fieldData.WaitMonsterPlace(place);
         }
         else
