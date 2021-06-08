@@ -22,6 +22,8 @@ public class ActivateTip : MonoBehaviour
     public void SetActivateTip(string tip)
     {
         activateTip.text = tip;
+        if (tip.Length < 15) activateTip.alignment = TextAnchor.MiddleCenter;
+        else activateTip.alignment = TextAnchor.MiddleLeft;
     }
 
     public string WhoText(int who)
@@ -35,5 +37,11 @@ public class ActivateTip : MonoBehaviour
     public string DrawCardText(int who, int num)
     {
         return WhoText(who) + "抽了" + num + "张卡";
+    }
+
+    public string ActivateText(CardEffect cardEffect)
+    {
+        DuelCard duelcard = cardEffect.duelcard;
+        return WhoText(duelcard.controller) + "发动「" + duelcard.name + "」的效果" + cardEffect.effect;
     }
 }

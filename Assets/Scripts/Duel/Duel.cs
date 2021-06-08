@@ -570,6 +570,7 @@ public class Duel : MonoBehaviour
         }
         if (cardEffect.cost) yield return PayCost(cardEffect);
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 发动");
+        duelData.eventText = uiData.activateTip.ActivateText(cardEffect);
         DuelCase duelcase = new DuelCase(way);
         duelcase.type = "activate";
         duelcase.card.Add(duelcard);
