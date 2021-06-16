@@ -93,6 +93,15 @@ public class MonsterOwn : MonoBehaviour
         particle.gameObject.SetActive(false);
     }
 
+    public void SelectPlace(List<int> place, int select)
+    {
+        foreach (int index in place)
+        {
+            if (index != select) HideSelectParticle(index);
+        }
+        GetSelectParticle(select).GetComponent<ParticleSystem>().Pause(true);
+    }
+
     public int GetClickArea(List<int> place, Vector3 clickposition)
     {
         int placeSelect = -1;

@@ -23,7 +23,7 @@ public class DuelUIData : MonoBehaviour
     public DuelHint duelhint;
     public CardInfoShow cardinfo;
     public ActivateTip activateTip;
-    public Tip tip;
+    public MessageTip messageTip;
 
     // Start is called before the first frame update
     void Start()
@@ -247,9 +247,9 @@ public class DuelUIData : MonoBehaviour
         //由玩家选择或者AI选择
         if (duel.IsPlayerOwn(duelData.opWho))
         {
-            tip.ShowTip("提示", "是否发动？");
-            yield return tip.WaitForTipChoose();
-            duelData.optionChoose = tip.select;
+            messageTip.ShowTip("提示", "是否发动？");
+            yield return messageTip.WaitForTipChoose();
+            duelData.optionChoose = messageTip.select;
         }
         else
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Tip : MonoBehaviour
+public class MessageTip : MonoBehaviour
 {
     public Text title;
     public Text content;

@@ -73,6 +73,7 @@ public class DuelFieldData : MonoBehaviour
             }
             yield return null;
         }
+        monserOwn.SelectPlace(place, duelData.placeSelect);
     }
 
     public IEnumerator MagicTrapShow(DuelCard duelcard, bool activateCover)
