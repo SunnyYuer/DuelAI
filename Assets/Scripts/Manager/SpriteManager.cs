@@ -63,7 +63,7 @@ public class SpriteManager
         return sprite;
     }
 
-    public Texture2D ScaleTexture(Texture2D sourceTex, int targetWidth, int targetHeight)
+    private Texture2D ScaleTexture(Texture2D sourceTex, int targetWidth, int targetHeight)
     {
         Texture2D destTex = new Texture2D(targetWidth, targetHeight, TextureFormat.RGB24, false);
         Color[] destPix = new Color[destTex.width * destTex.height];

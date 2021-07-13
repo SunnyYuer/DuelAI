@@ -22,7 +22,7 @@ public class Card
 
 public class CardDataManager
 {
-    public Dictionary<string, Card> cardDic;
+    private Dictionary<string, Card> cardDic;
     public string allcode;
     private SQLManager sql;
 
@@ -71,5 +71,15 @@ public class CardDataManager
             if (values[0].Equals("atk")) card.atk = int.Parse(values[1]);
             if (values[0].Equals("def")) card.def = int.Parse(values[1]);
         }
+    }
+
+    public bool ContainsCard(string cardid)
+    {
+        return cardDic.ContainsKey(cardid);
+    }
+
+    public Card GetCard(string cardid)
+    {
+        return cardDic[cardid];
     }
 }

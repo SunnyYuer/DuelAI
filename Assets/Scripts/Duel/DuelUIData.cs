@@ -23,7 +23,7 @@ public class DuelUIData : MonoBehaviour
     public DuelHint duelhint;
     public CardInfoShow cardinfo;
     public ActivateTip activateTip;
-    public MessageTip messageTip;
+    public DuelTip duelTip;
 
     // Start is called before the first frame update
     void Start()
@@ -247,14 +247,23 @@ public class DuelUIData : MonoBehaviour
         //由玩家选择或者AI选择
         if (duel.IsPlayerOwn(duelData.opWho))
         {
-            messageTip.ShowTip("提示", "是否发动？");
-            yield return messageTip.WaitForTipChoose();
-            duelData.optionChoose = messageTip.select;
+            yield return duelTip.ShowMessageTip("提示", "是否发动？");
+            duelData.optionChoose = duelTip.choice;
         }
         else
         {
             duelData.optionChoose = 1;
         }
         yield return null;
+    }
+
+    public IEnumerator WaitMeanChoose(DuelCard duelcard, bool secSet)
+    {
+        if (secSet)
+            yield return duelTip.ShowMeanTip(Duel.spriteManager.GetCardSprite(duelcard.id, false),
+                Duel.spriteManager.GetTextureSprite("cover"));
+        else
+            yield return duelTip.ShowMeanTip(Duel.spriteManager.GetCardSprite(duelcard.id, false));
+        duelData.meanChoose = duelTip.choice;
     }
 }

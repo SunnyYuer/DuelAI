@@ -278,6 +278,10 @@ public class DuelEvent : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 从手卡盖放怪兽卡
+    /// </summary>
+    /// <param name="duelcard"></param>
     public void SetMonster(DuelCard duelcard)
     {
         if (precheck) return;

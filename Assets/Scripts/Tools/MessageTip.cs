@@ -7,7 +7,7 @@ public class MessageTip : MonoBehaviour
 {
     public Text title;
     public Text content;
-    public int select; // 玩家的选择
+    public int choice;
 
     // Use this for initialization
     void Start ()
@@ -21,31 +21,27 @@ public class MessageTip : MonoBehaviour
 		
 	}
 
-    public void ShowTip(string titleText, string contentText)
+    public IEnumerator ShowTip(string titleText, string contentText)
     {
         title.text = titleText;
         content.text = contentText;
         gameObject.SetActive(true);
+        choice = -1;
+        while (choice == -1)
+        {
+            yield return null;
+        }
     }
 
     public void OnConfirmButtonClick()
     {
-        select = 1;
+        choice = 1;
         gameObject.SetActive(false);
     }
 
     public void OnCancelButtonClick()
     {
-        select = 0;
+        choice = 0;
         gameObject.SetActive(false);
-    }
-
-    public IEnumerator WaitForTipChoose()
-    {
-        select = -1;
-        while (select == -1)
-        {
-            yield return null;
-        }
     }
 }

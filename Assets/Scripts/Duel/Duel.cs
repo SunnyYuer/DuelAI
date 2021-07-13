@@ -12,7 +12,6 @@ public class Duel : MonoBehaviour
     private Camera mainCamera;
     public static SpriteManager spriteManager;
     public DuelDataManager duelData;
-    public static Dictionary<string, Card> cardDic;
     private LuaCode luaCode;
     private DuelAI duelAI;
 
@@ -66,7 +65,6 @@ public class Duel : MonoBehaviour
         luaCode.Close();
         StopAllCoroutines();
         duelData = null;
-        cardDic = null;
         fieldData.ReSetAll();
         Destroy(gameObject);
         Instantiate(mainLayout, GameObject.Find("Canvas").transform);
@@ -74,7 +72,6 @@ public class Duel : MonoBehaviour
 
     public void ReadDeckFile()
     {
-        cardDic = duelData.cardData.cardDic;
         string[] deckpath = new string[duelData.playerNum];
         deckpath[0] = Main.rulePath + "/deck/mycard.ydk";
         deckpath[1] = Main.rulePath + "/deck/mycard.ydk";
@@ -105,7 +102,7 @@ public class Duel : MonoBehaviour
             duelData.cardData.LoadCardData(extra);
             foreach (string card in deck)
             {
-                if (!cardDic.ContainsKey(card)) continue;
+                if (!duelData.cardData.ContainsCard(card)) continue;
                 DuelCard duelcard = new DuelCard
                 {
                     cardeffect = new List<CardEffect>(),
@@ -116,12 +113,12 @@ public class Duel : MonoBehaviour
                     mean = CardMean.faceup,
                     infopublic = false,
                 };
-                duelcard.SetCard(cardDic[card]);
+                duelcard.SetCard(duelData.cardData.GetCard(card));
                 duelData.deck[player].Add(duelcard);
             }
             foreach (string card in extra)
             {
-                if (!cardDic.ContainsKey(card)) continue;
+                if (!duelData.cardData.ContainsCard(card)) continue;
                 DuelCard duelcard = new DuelCard
                 {
                     cardeffect = new List<CardEffect>(),
@@ -132,7 +129,7 @@ public class Duel : MonoBehaviour
                     mean = CardMean.faceup,
                     infopublic = false,
                 };
-                duelcard.SetCard(cardDic[card]);
+                duelcard.SetCard(duelData.cardData.GetCard(card));
                 duelData.extra[player].Add(duelcard);
             }
         }
@@ -470,19 +467,20 @@ public class Duel : MonoBehaviour
                 case GameEvent.normalsummon:
                     duelcarddata = eData.data["handcard"] as DuelCard;
                     yield return SelectMonsterPlace();
-                    intdata1 = CardMean.faceupatk;
+                    // 默认表侧攻击表示，如果不允许盖放，则多出选项表侧守备表示
+                    duelData.meanChoose = CardMean.faceupatk;
                     if (!duelData.setmonster[player%2])
-                        intdata1 = SelectMonsterMean(eData.gameEvent);
+                        yield return SelectMonsterMean(eData.gameEvent, duelcarddata);
                     ObserveView(player);
-                    NormalSummon(duelcarddata, duelData.placeSelect, intdata1);
+                    NormalSummon(duelcarddata, duelData.placeSelect, duelData.meanChoose);
                     yield return new WaitForSeconds(1);
                     break;
                 case GameEvent.specialsummon:
                     duelcarddata = eData.data["monstercard"] as DuelCard;
                     yield return SelectMonsterPlace();
-                    intdata1 = SelectMonsterMean(eData.gameEvent);
+                    yield return SelectMonsterMean(eData.gameEvent, duelcarddata);
                     ObserveView(player);
-                    SpecialSummon(duelcarddata, duelData.placeSelect, intdata1);
+                    SpecialSummon(duelcarddata, duelData.placeSelect, duelData.meanChoose);
                     yield return new WaitForSeconds(1);
                     break;
                 case GameEvent.setmonster:
@@ -889,24 +887,30 @@ public class Duel : MonoBehaviour
         yield return null;
     }
 
-    private int SelectMonsterMean(int gameEvent)
+    private IEnumerator SelectMonsterMean(int gameEvent, DuelCard duelcard)
     { // 召唤怪兽时的表示选择
         // 由玩家选择或者AI选择
+        int[] means = new int[2] { CardMean.faceupatk, CardMean.faceupdef };
         if (gameEvent == GameEvent.normalsummon)
         {
             if (IsPlayerOwn(duelData.opWho))
-                return CardMean.faceupdef;
+            {
+                yield return uiData.WaitMeanChoose(duelcard, false);
+                duelData.meanChoose = means[duelData.meanChoose];
+            }
             else
-                return CardMean.faceupatk;
+                duelData.meanChoose = means[0];
         }
         if (gameEvent == GameEvent.specialsummon)
         {
             if (IsPlayerOwn(duelData.opWho))
-                return CardMean.faceupatk;
+            {
+                yield return uiData.WaitMeanChoose(duelcard, false);
+                duelData.meanChoose = means[duelData.meanChoose];
+            }
             else
-                return CardMean.faceupatk;
+                duelData.meanChoose = means[0];
         }
-        return 0;
     }
 
     private IEnumerator DrawCard(int player, int num)
@@ -1085,7 +1089,7 @@ public class Duel : MonoBehaviour
         List<DuelCard> cardList = GetTargetCard(targetcard);
         foreach (DuelCard duelcard in cardList)
         { // 重置双方场上和手卡的信息
-            duelcard.ResetCard(cardDic[duelcard.id]);
+            duelcard.ResetCard(duelData.cardData.GetCard(duelcard.id));
         }
         foreach (CardEffect buff in duelData.buffeffect)
         { // 让buff重新生效
