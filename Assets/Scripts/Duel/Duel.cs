@@ -896,6 +896,7 @@ public class Duel : MonoBehaviour
             if (IsPlayerOwn(duelData.opWho))
             {
                 yield return uiData.WaitMeanChoose(duelcard, false);
+                fieldData.HideMonsterPlaceParticle(duelData.placeSelect);
                 duelData.meanChoose = means[duelData.meanChoose];
             }
             else
@@ -906,6 +907,7 @@ public class Duel : MonoBehaviour
             if (IsPlayerOwn(duelData.opWho))
             {
                 yield return uiData.WaitMeanChoose(duelcard, false);
+                fieldData.HideMonsterPlaceParticle(duelData.placeSelect);
                 duelData.meanChoose = means[duelData.meanChoose];
             }
             else

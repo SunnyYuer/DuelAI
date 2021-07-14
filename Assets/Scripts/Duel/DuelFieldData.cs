@@ -76,6 +76,11 @@ public class DuelFieldData : MonoBehaviour
         monserOwn.SelectPlace(place, duelData.placeSelect);
     }
 
+    public void HideMonsterPlaceParticle(int index)
+    {
+        monserOwn.HideSelectParticle(index);
+    }
+
     public IEnumerator MagicTrapShow(DuelCard duelcard, bool activateCover)
     {
         if (activateCover)
