@@ -5,12 +5,12 @@ using UnityEngine.EventSystems;
 
 public class CardClick : MonoBehaviour, IPointerClickHandler
 {
-    private DuelUIData uiData;
+    private DuelUIManager uiData;
 
     // Start is called before the first frame update
     void Start()
     {
-        uiData = GameObject.Find("DuelLayout(Clone)").GetComponent<DuelUIData>();
+        uiData = GameObject.Find("DuelLayout(Clone)").GetComponent<DuelUIManager>();
     }
 
     // Update is called once per frame

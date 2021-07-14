@@ -4467,8 +4467,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainLayout: {fileID: 8344503884013952710, guid: a78711cb244002d46b00664ad0ae8398,
     type: 3}
-  uiData: {fileID: 9184153460685539722}
-  fieldData: {fileID: 2110602247762175802}
+  uiManage: {fileID: 9184153460685539722}
+  fieldManage: {fileID: 2110602247762175802}
   duelEvent: {fileID: 4929204863127703183}
 --- !u!1 &6791702181814629270
 GameObject:
@@ -6018,16 +6018,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8949989166230781049}
     m_Modifications:
-    - target: {fileID: 6436408034928115250, guid: 228ceb4a68c26574091856bc5200bcc2,
-        type: 3}
-      propertyPath: m_Name
-      value: MessageTip
-      objectReference: {fileID: 0}
-    - target: {fileID: 6436408034928115250, guid: 228ceb4a68c26574091856bc5200bcc2,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1478111108723793697, guid: 228ceb4a68c26574091856bc5200bcc2,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6132,6 +6122,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6436408034928115250, guid: 228ceb4a68c26574091856bc5200bcc2,
+        type: 3}
+      propertyPath: m_Name
+      value: MessageTip
+      objectReference: {fileID: 0}
+    - target: {fileID: 6436408034928115250, guid: 228ceb4a68c26574091856bc5200bcc2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 228ceb4a68c26574091856bc5200bcc2, type: 3}

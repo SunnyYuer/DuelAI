@@ -6,8 +6,8 @@ using UnityEngine;
 public class Duel : MonoBehaviour
 {
     public GameObject mainLayout;
-    public DuelUIData uiData;
-    public DuelFieldData fieldData;
+    public DuelUIManager uiManage;
+    public DuelFieldManager fieldManage;
     public DuelEvent duelEvent;
     private Camera mainCamera;
     public static SpriteManager spriteManager;
@@ -27,21 +27,21 @@ public class Duel : MonoBehaviour
     // Start is called before the first frame update
     IEnumerator Start()
     {
-        fieldData.SetCover();
+        fieldManage.SetCover();
         //加载卡组数据
         ReadDeckFile();
         luaCode.SetCode(duelData.cardData.allcode);
         luaCode.SetTestCard();
         ReadCardEffect();
         //放置卡组
-        uiData.PutDeck();
+        uiManage.PutDeck();
         //初始化先攻，阶段，生命值
-        uiData.SetHint("决斗");
+        uiManage.SetHint("决斗");
         duelData.player = 0;
         duelData.opWho = 0;
         duelData.duelPhase = 0;
-        uiData.LPUpdate(0, 8000);
-        uiData.LPUpdate(1, 8000);
+        uiManage.LPUpdate(0, 8000);
+        uiManage.LPUpdate(1, 8000);
         yield return new WaitForSeconds(1);
         //各自起手5张卡
         MainView();
@@ -65,7 +65,7 @@ public class Duel : MonoBehaviour
         luaCode.Close();
         StopAllCoroutines();
         duelData = null;
-        fieldData.ReSetAll();
+        fieldManage.ReSetAll();
         Destroy(gameObject);
         Instantiate(mainLayout, GameObject.Find("Canvas").transform);
     }
@@ -177,7 +177,7 @@ public class Duel : MonoBehaviour
     {
         mainCamera.transform.position = new Vector3(3f, 2.5f, -1f);
         mainCamera.transform.eulerAngles = new Vector3(35f, 0f, 0f);
-        uiData.ShowCardLayout();
+        uiManage.ShowCardLayout();
     }
 
     private void ObserveView(int player)
@@ -193,7 +193,7 @@ public class Duel : MonoBehaviour
             mainCamera.transform.eulerAngles = new Vector3(35f, 0f, 0f);
         }
         // 隐藏手卡布局
-        uiData.HideCardLayout();
+        uiManage.HideCardLayout();
         /*
         // 特写视角
         Vector3 camPosition = new Vector3
@@ -220,14 +220,14 @@ public class Duel : MonoBehaviour
         {
             case GamePhase.turnstart:
                 duelData.turnNum++;
-                if (IsPlayerOwn(duelData.player)) uiData.SetPhaseText("我的回合");
-                else uiData.SetPhaseText("对方回合");
+                if (IsPlayerOwn(duelData.player)) uiManage.SetPhaseText("我的回合");
+                else uiManage.SetPhaseText("对方回合");
                 Debug.Log("玩家" + duelData.player);
                 yield return new WaitForSeconds(1);
                 StartCoroutine(EndPhase());
                 break;
             case GamePhase.draw:
-                uiData.SetPhaseText("抽卡阶段");
+                uiManage.SetPhaseText("抽卡阶段");
                 Debug.Log("抽卡阶段");
                 yield return new WaitForSeconds(1);
                 duelEvent.DrawCard(1);
@@ -235,34 +235,34 @@ public class Duel : MonoBehaviour
                 StartCoroutine(EndPhase());
                 break;
             case GamePhase.standby:
-                uiData.SetPhaseText("准备阶段");
+                uiManage.SetPhaseText("准备阶段");
                 Debug.Log("准备阶段");
                 yield return new WaitForSeconds(1);
                 StartCoroutine(EndPhase());
                 break;
             case GamePhase.main1:
-                uiData.SetPhaseText("主一阶段");
-                uiData.ChangeBattleButtonText("开始战斗");
+                uiManage.SetPhaseText("主一阶段");
+                uiManage.ChangeBattleButtonText("开始战斗");
                 Debug.Log("主一阶段");
                 yield return new WaitForSeconds(1);
                 if (!IsPlayerOwn(duelData.player)) yield return DuelAI();
                 break;
             case GamePhase.battle:
-                uiData.SetPhaseText("战斗阶段");
-                uiData.ChangeBattleButtonText("结束战斗");
+                uiManage.SetPhaseText("战斗阶段");
+                uiManage.ChangeBattleButtonText("结束战斗");
                 Debug.Log("战斗阶段");
                 yield return new WaitForSeconds(1);
                 yield return EffectChain();
                 if(!IsPlayerOwn(duelData.player)) yield return DuelAI();
                 break;
             case GamePhase.main2:
-                uiData.SetPhaseText("主二阶段");
+                uiManage.SetPhaseText("主二阶段");
                 Debug.Log("主二阶段");
                 yield return new WaitForSeconds(1);
                 if (!IsPlayerOwn(duelData.player)) yield return DuelAI();
                 break;
             case GamePhase.end:
-                uiData.SetPhaseText("结束阶段");
+                uiManage.SetPhaseText("结束阶段");
                 Debug.Log("结束阶段");
                 yield return new WaitForSeconds(1);
                 StartCoroutine(EndPhase());
@@ -352,7 +352,7 @@ public class Duel : MonoBehaviour
         if (target == -1)
         { // 直接攻击对方
             int atk = atkmonster.atk;
-            uiData.LPUpdate(antiplayer, -atk);
+            uiManage.LPUpdate(antiplayer, -atk);
         }
         else
         { // 攻击选定的目标
@@ -362,7 +362,7 @@ public class Duel : MonoBehaviour
                 int atk2 = antimonster.atk;
                 if (atk1 > atk2)
                 {
-                    uiData.LPUpdate(antiplayer, -(atk1 - atk2));
+                    uiManage.LPUpdate(antiplayer, -(atk1 - atk2));
                     destroycard = 2;
                 }
                 if (atk1 == atk2)
@@ -374,7 +374,7 @@ public class Duel : MonoBehaviour
                 }
                 if (atk1 < atk2)
                 {
-                    uiData.LPUpdate(atkplayer, -(atk2 - atk1));
+                    uiManage.LPUpdate(atkplayer, -(atk2 - atk1));
                     destroycard = 1;
                 }
             }
@@ -388,7 +388,7 @@ public class Duel : MonoBehaviour
                 }
                 if (atk1 <= def2)
                 {
-                    uiData.LPUpdate(atkplayer, -(def2 - atk1));
+                    uiManage.LPUpdate(atkplayer, -(def2 - atk1));
                 }
             }
         }
@@ -568,7 +568,7 @@ public class Duel : MonoBehaviour
         }
         if (cardEffect.cost) yield return PayCost(cardEffect);
         Debug.Log("玩家" + duelcard.controller + " 卡牌 " + duelcard.name + " 的效果" + cardEffect.effect + " 发动");
-        duelData.eventText = uiData.activateTip.ActivateText(cardEffect);
+        duelData.eventText = uiManage.activateTip.ActivateText(cardEffect);
         DuelCase duelcase = new DuelCase(way);
         duelcase.type = "activate";
         duelcase.card.Add(duelcard);
@@ -673,14 +673,14 @@ public class Duel : MonoBehaviour
                 bool chain = false;
                 Debug.Log("扫描效果 玩家" + duelData.opWho);
                 ScanEffect(duelData.opWho, EffectType.activate);
-                uiData.SetCardOutline();
+                uiManage.SetCardOutline();
                 if (duelData.activatableEffect.Count > 0)
                 {
                     // 由玩家选择或者AI选择
                     if (IsPlayerOwn(duelData.opWho))
                     {
                         MainView();
-                        yield return uiData.WaitChooseActivate();
+                        yield return uiManage.WaitChooseActivate();
                     }
                     else duelData.optionChoose = 0;
                     CardEffect activateEffect = null;
@@ -689,7 +689,7 @@ public class Duel : MonoBehaviour
                         activateEffect = duelData.activatableEffect[duelData.optionChoose];
                         chain = true;
                     }
-                    uiData.CutCardOutline();
+                    uiManage.CutCardOutline();
                     if (chain)
                     {
                         yield return ActivateEffect(activateEffect);
@@ -741,7 +741,7 @@ public class Duel : MonoBehaviour
                 {
                     while (effectList.Count > 0)
                     {
-                        yield return uiData.WantActivate();
+                        yield return uiManage.WantActivate();
                         if (duelData.optionChoose == 1)
                         {
                             yield return ActivateEffect(effectList[0]);
@@ -861,7 +861,7 @@ public class Duel : MonoBehaviour
         if (IsPlayerOwn(duelData.opWho))
         {
             MainView();
-            yield return fieldData.WaitMonsterPlace(place);
+            yield return fieldManage.WaitMonsterPlace(place);
         }
         else
         {
@@ -895,8 +895,8 @@ public class Duel : MonoBehaviour
         {
             if (IsPlayerOwn(duelData.opWho))
             {
-                yield return uiData.WaitMeanChoose(duelcard, false);
-                fieldData.HideMonsterPlaceParticle(duelData.placeSelect);
+                yield return uiManage.WaitMeanChoose(duelcard, false);
+                fieldManage.HideMonsterPlaceParticle(duelData.placeSelect);
                 duelData.meanChoose = means[duelData.meanChoose];
             }
             else
@@ -906,8 +906,8 @@ public class Duel : MonoBehaviour
         {
             if (IsPlayerOwn(duelData.opWho))
             {
-                yield return uiData.WaitMeanChoose(duelcard, false);
-                fieldData.HideMonsterPlaceParticle(duelData.placeSelect);
+                yield return uiManage.WaitMeanChoose(duelcard, false);
+                fieldManage.HideMonsterPlaceParticle(duelData.placeSelect);
                 duelData.meanChoose = means[duelData.meanChoose];
             }
             else
@@ -918,14 +918,14 @@ public class Duel : MonoBehaviour
     private IEnumerator DrawCard(int player, int num)
     {
         if (duelData.deck[player].Count == 0) yield break;
-        duelData.eventText = uiData.activateTip.DrawCardText(player, num);
+        duelData.eventText = uiManage.activateTip.DrawCardText(player, num);
         DuelCase duelcase = new DuelCase(GameEvent.drawcard);
         while (num > 0)
         {
             yield return new WaitForSeconds(0.1f);
             DuelCard duelcard = duelData.deck[player][0];
-            uiData.DeckRemove(player, duelcard);
-            uiData.HandCardAdd(player, duelcard);
+            uiManage.DeckRemove(player, duelcard);
+            uiManage.HandCardAdd(player, duelcard);
             duelcase.card.Add(duelcard);
             num--;
         }
@@ -948,7 +948,7 @@ public class Duel : MonoBehaviour
             Debug.Log("玩家" + player + " 通常召唤 " + duelcard.name);
         if (mean == CardMean.facedowndef)
             Debug.Log("玩家" + player + " 盖放 " + duelcard.name);
-        uiData.HandCardRemove(player, duelcard);
+        uiManage.HandCardRemove(player, duelcard);
         duelcard.position = CardPosition.monster;
         duelcard.index = place;
         duelcard.mean = mean;
@@ -957,7 +957,7 @@ public class Duel : MonoBehaviour
         duelcard.appearturn = duelData.turnNum;
         duelcard.battledeclare = 0;
         duelData.monster[player][place] = duelcard;
-        fieldData.MonsterShow(duelcard);
+        fieldManage.MonsterShow(duelcard);
         // 通常召唤次数+1
         duelData.normalsummon[player]++;
     }
@@ -968,15 +968,15 @@ public class Duel : MonoBehaviour
         Debug.Log("玩家" + player + " 特殊召唤 " + duelcard.name);
         if (duelcard.position == CardPosition.handcard)
         {
-            uiData.HandCardRemove(player, duelcard);
+            uiManage.HandCardRemove(player, duelcard);
         }
         if (duelcard.position == CardPosition.deck)
         {
-            uiData.DeckRemove(player, duelcard);
+            uiManage.DeckRemove(player, duelcard);
         }
         if (duelcard.position == CardPosition.grave)
         {
-            uiData.GraveRemove(player, duelcard);
+            uiManage.GraveRemove(player, duelcard);
         }
         duelcard.position = CardPosition.monster;
         duelcard.index = place;
@@ -986,7 +986,7 @@ public class Duel : MonoBehaviour
         duelcard.appearturn = duelData.turnNum;
         duelcard.battledeclare = 0;
         duelData.monster[player][place] = duelcard;
-        fieldData.MonsterShow(duelcard);
+        fieldManage.MonsterShow(duelcard);
     }
 
     private void ChangeMean(DuelCard duelcard, int mean)
@@ -1000,7 +1000,7 @@ public class Duel : MonoBehaviour
                 duelcard.mean = CardMean.faceupatk;
         }
         duelcard.meanchange++;
-        fieldData.MonsterShow(duelcard);
+        fieldManage.MonsterShow(duelcard);
     }
 
     private IEnumerator UseMagicTrap(DuelCard duelcard, int place, int mean, int way)
@@ -1012,14 +1012,14 @@ public class Duel : MonoBehaviour
         duelcase.old.Add(duelcard.Clone());
         if (duelcard.position == CardPosition.handcard)
         {
-            uiData.HandCardRemove(player, duelcard);
+            uiManage.HandCardRemove(player, duelcard);
         }
         duelcard.position = CardPosition.magictrap;
         duelcard.index = place;
         duelcard.mean = mean;
         duelcard.appearturn = duelData.turnNum;
         duelData.magictrap[player][place] = duelcard;
-        yield return fieldData.MagicTrapShow(duelcard, false);
+        yield return fieldManage.MagicTrapShow(duelcard, false);
         duelcase.card.Add(duelcard);
         if (way != GameEvent.activatecard)
             duelData.duelcase.Add(duelcase);
@@ -1028,7 +1028,7 @@ public class Duel : MonoBehaviour
     private IEnumerator ActivateCoverCard(DuelCard duelcard)
     {
         duelcard.mean = CardMean.faceupmgt;
-        yield return fieldData.MagicTrapShow(duelcard, true);
+        yield return fieldManage.MagicTrapShow(duelcard, true);
     }
 
     private IEnumerator CardLeave(DuelCard duelcard, int way)
@@ -1049,18 +1049,18 @@ public class Duel : MonoBehaviour
             duelcase.old.Add(duelcard.Clone());
             if (duelcard.position == CardPosition.handcard)
             {
-                uiData.HandCardRemove(duelcard.controller, duelcard);
+                uiManage.HandCardRemove(duelcard.controller, duelcard);
             }
             if (duelcard.position == CardPosition.monster)
             {
-                fieldData.MonsterRemove(duelcard);
+                fieldManage.MonsterRemove(duelcard);
             }
             if (duelcard.position == CardPosition.magictrap)
             {
-                fieldData.MagicTrapRemove(duelcard);
+                fieldManage.MagicTrapRemove(duelcard);
             }
             duelcard.infopublic = true;
-            uiData.GraveInsert(duelcard.owner, 0, duelcard);
+            uiManage.GraveInsert(duelcard.owner, 0, duelcard);
             duelcase.card.Add(duelcard);
             yield return new WaitForSeconds(0.1f);
         }

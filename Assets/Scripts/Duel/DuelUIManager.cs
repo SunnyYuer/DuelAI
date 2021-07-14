@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DuelUIData : MonoBehaviour
+public class DuelUIManager : MonoBehaviour
 {
     public Duel duel;
     private DuelDataManager duelData;

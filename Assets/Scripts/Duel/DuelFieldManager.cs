@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DuelFieldData : MonoBehaviour
+public class DuelFieldManager : MonoBehaviour
 {
     public Duel duel;
     private DuelDataManager duelData;
